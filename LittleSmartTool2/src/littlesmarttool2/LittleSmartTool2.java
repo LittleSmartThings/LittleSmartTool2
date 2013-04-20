@@ -4,8 +4,8 @@
  */
 package littlesmarttool2;
 
-import javax.swing.JFrame;
-import littlesmarttool2.GUI.TestFrame;
+import javax.swing.*;
+import littlesmarttool2.GUI.*;
 
 /**
  *
@@ -17,9 +17,6 @@ public class LittleSmartTool2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("TODO: Write code");
-        JFrame frame = new TestFrame();
-        frame.setVisible(true);
+        new SS2Wizard(new JPanel[]{new Step1Panel(), new Step2Panel(), new Step3Panel(), new Step4Panel()});
     }
 }
