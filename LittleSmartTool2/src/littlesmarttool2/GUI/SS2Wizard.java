@@ -6,6 +6,7 @@ package littlesmarttool2.GUI;
 
 import java.awt.*;
 import javax.swing.*;
+import littlesmarttool2.model.Configuration;
 
 /**
  *
@@ -15,24 +16,28 @@ public class SS2Wizard extends javax.swing.JFrame {
 
     private StepPanel[] stepPanels;
     private int currentStep;
+    private Configuration configuration;
     
     /**
      * Creates new form SS2Wizard
      */
-    public SS2Wizard(StepPanel[] steps) {
-        if(steps.length < 1) throw new IllegalArgumentException("There must be at least one step in the wizard.");
-        this.stepPanels = steps;
-        
+    public SS2Wizard() {
         initComponents();
         
-        for (StepPanel step : steps) {
-            step.setWizard(this);
+        stepPanels = new StepPanel[]{new Step1Panel(this), new Step2Panel(this), new Step3Panel(this), new Step4Panel(this)};
+        configuration = new Configuration();
+        
+        for (StepPanel step : stepPanels) {
             cardPanel.add(step, step.getName());
         }
         
         goToStep(0);
         
         setVisible(true);
+    }
+    
+    public Configuration getConfiguration(){
+        return configuration;
     }
     
     public void setBackEnabled(boolean val) { backButton.setEnabled(val);}
@@ -48,7 +53,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         ((CardLayout)cardPanel.getLayout()).show(cardPanel, stepPanels[index].getName());
         stepPanels[index].onDisplay();
         
-        setTitle(stepPanels[index].getName());
+        headline.setText(stepPanels[index].getName());
         currentStep = index;
     }
     
@@ -66,6 +71,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         cardPanel = new javax.swing.JPanel();
+        headline = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
@@ -74,7 +80,6 @@ public class SS2Wizard extends javax.swing.JFrame {
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());
 
-        buttonPanel.setBackground(new java.awt.Color(0, 255, 102));
         buttonPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10));
         buttonPanel.setLayout(new java.awt.BorderLayout());
 
@@ -98,9 +103,13 @@ public class SS2Wizard extends javax.swing.JFrame {
 
         contentPanel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
 
-        cardPanel.setBackground(new java.awt.Color(204, 0, 0));
         cardPanel.setLayout(new java.awt.CardLayout());
         contentPanel.add(cardPanel, java.awt.BorderLayout.CENTER);
+
+        headline.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        headline.setText("StratoSnapper 2");
+        headline.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.add(headline, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -123,6 +132,7 @@ public class SS2Wizard extends javax.swing.JFrame {
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel cardPanel;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JLabel headline;
     private javax.swing.JButton nextButton;
     // End of variables declaration//GEN-END:variables
 }

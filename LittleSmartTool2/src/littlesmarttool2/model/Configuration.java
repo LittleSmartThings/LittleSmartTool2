@@ -10,12 +10,12 @@ import java.util.ArrayList;
  *
  * @author Rasmus
  */
-public class Program {
+public class Configuration {
     private OutputType outputType;
     private ArrayList<Channel> channels = new ArrayList<>();
     private int irFreq;
     
-    public Program()
+    public Configuration()
     {
         
     }

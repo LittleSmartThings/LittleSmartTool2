@@ -17,6 +17,6 @@ public class LittleSmartTool2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new SS2Wizard(new StepPanel[]{new Step1Panel(), new Step2Panel(), new Step3Panel(), new Step4Panel()});
+        new SS2Wizard();
     }
 }
