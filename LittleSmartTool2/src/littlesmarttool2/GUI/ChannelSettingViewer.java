@@ -33,10 +33,13 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         new Color(0xED, 0xEF, 0x85)
     };
     
-    
+    private int lowerBound = 0, upperBound = 100;
     private double readingValue = 0.5;
     private Block selectedBlock;
     private Threshold selectedThreshold;
+    private ArrayList<Block> blocks = new ArrayList<>();
+    private ArrayList<Threshold> thresholds = new ArrayList<>();
+    
     
     /**
      * Creates new form ChannelSettingViewer
@@ -76,6 +79,22 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         }
     }
     
+    public void setBlockList(ArrayList<Block> blocks)
+    {
+        this.blocks = blocks;
+    }
+    
+    public void setThresholdlist(ArrayList<Threshold> thresholds)
+    {
+        this.thresholds = thresholds;
+    }
+    
+    public void setBounds(int lowerBound, int upperBound)
+    {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
+    
     private void drawReadingValue(Graphics2D g2)
     {
         Stroke defaultStroke = g2.getStroke();
@@ -91,13 +110,44 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         g2.drawRect(0, 0, getWidth()-1, getHeight()-1);
     }
     
+    private void drawBlocks(Graphics2D g2)
+    {
+        double prevWidth = 0;
+        for (int i = 0; i < blocks.size(); i++)
+        {
+            Block block = blocks.get(i);
+            double lower = (block.getLowerThreshold() == null) ? lowerBound : block.getLowerThreshold().getValue();
+            double upper = (block.getUpperThreshold() == null) ? upperBound : block.getUpperThreshold().getValue();
+            double width = ((upper - lower) / (upperBound-lowerBound)) * getWidth();
+            System.out.println("Trying lower: " + lower);
+            System.out.println("Trying upper: " + upper);
+            System.out.println("Trying width: " + width);
+            System.out.println("B: " + block.getInterval());
+            g2.setColor(colors[i % colors.length]);
+            g2.fillRect((int)prevWidth, 0, (int)width, getHeight());
+            prevWidth += width;
+        }
+    }
+    
+    private void drawThresholds(Graphics2D g2)
+    {
+        for (int i = 0; i < thresholds.size(); i++)
+        {
+            Threshold threshold = thresholds.get(i);
+            int x = (int)((threshold.getValue() * 1.0 / (upperBound-lowerBound)) * getWidth());
+            g2.setColor(Color.black);
+            g2.drawLine(x, 0, x, getHeight());
+        }
+    }
+    
     @Override
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         drawReadingValue(g2);
-        g2.drawLine(0, 0, 100, 100);
+        drawBlocks(g2);
+        drawThresholds(g2);
         
         drawBorder(g2);
     }

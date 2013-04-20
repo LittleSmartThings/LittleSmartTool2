@@ -4,6 +4,11 @@
  */
 package littlesmarttool2.GUI;
 
+import java.util.ArrayList;
+import littlesmarttool2.model.Block;
+import littlesmarttool2.model.LANCCommand;
+import littlesmarttool2.model.Threshold;
+
 /**
  *
  * @author Rasmus
@@ -15,6 +20,28 @@ public class TestFrame extends javax.swing.JFrame {
      */
     public TestFrame() {
         initComponents();
+        
+        //Set up test for channel setting viewer
+        ArrayList<Block> blocks = new ArrayList<>();
+        ArrayList<Threshold> thresholds = new ArrayList<>();
+        
+        Threshold th = new Threshold(20, null, null);
+        Threshold th2 = new Threshold(30, null, null);
+        thresholds.add(th);
+        thresholds.add(th2);
+        Block b = new Block(null, null, th, 0);
+        Block b2 = new Block(null, th, th2, 2);
+        Block b3 = new Block(null, th2, null, 2);
+        blocks.add(b);
+        blocks.add(b2);
+        blocks.add(b3);
+        
+        channelSettingViewer1.setBounds(0,100);
+        channelSettingViewer1.setBlockList(blocks);
+        channelSettingViewer1.setThresholdlist(thresholds);
+        
+        
+        
     }
 
     /**

@@ -10,13 +10,13 @@ package littlesmarttool2.model;
  */
 public class Block {
     private Command command;
-    private Threshold upThreshold, downThreshold;
+    private Threshold lowerThreshold, upperThreshold;
     private int interval;
-    public Block(Command command, Threshold upThreshold, Threshold downThreshold, int interval)
+    public Block(Command command, Threshold lowerThreshold, Threshold upperThreshold, int interval)
     {
         this.command = command;
-        this.upThreshold = upThreshold;
-        this.downThreshold = downThreshold;
+        this.lowerThreshold = lowerThreshold;
+        this.upperThreshold = upperThreshold;
         this.interval = interval;
     }
     
@@ -30,24 +30,24 @@ public class Block {
         this.command = command;
     }
     
-    public Threshold getUpThreshold()
+    public Threshold getLowerThreshold()
     {
-        return upThreshold;
+        return lowerThreshold;
     }
     
-    public void setUpThreshold(Threshold threshold)
+    public void setLowerThreshold(Threshold threshold)
     {
-        this.upThreshold = threshold;
+        this.lowerThreshold = threshold;
     }
     
-    public Threshold getDownThreshold()
+    public Threshold getUpperThreshold()
     {
-        return downThreshold;
+        return upperThreshold;
     }
     
-    public void setDownThreshold(Threshold threshold)
+    public void setUpperThreshold(Threshold threshold)
     {
-        this.downThreshold = threshold;
+        this.upperThreshold = threshold;
     }
     
     public int getInterval()
