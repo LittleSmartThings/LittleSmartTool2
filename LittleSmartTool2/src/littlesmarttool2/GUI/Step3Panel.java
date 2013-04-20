@@ -14,13 +14,9 @@ public class Step3Panel extends StepPanel {
     /**
      * Creates new form Step1Panel
      */
-    public Step3Panel() {
+    public Step3Panel(SS2Wizard wizard) {
+        super(wizard);
         initComponents();
-    }
-
-    @Override
-    public void setWizard(SS2Wizard wizard) {
-        this.wizard = wizard;
     }
     
     @Override

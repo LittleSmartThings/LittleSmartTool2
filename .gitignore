@@ -3,6 +3,7 @@
 # Package Files #
 *.war
 *.ear
+.DS_Store
 
 **/build/
 /LittleSmartTool2/build/

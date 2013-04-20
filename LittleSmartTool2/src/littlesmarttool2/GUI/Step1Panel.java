@@ -4,6 +4,10 @@
  */
 package littlesmarttool2.GUI;
 
+import javax.swing.*;
+import littlesmarttool2.model.*;
+import littlesmarttool2.util.*;
+
 /**
  *
  * @author marcher89
@@ -14,13 +18,17 @@ public class Step1Panel extends StepPanel {
     /**
      * Creates new form Step1Panel
      */
-    public Step1Panel() {
+    public Step1Panel(SS2Wizard wizard) {
+        super(wizard);
         initComponents();
-    }
-
-    @Override
-    public void setWizard(SS2Wizard wizard) {
-        this.wizard = wizard;
+        
+        CameraBrand[] brands = JSON.readObjectFromFile("camera-list.json", CameraBrand[].class);
+        
+        DefaultListModel model = new DefaultListModel();
+        for (CameraBrand cameraBrand : brands) {
+            model.addElement(cameraBrand);
+        }
+        brandList.setModel(model);
     }
     
     @Override
@@ -42,31 +50,19 @@ public class Step1Panel extends StepPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        brandList = new javax.swing.JList();
 
         setName("Choose camera and output type"); // NOI18N
+        setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("Step 1");
+        jScrollPane1.setViewportView(brandList);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(185, Short.MAX_VALUE)
-                .add(jLabel1)
-                .add(176, 176, 176))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(117, 117, 117)
-                .add(jLabel1)
-                .addContainerGap(167, Short.MAX_VALUE))
-        );
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList brandList;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
 }
