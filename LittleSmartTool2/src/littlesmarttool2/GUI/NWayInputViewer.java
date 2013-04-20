@@ -42,7 +42,6 @@ public class NWayInputViewer extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g)
     {
-        value = (value + 1) % n;
         Graphics2D g2 = (Graphics2D) g;
         int widthPrBox = (getWidth() / n);
         int height = getHeight();
