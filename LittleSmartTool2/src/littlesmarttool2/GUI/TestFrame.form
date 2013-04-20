@@ -66,7 +66,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="littlesmarttool2.GUI.PushbuttonInputViewer" name="pushbuttonInputViewer2">
+    <Container class="littlesmarttool2.GUI.components.PushbuttonInputViewer" name="pushbuttonInputViewer2">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -81,7 +81,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="littlesmarttool2.GUI.StickInputViewer" name="stickInputViewer2">
+    <Container class="littlesmarttool2.GUI.components.StickInputViewer" name="stickInputViewer2">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -96,7 +96,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="littlesmarttool2.GUI.NWayInputViewer" name="nWayInputViewer1">
+    <Container class="littlesmarttool2.GUI.components.NWayInputViewer" name="nWayInputViewer1">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -111,7 +111,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="littlesmarttool2.GUI.ChannelSettingViewer" name="channelSettingViewer1">
+    <Container class="littlesmarttool2.GUI.components.ChannelSettingViewer" name="channelSettingViewer1">
 
       <Layout>
         <DimensionLayout dim="0">

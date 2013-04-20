@@ -5,6 +5,9 @@
 package littlesmarttool2.GUI;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicListUI;
 import littlesmarttool2.model.*;
 import littlesmarttool2.util.*;
 
@@ -24,11 +27,18 @@ public class Step1Panel extends StepPanel {
         
         CameraBrand[] brands = JSON.readObjectFromFile("camera-list.json", CameraBrand[].class);
         
-        DefaultListModel model = new DefaultListModel();
-        for (CameraBrand cameraBrand : brands) {
-            model.addElement(cameraBrand);
-        }
-        brandList.setModel(model);
+        brandList.setHeadLine("Camera");
+        brandList.getList().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getProfiles());
+            }
+        });
+        brandList.setElements(brands);
+        
+        
+        modelList.setHeadLine("Model");
     }
     
     @Override
@@ -50,19 +60,25 @@ public class Step1Panel extends StepPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        brandList = new javax.swing.JList();
+        cameraPanel = new javax.swing.JPanel();
+        brandList = new littlesmarttool2.GUI.components.ListWithHeadline();
+        modelList = new littlesmarttool2.GUI.components.ListWithHeadline();
 
         setName("Choose camera and output type"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.GridLayout(2, 0));
 
-        jScrollPane1.setViewportView(brandList);
+        cameraPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        cameraPanel.setLayout(new java.awt.GridLayout(1, 2));
+        cameraPanel.add(brandList);
+        cameraPanel.add(modelList);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        add(cameraPanel);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList brandList;
-    private javax.swing.JScrollPane jScrollPane1;
+    private littlesmarttool2.GUI.components.ListWithHeadline brandList;
+    private javax.swing.JPanel cameraPanel;
+    private littlesmarttool2.GUI.components.ListWithHeadline modelList;
     // End of variables declaration//GEN-END:variables
 
 }
