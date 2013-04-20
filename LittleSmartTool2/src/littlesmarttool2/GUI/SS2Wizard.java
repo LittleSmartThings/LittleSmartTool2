@@ -13,23 +13,21 @@ import javax.swing.*;
  */
 public class SS2Wizard extends javax.swing.JFrame {
 
-    private JPanel[] stepPanels;
-    private String[] stepNames;
+    private StepPanel[] stepPanels;
     private int currentStep;
     
     /**
      * Creates new form SS2Wizard
      */
-    public SS2Wizard(JPanel[] steps) {
+    public SS2Wizard(StepPanel[] steps) {
         if(steps.length < 1) throw new IllegalArgumentException("There must be at least one step in the wizard.");
         this.stepPanels = steps;
-        this.stepNames = new String[stepPanels.length];
         
         initComponents();
         
-        for (int i = 0; i<steps.length; i++) {
-            stepNames[i] = "Step number "+i;
-            cardPanel.add(stepPanels[i], stepNames[i]);
+        for (StepPanel step : steps) {
+            step.setWizard(this);
+            cardPanel.add(step, step.getName());
         }
         
         goToStep(0);
@@ -37,10 +35,20 @@ public class SS2Wizard extends javax.swing.JFrame {
         setVisible(true);
     }
     
+    public void setBackEnabled(boolean val) { backButton.setEnabled(val);}
+    
+    public void setNextEnabled(boolean val) { nextButton.setEnabled(val);}
+    
     private void goToStep(int index) {
-        ((CardLayout)cardPanel.getLayout()).show(cardPanel, stepNames[index]);
         backButton.setEnabled((index <= 0) ? false : true);
+        nextButton.setEnabled(true);
+        
         nextButton.setText((index >= stepPanels.length-1) ? "Close" : "Next");
+        stepPanels[currentStep].onHide();
+        ((CardLayout)cardPanel.getLayout()).show(cardPanel, stepPanels[index].getName());
+        stepPanels[index].onDisplay();
+        
+        setTitle(stepPanels[index].getName());
         currentStep = index;
     }
     
