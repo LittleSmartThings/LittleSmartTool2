@@ -4,6 +4,8 @@
 *.jar
 *.war
 *.ear
+
+**/build/
 /LittleSmartTool2/build/
 /LittleSmartTool2/dist/
 **/nbproject/private/
