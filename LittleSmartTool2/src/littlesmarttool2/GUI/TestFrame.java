@@ -5,6 +5,9 @@
 package littlesmarttool2.GUI;
 
 import java.util.ArrayList;
+import littlesmarttool2.comm.AutoServoPuller;
+import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Threshold;
 
@@ -12,13 +15,40 @@ import littlesmarttool2.model.Threshold;
  *
  * @author Rasmus
  */
-public class TestFrame extends javax.swing.JFrame {
+public class TestFrame extends javax.swing.JFrame implements ResponseListener {
 
+    @Override
+    public void receiveResponse(char command, String[] args) {
+        if (command != 'S') return;
+        if (args.length < 4) return;
+        int value = Integer.parseInt(args[3]);
+        stickInputViewer2.setValue((value - 800) / (2200-800.0));
+        stickInputViewer2.repaint();
+        nWayInputViewer1.setN(5);
+        nWayInputViewer1.setValue((int)((value - 800) / (2200-800.0)) % 5);
+        nWayInputViewer1.repaint();
+    }
+    
+    
     /**
      * Creates new form TestFrame
      */
     public TestFrame() {
         initComponents();
+        
+        SerialController controller = new SerialController();
+        AutoServoPuller puller = AutoServoPuller.getSingleton();
+        
+        controller.addResponseListener(this);
+        try
+        {
+            controller.connect(SerialController.getPortNames().get(0));
+            puller.Start(controller);
+        }
+        catch (Exception e)
+        {
+            
+        }
         
         //Set up test for channel setting viewer
         ArrayList<Block> blocks = new ArrayList<>();
@@ -181,4 +211,6 @@ public class TestFrame extends javax.swing.JFrame {
     private littlesmarttool2.GUI.PushbuttonInputViewer pushbuttonInputViewer2;
     private littlesmarttool2.GUI.StickInputViewer stickInputViewer2;
     // End of variables declaration//GEN-END:variables
+
+
 }

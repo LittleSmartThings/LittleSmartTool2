@@ -43,6 +43,9 @@ public class NWayInputViewer extends javax.swing.JPanel {
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
+        
+        g2.setColor(Color.white);
+        g2.fillRect(0, 0, getWidth(), getHeight());
         int widthPrBox = (getWidth() / n);
         int height = getHeight();
         for (int i = 0; i < n; i++)

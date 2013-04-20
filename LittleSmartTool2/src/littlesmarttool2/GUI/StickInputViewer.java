@@ -68,6 +68,8 @@ public class StickInputViewer extends javax.swing.JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
         //Draw border
+        g2.setColor(Color.white);
+        g2.fillRect(0, 0, getWidth(), getHeight());
         g2.setColor(Color.black);
         g2.drawRect(0,0,getWidth()-1, getHeight()-1);
         
