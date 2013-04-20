@@ -77,6 +77,7 @@ public class SerialController {
         connected = true;
         reader.setInputStream(port.getInputStream());
         outStream = port.getOutputStream();
+        reader.setDaemon(true);
         reader.start();
     }
     
@@ -100,14 +101,56 @@ public class SerialController {
         try
         {
             String tmp = "" + command;
-            for (String s : args)
-                tmp += ";" + s;
+            if (args != null)
+                for (String s : args)
+                    tmp += ";" + s;
             outStream.write((tmp+">").getBytes());
+            outStream.flush();
         }
         catch (IOException e)
         {
             connected = false;
             throw e;
+        }
+    }
+    
+    private static class SerialCommReader extends Thread {
+        private InputStream inStream;
+        private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
+        public void addResponseListener(ResponseListener listener){
+            if (!responseListeners.contains(listener))
+                responseListeners.add(listener);
+        }
+        public void setInputStream(InputStream in){
+            this.inStream = in;
+        }
+        @Override
+        public void run()
+        {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
+                Thread.sleep(1500);
+                while (true)
+                {
+                    String read = bufferedReader.readLine();
+                    if (read == null) {
+                        Thread.sleep(10); //wait for just a little bit
+                        continue;
+                    }
+                    String[] parts = read.split(";");
+                    if (parts[0].length() == 0) continue; //Failure
+                    char cmd = parts[0].charAt(0);
+                    String[] args = new String[parts.length-1];
+                    for (int i = 0; i < args.length; i++)
+                        args[i] = parts[i+1];
+                    for (ResponseListener l : responseListeners)
+                        l.receiveResponse(cmd, args);
+                }
+            } catch (InterruptedException ex) {
+                System.out.println("InterruptedException in SerialCommReader: " + ex.getMessage());
+            } catch (IOException ex) {
+                System.out.println("IOException in SerialCommReader: " + ex.getMessage());
+            }
         }
     }
 }
