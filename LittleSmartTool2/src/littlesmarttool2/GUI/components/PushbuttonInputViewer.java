@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package littlesmarttool2.GUI;
+package littlesmarttool2.GUI.components;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,53 +12,36 @@ import java.awt.Graphics2D;
  *
  * @author Rasmus
  */
-public class NWayInputViewer extends javax.swing.JPanel {
+public class PushbuttonInputViewer extends javax.swing.JPanel {
 
-    private int n = 3, value = 1;
+    private boolean value = true;
     
-    /**
-     * Must be greater than 0!
-     * @param n 
-     */
-    public void setN(int n)
+    public void setValue(boolean pressed)
     {
-        this.n = n;
-    }
-    
-    public void setValue(int value)
-    {
-        this.value = value;
+        this.value = pressed;
     }
     
     /**
-     * Creates new form NWayInputViewer
+     * Creates new form PushbuttonInputViewer
      */
-    public NWayInputViewer() {
+    public PushbuttonInputViewer() {
         initComponents();
     }
 
-    //private void getBox
-    
     @Override
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        
-        g2.setColor(Color.white);
-        g2.fillRect(0, 0, getWidth(), getHeight());
-        int widthPrBox = (getWidth() / n);
-        int height = getHeight();
-        for (int i = 0; i < n; i++)
+        //Pressed
+        if (value)
         {
-            int x = widthPrBox * i;
-            if (i == value)
-            {
-                g2.setColor(Color.green);
-                g2.fillRect(x, 0, widthPrBox-4, height-1);
-            }
-            g2.setColor(Color.black);
-            g2.drawRect(x, 0, widthPrBox-4, height-1);
+            g2.setColor(Color.green);
+            g2.fillOval(0,0, getWidth(), getHeight());
         }
+        //Border & lines
+        g2.setColor(Color.black);
+        g2.fillOval(getWidth()/4, getHeight()/4, getWidth()/2, getHeight()/2);
+        g2.drawOval(0,0, getWidth()-1, getHeight()-1);
     }
     
     /**

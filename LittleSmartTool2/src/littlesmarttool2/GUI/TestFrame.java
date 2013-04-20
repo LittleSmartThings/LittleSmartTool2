@@ -82,10 +82,10 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pushbuttonInputViewer2 = new littlesmarttool2.GUI.PushbuttonInputViewer();
-        stickInputViewer2 = new littlesmarttool2.GUI.StickInputViewer();
-        nWayInputViewer1 = new littlesmarttool2.GUI.NWayInputViewer();
-        channelSettingViewer1 = new littlesmarttool2.GUI.ChannelSettingViewer();
+        pushbuttonInputViewer2 = new littlesmarttool2.GUI.components.PushbuttonInputViewer();
+        stickInputViewer2 = new littlesmarttool2.GUI.components.StickInputViewer();
+        nWayInputViewer1 = new littlesmarttool2.GUI.components.NWayInputViewer();
+        channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -206,10 +206,10 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private littlesmarttool2.GUI.ChannelSettingViewer channelSettingViewer1;
-    private littlesmarttool2.GUI.NWayInputViewer nWayInputViewer1;
-    private littlesmarttool2.GUI.PushbuttonInputViewer pushbuttonInputViewer2;
-    private littlesmarttool2.GUI.StickInputViewer stickInputViewer2;
+    private littlesmarttool2.GUI.components.ChannelSettingViewer channelSettingViewer1;
+    private littlesmarttool2.GUI.components.NWayInputViewer nWayInputViewer1;
+    private littlesmarttool2.GUI.components.PushbuttonInputViewer pushbuttonInputViewer2;
+    private littlesmarttool2.GUI.components.StickInputViewer stickInputViewer2;
     // End of variables declaration//GEN-END:variables
 
 
