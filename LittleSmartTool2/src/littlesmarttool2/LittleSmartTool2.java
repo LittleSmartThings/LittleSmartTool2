@@ -4,7 +4,7 @@
  */
 package littlesmarttool2;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import littlesmarttool2.GUI.*;
 
 /**
