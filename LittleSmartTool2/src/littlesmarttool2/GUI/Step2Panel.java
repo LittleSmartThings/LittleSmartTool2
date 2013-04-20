@@ -8,7 +8,8 @@ package littlesmarttool2.GUI;
  *
  * @author marcher89
  */
-public class Step2Panel extends javax.swing.JPanel {
+public class Step2Panel extends StepPanel {
+    private SS2Wizard wizard;
 
     /**
      * Creates new form Step1Panel
@@ -16,6 +17,22 @@ public class Step2Panel extends javax.swing.JPanel {
     public Step2Panel() {
         initComponents();
     }
+
+    @Override
+    public void setWizard(SS2Wizard wizard) {
+        this.wizard = wizard;
+    }
+    
+    @Override
+    public void onDisplay() {
+        //TODO: Do anything??
+    }
+
+    @Override
+    public void onHide() {
+        //TODO: Do anything??
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,6 +44,8 @@ public class Step2Panel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+
+        setName("Choose control types and calibrate"); // NOI18N
 
         jLabel1.setText("Step 2");
 
