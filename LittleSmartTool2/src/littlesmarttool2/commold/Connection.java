@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package littlesmarttool2.comm;
+package littlesmarttool2.commold;
 
 import gnu.io.CommPortIdentifier;  
 import gnu.io.SerialPort;  
@@ -21,7 +21,7 @@ public class Connection {
               
             // setup connection parameters  
             serialPort.setSerialPortParams(  
-                57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+                9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             //serialPort.setFlowControlMode(serialPort.FLOWCONTROL_NONE);
             
             // setup serial port writer  
@@ -39,7 +39,7 @@ public class Connection {
     public static void main(String[] args) throws Exception {
         SerialPort serPort;
         String port = "COM6";
-        String message = "#?!";
+        String message = "S>";
         
         if (args != null && args.length == 2) {          
             port = args[0];
@@ -48,10 +48,11 @@ public class Connection {
             
         // connects to the port which name (e.g. COM1) is in the first arg  
         serPort = new Connection().connectToSerial(port);
-          
+        System.out.println("A");
         // send message in second arg through serial port using protocol implementation  
         CommPortSender.send(new ProtocolImpl().getMessage(message));
-        
+        System.out.println("B");
+        serPort.close();
         //serPort.close();
     }  
 }  

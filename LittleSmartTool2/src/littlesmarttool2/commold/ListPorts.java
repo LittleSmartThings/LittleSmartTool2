@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package littlesmarttool2.comm;
+package littlesmarttool2.commold;
 
 import gnu.io.CommPortIdentifier;  
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class ListPorts implements PortLister{
         ArrayList portNames = new ArrayList();
         while(ports.hasMoreElements()) {
             String portName = ((CommPortIdentifier)ports.nextElement()).getName();
-            //System.out.println(portName);
+            System.out.println(portName);
             portNames.add(portName);
         }       
         

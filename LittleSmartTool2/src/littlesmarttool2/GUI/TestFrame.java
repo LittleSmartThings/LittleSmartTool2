@@ -6,7 +6,6 @@ package littlesmarttool2.GUI;
 
 import java.util.ArrayList;
 import littlesmarttool2.model.Block;
-import littlesmarttool2.model.LANCCommand;
 import littlesmarttool2.model.Threshold;
 
 /**
