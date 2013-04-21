@@ -4,6 +4,8 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.EventQueue;
+
 /**
  *
  * @author Rasmus

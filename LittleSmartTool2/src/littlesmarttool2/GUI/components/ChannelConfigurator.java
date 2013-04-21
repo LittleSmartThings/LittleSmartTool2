@@ -44,7 +44,7 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         inputViewerPanel.removeAll();
         viewer = newViewer;
         inputViewerPanel.add(viewer, BorderLayout.CENTER);
-        inputViewerPanel.repaint();
+        inputViewerPanel.revalidate();
     }
     
     /**

@@ -44,7 +44,7 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         controller.addResponseListener(this);
         try
         {
-            controller.connect(SerialController.getPortNames().get(7));
+            controller.connect(SerialController.getPortNames().get(0));
             AutoServoPuller.Start(controller);
         }
         catch (Exception e)

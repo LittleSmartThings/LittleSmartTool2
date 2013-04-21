@@ -24,19 +24,22 @@ public class PushbuttonInputViewer extends InputViewer {
     @Override
     public void paintComponent(Graphics g)
     {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
+        int dim = Math.min(getWidth()-1,getHeight()-1);
+        dim = Math.min(dim, 50); //Max 50 px
         //Pressed
         if (getValuePct() > .5)
         {
             g2.setColor(Color.green);
-            g2.fillOval(0,0, getWidth(), getHeight());
+            g2.fillOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim, dim);
         }
         //Border & lines
         g2.setColor(Color.black);
-        g2.fillOval(getWidth()/4, getHeight()/4, getWidth()/2, getHeight()/2);
-        g2.drawOval(0,0, getWidth()-1, getHeight()-1);
+        //g2.fillOval((getWidth()/2) - (dim/2)) / 2, (getHeight()/2) - (dim/2) / 2, dim/2, dim/2);
+        g2.drawOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim, dim);
     }
     
     /**
