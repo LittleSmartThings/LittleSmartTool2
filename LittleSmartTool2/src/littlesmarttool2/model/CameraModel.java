@@ -15,11 +15,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CameraModel {
     private String identifier;
     private String modelName;
+    public ConnectionType[] connectionTypes;
     
     @JsonCreator
-    public CameraModel(@JsonProperty("identifier") String identifier, @JsonProperty("models") String modelName) {
+    public CameraModel(@JsonProperty("identifier") String identifier, @JsonProperty("models") String modelName, @JsonProperty("connectionTypes") ConnectionType[] connectionTypes) {
         this.identifier = identifier;
         this.modelName = modelName;
+        this.connectionTypes = connectionTypes;
     }
 
     public String getIdentifier() {
@@ -28,6 +30,10 @@ public class CameraModel {
     
     public String getModelName() {
         return modelName;
+    }
+    
+    public ConnectionType[] getConnectionTypes() {
+        return connectionTypes;
     }
     
     @Override

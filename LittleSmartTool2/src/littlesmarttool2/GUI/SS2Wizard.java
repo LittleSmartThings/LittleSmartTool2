@@ -26,7 +26,7 @@ import littlesmarttool2.model.Configuration;
 public class SS2Wizard extends javax.swing.JFrame {
 
     private StepPanel[] stepPanels;
-    private int currentStep;
+    private int currentStep = -1;
     private Configuration configuration;
     private SerialController controller;
     private final String selectPortMsg = "Select port:";
@@ -80,7 +80,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         nextButton.setEnabled(true);
         
         nextButton.setText((index >= stepPanels.length-1) ? "Close" : "Next");
-        stepPanels[currentStep].onHide();
+        if(currentStep > -1) stepPanels[currentStep].onHide();
         ((CardLayout)cardPanel.getLayout()).show(cardPanel, stepPanels[index].getName());
         stepPanels[index].onDisplay();
         

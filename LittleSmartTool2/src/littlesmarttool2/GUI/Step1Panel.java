@@ -4,10 +4,14 @@
  */
 package littlesmarttool2.GUI;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicListUI;
+import littlesmarttool2.GUI.components.ConnectionTypeBox;
 import littlesmarttool2.model.*;
 import littlesmarttool2.util.*;
 
@@ -16,38 +20,87 @@ import littlesmarttool2.util.*;
  * @author marcher89
  */
 public class Step1Panel extends StepPanel {
+    private final ConnectionTypeBox[] connBoxes;
+    private final ButtonGroup connGroup;
 
     /**
      * Creates new form Step1Panel
      */
-    public Step1Panel(SS2Wizard wizard) {
+    public Step1Panel(final SS2Wizard wizard) {
         super(wizard);
         initComponents();
         
-        CameraBrand[] brands = JSON.readObjectFromFile("camera-list.json", CameraBrand[].class);
+        CameraBrand[] brands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
         
+        //Intialize camera brand list
         brandList.setHeadLine("Camera");
         brandList.getList().addListSelectionListener(new ListSelectionListener() {
-
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                wizard.getConfiguration().setCameraBrand((CameraBrand)brandList.getSelectedElement());
+                connGroup.clearSelection();
+                for (ConnectionTypeBox connBox : connBoxes) {
+                    connBox.setEnabled(false);
+                }
                 modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getModels());
             }
         });
         brandList.setElements(brands);
         
-        
+        //Intialize camera model list
         modelList.setHeadLine("Model");
+        modelList.getList().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                CameraModel selected = (CameraModel)modelList.getSelectedElement();
+                wizard.getConfiguration().setCameraModel(selected);
+                if(selected==null) return;
+                
+                for (ConnectionTypeBox connBox : connBoxes) {
+                    connBox.setEnabled(Arrays.asList(selected.getConnectionTypes()).contains(connBox.getConnectionType()));
+                    if(selected.getConnectionTypes().length==1 && selected.getConnectionTypes()[0] == connBox.getConnectionType())
+                        connBox.setSelected(true);
+                }
+            }
+        });
+        
+        //Initialize connection type boxes
+        connBoxes = new ConnectionTypeBox[ConnectionType.values().length];
+        connGroup = new ButtonGroup();
+        
+        int i = 0;
+        for (ConnectionType connectionType : ConnectionType.values()) {
+            System.out.println(connectionType);
+            connBoxes[i] = new ConnectionTypeBox(connectionType);
+            connBoxes[i].setEnabled(false);
+            connBoxes[i].addToGroup(connGroup);
+            connBoxes[i].addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    wizard.setNextEnabled(connGroup.getSelection() != null);
+                    wizard.getConfiguration().setOutputType(null);
+                    for (ConnectionTypeBox connectionTypeBox : connBoxes) {
+                        if(connectionTypeBox.isSelected()) wizard.getConfiguration().setOutputType(connectionTypeBox.getConnectionType());
+                    }
+                }
+            });
+            
+            outputconnectionsPanel.add(connBoxes[i++]);
+        }
     }
     
     @Override
     public void onDisplay() {
-        //TODO: Do anything??
+        wizard.setNextEnabled(connGroup.getSelection() != null);
     }
 
     @Override
     public void onHide() {
-        //TODO: Do anything??
+        Configuration conf = wizard.getConfiguration();
+        System.out.println("Camera Brand: "+conf.getCameraBrand());
+        System.out.println("Camera Model: "+conf.getCameraModel());
+        System.out.println("Output type: "+ conf.getOutputType());
     }
     
     /**
@@ -65,15 +118,6 @@ public class Step1Panel extends StepPanel {
         outputPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         outputconnectionsPanel = new javax.swing.JPanel();
-        IRPanel = new javax.swing.JPanel();
-        IRRadioButton = new javax.swing.JRadioButton();
-        IRDescription = new javax.swing.JLabel();
-        WirePanel = new javax.swing.JPanel();
-        IRRadioButton1 = new javax.swing.JRadioButton();
-        IRDescription1 = new javax.swing.JLabel();
-        LANCPanel2 = new javax.swing.JPanel();
-        IRRadioButton2 = new javax.swing.JRadioButton();
-        IRDescription2 = new javax.swing.JLabel();
 
         setName("Choose camera and output type"); // NOI18N
         setLayout(new java.awt.GridLayout(2, 0));
@@ -93,64 +137,12 @@ public class Step1Panel extends StepPanel {
         outputPanel.add(jLabel1, java.awt.BorderLayout.NORTH);
 
         outputconnectionsPanel.setLayout(new javax.swing.BoxLayout(outputconnectionsPanel, javax.swing.BoxLayout.X_AXIS));
-
-        IRPanel.setMaximumSize(new java.awt.Dimension(1200, 39));
-        IRPanel.setLayout(new javax.swing.BoxLayout(IRPanel, javax.swing.BoxLayout.Y_AXIS));
-
-        IRRadioButton.setText("jRadioButton1");
-        IRRadioButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        IRRadioButton.setMaximumSize(new java.awt.Dimension(1200, 23));
-        IRPanel.add(IRRadioButton);
-
-        IRDescription.setText("This is an IR connection.");
-        IRDescription.setMaximumSize(new java.awt.Dimension(4500, 16));
-        IRPanel.add(IRDescription);
-
-        outputconnectionsPanel.add(IRPanel);
-
-        WirePanel.setMaximumSize(new java.awt.Dimension(1200, 39));
-        WirePanel.setLayout(new javax.swing.BoxLayout(WirePanel, javax.swing.BoxLayout.Y_AXIS));
-
-        IRRadioButton1.setText("jRadioButton1");
-        IRRadioButton1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        IRRadioButton1.setMaximumSize(new java.awt.Dimension(1200, 23));
-        WirePanel.add(IRRadioButton1);
-
-        IRDescription1.setText("This is an IR connection.");
-        IRDescription1.setMaximumSize(new java.awt.Dimension(4500, 16));
-        WirePanel.add(IRDescription1);
-
-        outputconnectionsPanel.add(WirePanel);
-
-        LANCPanel2.setMaximumSize(new java.awt.Dimension(1200, 39));
-        LANCPanel2.setLayout(new javax.swing.BoxLayout(LANCPanel2, javax.swing.BoxLayout.Y_AXIS));
-
-        IRRadioButton2.setText("jRadioButton1");
-        IRRadioButton2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        IRRadioButton2.setMaximumSize(new java.awt.Dimension(1200, 23));
-        LANCPanel2.add(IRRadioButton2);
-
-        IRDescription2.setText("This is an IR connection.");
-        IRDescription2.setMaximumSize(new java.awt.Dimension(4500, 16));
-        LANCPanel2.add(IRDescription2);
-
-        outputconnectionsPanel.add(LANCPanel2);
-
         outputPanel.add(outputconnectionsPanel, java.awt.BorderLayout.CENTER);
 
         add(outputPanel);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel IRDescription;
-    private javax.swing.JLabel IRDescription1;
-    private javax.swing.JLabel IRDescription2;
-    private javax.swing.JPanel IRPanel;
-    private javax.swing.JRadioButton IRRadioButton;
-    private javax.swing.JRadioButton IRRadioButton1;
-    private javax.swing.JRadioButton IRRadioButton2;
-    private javax.swing.JPanel LANCPanel2;
-    private javax.swing.JPanel WirePanel;
     private littlesmarttool2.GUI.components.ListWithHeadline brandList;
     private javax.swing.JPanel cameraPanel;
     private javax.swing.JLabel jLabel1;

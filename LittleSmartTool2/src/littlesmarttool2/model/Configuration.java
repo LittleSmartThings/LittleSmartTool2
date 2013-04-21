@@ -11,7 +11,9 @@ import java.util.ArrayList;
  * @author Rasmus
  */
 public class Configuration {
-    private OutputType outputType;
+    private CameraBrand cameraBrand;
+    private CameraModel cameraModel;
+    private ConnectionType outputType;
     private ArrayList<Channel> channels = new ArrayList<>();
     private int irFreq;
     
@@ -19,13 +21,29 @@ public class Configuration {
     {
         
     }
+
+    public CameraBrand getCameraBrand() {
+        return cameraBrand;
+    }
     
-    public OutputType getOutputType()
+    public void setCameraBrand(CameraBrand cameraBrand) {
+        this.cameraBrand = cameraBrand;
+    }
+    
+    public CameraModel getCameraModel() {
+        return cameraModel;
+    }
+    
+    public void setCameraModel(CameraModel cameraModel) {
+        this.cameraModel = cameraModel;
+    }
+    
+    public ConnectionType getOutputType()
     {
         return outputType;
     }
     
-    public void setOutputType(OutputType type)
+    public void setOutputType(ConnectionType type)
     {
         this.outputType = type;
     }

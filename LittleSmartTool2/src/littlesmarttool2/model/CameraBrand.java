@@ -20,6 +20,10 @@ public class CameraBrand {
         this.brandName = brandName;
         this.models = models;
     }
+
+    public CameraBrand() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public String getBrandName() {
         return brandName;

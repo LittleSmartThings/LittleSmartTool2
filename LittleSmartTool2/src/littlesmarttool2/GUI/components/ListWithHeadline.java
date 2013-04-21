@@ -28,7 +28,12 @@ public class ListWithHeadline extends javax.swing.JPanel {
     }
     
     public Object getSelectedElement() {
-        return list.getModel().getElementAt(list.getSelectedIndex());
+        try{
+            return list.getModel().getElementAt(list.getSelectedIndex());
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            return null;
+        }
     }
     
     public void setHeadLine(String text){

@@ -8,6 +8,6 @@ package littlesmarttool2.model;
  *
  * @author Rasmus
  */
-public enum OutputType {
+public enum ConnectionType {
     IR, LANC, Wire
 }

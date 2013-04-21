@@ -63,11 +63,20 @@ public class JSON {
             })
         };
         writeObjectToFile(list, "newCameraList.json");*/
-        for (CameraBrand cameraBrand : readObjectFromFile("camera-list.json", CameraBrand[].class)) {
-            System.out.println(cameraBrand);
+        CameraBrand[] list = readObjectFromFile("camera-list.json", CameraBrand[].class);
+        for (CameraBrand cameraBrand : list) {
             for (CameraModel cameraModel : cameraBrand.getModels()) {
-                System.out.println("   "+cameraModel);
+                String name = cameraBrand.getBrandName();
+                if(name.equals("Sony"))
+                    cameraModel.connectionTypes = new ConnectionType[]{ConnectionType.IR, ConnectionType.Wire, ConnectionType.LANC};
+                else if(name.equals("Canon")||name.equals("Nikon")||name.equals("Minolta"))
+                    cameraModel.connectionTypes = new ConnectionType[]{ConnectionType.IR, ConnectionType.Wire};
+                else if(name.equals("Pentax"))
+                    cameraModel.connectionTypes = new ConnectionType[]{ConnectionType.IR};
+                else 
+                    cameraModel.connectionTypes = new ConnectionType[]{ConnectionType.Wire};
             }
         }
+        writeObjectToFile(list, "cameraList.json");
     }
 }

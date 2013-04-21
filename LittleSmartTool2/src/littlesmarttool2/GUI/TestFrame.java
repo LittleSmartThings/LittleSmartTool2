@@ -41,12 +41,12 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         controller.addResponseListener(this);
         try
         {
-            controller.connect(SerialController.getPortNames().get(0));
+            controller.connect(SerialController.getPortNames().get(7));
             AutoServoPuller.Start(controller);
         }
         catch (Exception e)
         {
-            
+            e.printStackTrace();
         }
         
         //Set up test for channel setting viewer
