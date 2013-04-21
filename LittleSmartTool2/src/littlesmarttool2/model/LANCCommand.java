@@ -27,7 +27,7 @@ public class LANCCommand extends Command {
         return commandByte1;
     }
     
-    public byte getCommByte2()
+    public byte getCommandByte2()
     {
         return commandByte2;
     }
