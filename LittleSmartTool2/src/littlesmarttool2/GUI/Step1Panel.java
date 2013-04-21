@@ -122,7 +122,6 @@ public class Step1Panel extends StepPanel {
         setName("Choose camera and output type"); // NOI18N
         setLayout(new java.awt.GridLayout(2, 0));
 
-        cameraPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         cameraPanel.setLayout(new java.awt.GridLayout(1, 2));
         cameraPanel.add(brandList);
         cameraPanel.add(modelList);

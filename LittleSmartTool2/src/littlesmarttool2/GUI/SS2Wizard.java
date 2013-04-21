@@ -139,6 +139,7 @@ public class SS2Wizard extends javax.swing.JFrame {
 
         contentPanel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
 
+        cardPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         cardPanel.setLayout(new java.awt.CardLayout());
         contentPanel.add(cardPanel, java.awt.BorderLayout.CENTER);
 
