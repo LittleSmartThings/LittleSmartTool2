@@ -31,10 +31,10 @@ public class Step1Panel extends StepPanel {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getProfiles());
+                modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getModels());
             }
         });
-        brandList.setElements(brands);
+        //brandList.setElements(brands);
         
         
         modelList.setHeadLine("Model");

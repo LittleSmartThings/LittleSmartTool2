@@ -186,13 +186,16 @@ public class SS2Wizard extends javax.swing.JFrame {
         if (evt.getStateChange() == ItemEvent.DESELECTED)
         {
             controller.disconnect();
+            System.out.println("tried disconnecting, connected : " + controller.connected());
             return;
         }
-        System.out.println("hallo!!! " + evt.getItem());
+        System.out.println("Selected: " + evt.getItem());
         if (evt.getItem() == selectPortMsg) return;
         try {
             //Connect to the StratoSnapper and begin polling 
+            System.out.println("Connecting: " + evt.getItem());
             controller.connect(evt.getItem().toString());
+            System.out.println("Connected : " + controller.connected());
             AutoServoPuller.Start(controller);
         } catch (NoSuchPortException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);

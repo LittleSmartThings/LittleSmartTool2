@@ -21,6 +21,7 @@ import java.util.Enumeration;
  * @author Rasmus
  */
 public class SerialController {
+    private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
     private boolean connected = false;
     private SerialCommReader reader;
     private SerialPort port;
@@ -32,16 +33,15 @@ public class SerialController {
      */
     public SerialController()
     {
-        reader = new SerialCommReader();
     }
     
     /**
      * Add a response listener which will get invoked when a 
      * response from the StratoSnapper i received
      */
-    public void addResponseListener(ResponseListener listener)
-    {
-        reader.addResponseListener(listener);
+    public void addResponseListener(ResponseListener listener){
+        if (!responseListeners.contains(listener))
+            responseListeners.add(listener);
     }
     
     /**
@@ -75,6 +75,7 @@ public class SerialController {
         port = (SerialPort) portIdentifier.open("LittleSmartTool 2", 1000);
         port.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
         connected = true;
+        reader = new SerialCommReader(responseListeners);
         reader.setInputStream(port.getInputStream());
         outStream = port.getOutputStream();
         reader.setDaemon(true);
@@ -86,7 +87,6 @@ public class SerialController {
         if (!connected) return;
         connected = false;
         reader.stopListening();
-        reader = new SerialCommReader();
         port.close();
     }
     
@@ -95,7 +95,7 @@ public class SerialController {
      */
     public boolean connected()
     {
-        if (!reader.isAlive()) connected = false;
+        if (reader == null || !reader.isAlive()) connected = false;
         return connected;
     }
     
@@ -125,11 +125,10 @@ public class SerialController {
     
     private static class SerialCommReader extends Thread {
         private InputStream inStream;
-        private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
+        private ArrayList<ResponseListener> responseListeners;
         private boolean run = true;
-        public void addResponseListener(ResponseListener listener){
-            if (!responseListeners.contains(listener))
-                responseListeners.add(listener);
+        public SerialCommReader(ArrayList<ResponseListener> listeners){
+            responseListeners = listeners;
         }
         public void stopListening()
         {
