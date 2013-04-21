@@ -10,16 +10,20 @@ package littlesmarttool2.model;
  */
 public class WireCommand extends Command {
    
-    private int commandId;
+    private int pulseLength, pinConfig;
     
-    public WireCommand(String name, String description, int commandId)
+    public WireCommand(String name, String description, CameraModel[] models, int pulseLength, int pinConfig)
     {
-        super(name, description);
-        this.commandId = commandId;
+        super(name, description, models);
+        this.pulseLength = pulseLength;
+        this.pinConfig = pinConfig;
     }
     
-    public int getCommandId()
-    {
-        return commandId;
+    public int getPulseLength() {
+        return pulseLength;
+    }
+    
+    public int getPinConfig() {
+        return pinConfig;
     }
 }
