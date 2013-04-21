@@ -1,1 +1,44 @@
-[{"brandName":"Sony","profiles":[{"models":"NEX Series","functions":[{"id":"SonNexShu"},{"id":"SonNexVid"}],"functionList":["SonNexShu","SonNexVid"]},{"models":"A230, A330","functions":[{"id":"SonNexShu"}],"functionList":["SonNexShu"]},{"models":"A450, A500, A550","functions":[{"id":"SonNexShu"}],"functionList":["SonNexShu"]},{"models":"A700, A900","functions":[{"id":"SonNexShu"}],"functionList":["SonNexShu"]},{"models":"Video camera","functions":[{"id":"two"},{"id":"three"}],"functionList":["two","three"]}],"modelList":["NEX Series","A230, A330","A450, A500, A550","A700, A900","Video camera"]},{"brandName":"Canon","profiles":[{"models":"5D Series","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]},{"models":"7D Series","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]},{"models":"1D Series","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]},{"models":"500D, 550D / T1i, T2i","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]},{"models":"G Series","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]},{"models":"300D, 350D / XT","functions":[{"id":"Can5DShu"}],"functionList":["Can5DShu"]},{"models":"400D, 450D / XTI, XSI","functions":[{"id":"Can5DShu"}],"functionList":["Can5DShu"]},{"models":"600D / T3i","functions":[{"id":"Can5DShu"},{"id":"Can5DVid"}],"functionList":["Can5DShu","Can5DVid"]}],"modelList":["5D Series","7D Series","1D Series","500D, 550D / T1i, T2i","G Series","300D, 350D / XT","400D, 450D / XTI, XSI","600D / T3i"]},{"brandName":"Minolta","profiles":[{"models":"Dimage A200","functions":[{"id":"MinArLibShu"}],"functionList":["MinArLibShu"]},{"models":"F100, F200, F300","functions":[{"id":"MinArLibShu"}],"functionList":["MinArLibShu"]},{"models":"S Series","functions":[{"id":"MinArLibShu"}],"functionList":["MinArLibShu"]}],"modelList":["Dimage A200","F100, F200, F300","S Series"]},{"brandName":"Olympus","profiles":[{"models":"E series","functions":[{"id":"OlyArLibShu"}],"functionList":["OlyArLibShu"]}],"modelList":["E series"]},{"brandName":"Nikon","profiles":[{"models":"Coolpix series","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]},{"models":"D40, D50, D60","functions":[{"id":"MinArLibShu"},{"id":"MinArLibShu"}],"functionList":["MinArLibShu","MinArLibShu"]},{"models":"D70, D80, D90","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]},{"models":"D3000, D5000","functions":[{"id":"Nik70DShu"},{"id":"Nik70DShu"}],"functionList":["Nik70DShu","Nik70DShu"]},{"models":"D5100","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]},{"models":"D7000","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]},{"models":"D3 series","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]},{"models":"1 V1","functions":[{"id":"Nik70DShu"}],"functionList":["Nik70DShu"]}],"modelList":["Coolpix series","D40, D50, D60","D70, D80, D90","D3000, D5000","D5100","D7000","D3 series","1 V1"]},{"brandName":"Pentax","profiles":[{"models":"All","functions":[{"id":"PenLibShu"},{"id":"PenLibZom"}],"functionList":["PenLibShu","PenLibZom"]}],"modelList":["All"]},{"brandName":"Sony Video","profiles":[{"models":"All video cams","functions":[{"id":"SonVidTel"},{"id":"SonVidWid"},{"id":"SonVidVid"},{"id":"SonVidWid2"},{"id":"SonVidStill"}],"functionList":["SonVidTel","SonVidWid","SonVidVid","SonVidWid2","SonVidStill"]}],"modelList":["All video cams"]},{"brandName":"Canon Video","profiles":[{"models":"Legria/Vixia","functions":[{"id":"CanVidRec"},{"id":"CanVidPho"},{"id":"CanVidWid"},{"id":"CanVidTel"}],"functionList":["CanVidRec","CanVidPho","CanVidWid","CanVidTel"]}],"modelList":["Legria/Vixia"]}]
+[{"brandName":"Sony",
+	"models":[
+		{"identifier":"Sony - NEX Series","modelName":"NEX Series"},
+		{"identifier":"Sony - A230, A330","modelName":"A230, A330"},
+		{"identifier":"Sony - A450, A500, A550","modelName":"A450, A500, A550"},
+		{"identifier":"Sony - A700, A900","modelName":"A700, A900"},
+		{"identifier":"Sony - Video camera","modelName":"Video camera"}]},
+{"brandName":"Canon",
+	"models":[
+		{"identifier":"Canon - 5D Series","modelName":"5D Series"},
+		{"identifier":"Canon - 7D Series","modelName":"7D Series"},
+		{"identifier":"Canon - 1D Series","modelName":"1D Series"},
+		{"identifier":"Canon - 500D, 550D / T1i, T2i","modelName":"500D, 550D / T1i, T2i"},
+		{"identifier":"Canon - G Series","modelName":"G Series"},
+		{"identifier":"Canon - 300D, 350D / XT","modelName":"300D, 350D / XT"},
+		{"identifier":"Canon - 400D, 450D / XTI, XSI","modelName":"400D, 450D / XTI, XSI"},
+		{"identifier":"Canon - 600D / T3i","modelName":"600D / T3i"}]},
+{"brandName":"Minolta",
+	"models":[
+		{"identifier":"Minolta - Dimage A200","modelName":"Dimage A200"},
+		{"identifier":"Minolta - F100, F200, F300","modelName":"F100, F200, F300"},
+		{"identifier":"Minolta - S Series","modelName":"S Series"}]},
+{"brandName":"Olympus",
+	"models":[
+		{"identifier":"Olympus - E series","modelName":"E series"}]},
+{"brandName":"Nikon",
+	"models":[
+		{"identifier":"Nikon - Coolpix series","modelName":"Coolpix series"},
+		{"identifier":"Nikon - D40, D50, D60","modelName":"D40, D50, D60"},
+		{"identifier":"Nikon - D70, D80, D90","modelName":"D70, D80, D90"},
+		{"identifier":"Nikon - D3000, D5000","modelName":"D3000, D5000"},
+		{"identifier":"Nikon - D5100","modelName":"D5100"},
+		{"identifier":"Nikon - D7000","modelName":"D7000"},
+		{"identifier":"Nikon - D3 series","modelName":"D3 series"},
+		{"identifier":"Nikon - 1 V1","modelName":"1 V1"}]},
+{"brandName":"Pentax",
+	"models":[
+		{"identifier":"Pentax - All","modelName":"All"}]},
+{"brandName":"Sony Video",
+	"models":[
+		{"identifier":"Sony Video - All video cams","modelName":"All video cams"}]},
+{"brandName":"Canon Video",
+	"models":[
+		{"identifier":"Canon Video - Legria/Vixia","modelName":"Legria/Vixia"}]}]

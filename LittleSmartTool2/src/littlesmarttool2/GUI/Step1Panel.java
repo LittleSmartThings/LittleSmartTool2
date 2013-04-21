@@ -34,7 +34,7 @@ public class Step1Panel extends StepPanel {
                 modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getModels());
             }
         });
-        //brandList.setElements(brands);
+        brandList.setElements(brands);
         
         
         modelList.setHeadLine("Model");
@@ -62,6 +62,18 @@ public class Step1Panel extends StepPanel {
         cameraPanel = new javax.swing.JPanel();
         brandList = new littlesmarttool2.GUI.components.ListWithHeadline();
         modelList = new littlesmarttool2.GUI.components.ListWithHeadline();
+        outputPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        outputconnectionsPanel = new javax.swing.JPanel();
+        IRPanel = new javax.swing.JPanel();
+        IRRadioButton = new javax.swing.JRadioButton();
+        IRDescription = new javax.swing.JLabel();
+        WirePanel = new javax.swing.JPanel();
+        IRRadioButton1 = new javax.swing.JRadioButton();
+        IRDescription1 = new javax.swing.JLabel();
+        LANCPanel2 = new javax.swing.JPanel();
+        IRRadioButton2 = new javax.swing.JRadioButton();
+        IRDescription2 = new javax.swing.JLabel();
 
         setName("Choose camera and output type"); // NOI18N
         setLayout(new java.awt.GridLayout(2, 0));
@@ -72,12 +84,79 @@ public class Step1Panel extends StepPanel {
         cameraPanel.add(modelList);
 
         add(cameraPanel);
+
+        outputPanel.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setFont(this.headlineFont);
+        jLabel1.setText("Choose output connection type");
+        jLabel1.setBorder(this.headlineBorder);
+        outputPanel.add(jLabel1, java.awt.BorderLayout.NORTH);
+
+        outputconnectionsPanel.setLayout(new javax.swing.BoxLayout(outputconnectionsPanel, javax.swing.BoxLayout.X_AXIS));
+
+        IRPanel.setMaximumSize(new java.awt.Dimension(1200, 39));
+        IRPanel.setLayout(new javax.swing.BoxLayout(IRPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        IRRadioButton.setText("jRadioButton1");
+        IRRadioButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        IRRadioButton.setMaximumSize(new java.awt.Dimension(1200, 23));
+        IRPanel.add(IRRadioButton);
+
+        IRDescription.setText("This is an IR connection.");
+        IRDescription.setMaximumSize(new java.awt.Dimension(4500, 16));
+        IRPanel.add(IRDescription);
+
+        outputconnectionsPanel.add(IRPanel);
+
+        WirePanel.setMaximumSize(new java.awt.Dimension(1200, 39));
+        WirePanel.setLayout(new javax.swing.BoxLayout(WirePanel, javax.swing.BoxLayout.Y_AXIS));
+
+        IRRadioButton1.setText("jRadioButton1");
+        IRRadioButton1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        IRRadioButton1.setMaximumSize(new java.awt.Dimension(1200, 23));
+        WirePanel.add(IRRadioButton1);
+
+        IRDescription1.setText("This is an IR connection.");
+        IRDescription1.setMaximumSize(new java.awt.Dimension(4500, 16));
+        WirePanel.add(IRDescription1);
+
+        outputconnectionsPanel.add(WirePanel);
+
+        LANCPanel2.setMaximumSize(new java.awt.Dimension(1200, 39));
+        LANCPanel2.setLayout(new javax.swing.BoxLayout(LANCPanel2, javax.swing.BoxLayout.Y_AXIS));
+
+        IRRadioButton2.setText("jRadioButton1");
+        IRRadioButton2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        IRRadioButton2.setMaximumSize(new java.awt.Dimension(1200, 23));
+        LANCPanel2.add(IRRadioButton2);
+
+        IRDescription2.setText("This is an IR connection.");
+        IRDescription2.setMaximumSize(new java.awt.Dimension(4500, 16));
+        LANCPanel2.add(IRDescription2);
+
+        outputconnectionsPanel.add(LANCPanel2);
+
+        outputPanel.add(outputconnectionsPanel, java.awt.BorderLayout.CENTER);
+
+        add(outputPanel);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel IRDescription;
+    private javax.swing.JLabel IRDescription1;
+    private javax.swing.JLabel IRDescription2;
+    private javax.swing.JPanel IRPanel;
+    private javax.swing.JRadioButton IRRadioButton;
+    private javax.swing.JRadioButton IRRadioButton1;
+    private javax.swing.JRadioButton IRRadioButton2;
+    private javax.swing.JPanel LANCPanel2;
+    private javax.swing.JPanel WirePanel;
     private littlesmarttool2.GUI.components.ListWithHeadline brandList;
     private javax.swing.JPanel cameraPanel;
+    private javax.swing.JLabel jLabel1;
     private littlesmarttool2.GUI.components.ListWithHeadline modelList;
+    private javax.swing.JPanel outputPanel;
+    private javax.swing.JPanel outputconnectionsPanel;
     // End of variables declaration//GEN-END:variables
 
 }

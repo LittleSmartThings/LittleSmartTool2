@@ -5,24 +5,34 @@
 
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *
  * @author marcher89
  */
 public class CameraModel {
-    private String name;
+    private String identifier;
+    private String modelName;
     
-    public CameraModel(String name) {
-        this.name = name;
+    @JsonCreator
+    public CameraModel(@JsonProperty("identifier") String identifier, @JsonProperty("models") String modelName) {
+        this.identifier = identifier;
+        this.modelName = modelName;
     }
 
-    public String getName() {
-        return name;
+    public String getIdentifier() {
+        return identifier;
+    }
+    
+    public String getModelName() {
+        return modelName;
     }
     
     @Override
     public String toString() {
-        return getName();
+        return getModelName();
     }
 
 }
