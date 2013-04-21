@@ -65,6 +65,7 @@ public class AutoServoPuller implements ResponseListener {
     public void receiveResponse(char command, String[] args) {
         if (!running) return;
         if (command != 'S') return;
+        if (args.length >= 4) System.out.println(args[3]);
         try {
             controller.send('S', null);
         } catch (IOException ex) {

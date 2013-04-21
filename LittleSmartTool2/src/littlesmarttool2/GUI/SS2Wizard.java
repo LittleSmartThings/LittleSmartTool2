@@ -4,15 +4,18 @@
  */
 package littlesmarttool2.GUI;
 
-import com.apple.laf.AquaLookAndFeel;
-import com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicLookAndFeel;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
+import littlesmarttool2.comm.AutoServoPuller;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Configuration;
 
@@ -26,6 +29,7 @@ public class SS2Wizard extends javax.swing.JFrame {
     private int currentStep;
     private Configuration configuration;
     private SerialController controller;
+    private final String selectPortMsg = "Select port:";
     
     /**
      * Creates new form SS2Wizard
@@ -43,8 +47,9 @@ public class SS2Wizard extends javax.swing.JFrame {
         initComponents();
         
         //Initialize port chooser
-        ComboBoxModel model = new DefaultComboBoxModel(SerialController.getPortNames().toArray());
-        portChooser.setModel(model);
+        ArrayList<String> portNames = SerialController.getPortNames();
+        portNames.add(0, selectPortMsg);
+        portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
         
         //Initialize step panels
         stepPanels = new StepPanel[]{new Step1Panel(this), new Step2Panel(this), new Step3Panel(this), new Step4Panel(this)};
@@ -178,7 +183,26 @@ public class SS2Wizard extends javax.swing.JFrame {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged
-        System.out.println("hallo!!!");
+        if (evt.getStateChange() == ItemEvent.DESELECTED)
+        {
+            controller.disconnect();
+            return;
+        }
+        System.out.println("hallo!!! " + evt.getItem());
+        if (evt.getItem() == selectPortMsg) return;
+        try {
+            //Connect to the StratoSnapper and begin polling 
+            controller.connect(evt.getItem().toString());
+            AutoServoPuller.Start(controller);
+        } catch (NoSuchPortException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (PortInUseException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedCommOperationException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("Her");
+        }
     }//GEN-LAST:event_portChooserItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

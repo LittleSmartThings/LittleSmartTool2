@@ -81,6 +81,15 @@ public class SerialController {
         reader.start();
     }
     
+    public void disconnect()
+    {
+        if (!connected) return;
+        connected = false;
+        reader.stopListening();
+        reader = new SerialCommReader();
+        port.close();
+    }
+    
     /**
      * Get a value indicating if this controller is connected
      */
@@ -117,9 +126,14 @@ public class SerialController {
     private static class SerialCommReader extends Thread {
         private InputStream inStream;
         private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
+        private boolean run = true;
         public void addResponseListener(ResponseListener listener){
             if (!responseListeners.contains(listener))
                 responseListeners.add(listener);
+        }
+        public void stopListening()
+        {
+            run = false;
         }
         public void setInputStream(InputStream in){
             this.inStream = in;
@@ -132,7 +146,15 @@ public class SerialController {
                 Thread.sleep(1500);
                 while (true)
                 {
-                    String read = bufferedReader.readLine();
+                    if (!run)
+                    {
+                        return;
+                    }
+                    String read;
+                    try{
+                    read = bufferedReader.readLine();
+                    }
+                    catch (Exception e) { continue; }
                     if (read == null) {
                         Thread.sleep(10); //wait for just a little bit
                         continue;
@@ -148,9 +170,9 @@ public class SerialController {
                 }
             } catch (InterruptedException ex) {
                 System.out.println("InterruptedException in SerialCommReader: " + ex.getMessage());
-            } catch (IOException ex) {
+            } /*catch (IOException ex) {
                 System.out.println("IOException in SerialCommReader: " + ex.getMessage());
-            }
+            }*/
         }
     }
 }
