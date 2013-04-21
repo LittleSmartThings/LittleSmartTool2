@@ -2,32 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package littlesmarttool2.model;
 
 /**
  *
- * @author amrcher89
+ * @author marcher89
  */
-public class CameraBrand {
-
+public class CameraModel {
     private String name;
-    private CameraModel[] models;
-
-    public CameraBrand(String name, CameraModel[] models){
-        this.name = name;
-        this.models = models;
-    }
     
+    public CameraModel(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
-    }
-
-    public CameraModel[] getModels() {
-        return models;
     }
     
     @Override
     public String toString() {
         return getName();
     }
+
 }
