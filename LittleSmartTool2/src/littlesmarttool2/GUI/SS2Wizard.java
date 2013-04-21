@@ -4,8 +4,16 @@
  */
 package littlesmarttool2.GUI;
 
+import com.apple.laf.AquaLookAndFeel;
+import com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicLookAndFeel;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
+import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Configuration;
 
 /**
@@ -17,15 +25,29 @@ public class SS2Wizard extends javax.swing.JFrame {
     private StepPanel[] stepPanels;
     private int currentStep;
     private Configuration configuration;
+    private SerialController controller;
     
     /**
      * Creates new form SS2Wizard
      */
     public SS2Wizard() {
+        try {
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        configuration = new Configuration();
+        controller = new SerialController();
+        
         initComponents();
         
+        //Initialize port chooser
+        ComboBoxModel model = new DefaultComboBoxModel(SerialController.getPortNames().toArray());
+        portChooser.setModel(model);
+        
+        //Initialize step panels
         stepPanels = new StepPanel[]{new Step1Panel(this), new Step2Panel(this), new Step3Panel(this), new Step4Panel(this)};
-        configuration = new Configuration();
         
         for (StepPanel step : stepPanels) {
             cardPanel.add(step, step.getName());
@@ -38,6 +60,10 @@ public class SS2Wizard extends javax.swing.JFrame {
     
     public Configuration getConfiguration(){
         return configuration;
+    }
+    
+    public SerialController getSerialController(){
+        return controller;
     }
     
     public void setBackEnabled(boolean val) { backButton.setEnabled(val);}
@@ -71,7 +97,11 @@ public class SS2Wizard extends javax.swing.JFrame {
         backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         cardPanel = new javax.swing.JPanel();
+        upperPanel = new javax.swing.JPanel();
         headline = new javax.swing.JLabel();
+        portPanel = new javax.swing.JPanel();
+        portLabel = new javax.swing.JLabel();
+        portChooser = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
@@ -106,10 +136,29 @@ public class SS2Wizard extends javax.swing.JFrame {
         cardPanel.setLayout(new java.awt.CardLayout());
         contentPanel.add(cardPanel, java.awt.BorderLayout.CENTER);
 
+        upperPanel.setLayout(new java.awt.BorderLayout());
+
         headline.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
         headline.setText("StratoSnapper 2");
         headline.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        contentPanel.add(headline, java.awt.BorderLayout.NORTH);
+        upperPanel.add(headline, java.awt.BorderLayout.CENTER);
+
+        portPanel.setLayout(new javax.swing.BoxLayout(portPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        portLabel.setText("Choose port:");
+        portPanel.add(portLabel);
+
+        portChooser.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 5));
+        portChooser.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                portChooserItemStateChanged(evt);
+            }
+        });
+        portPanel.add(portChooser);
+
+        upperPanel.add(portPanel, java.awt.BorderLayout.EAST);
+
+        contentPanel.add(upperPanel, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -127,6 +176,11 @@ public class SS2Wizard extends javax.swing.JFrame {
             //TODO: Warn if haven't saved or uploaded configuration
             System.exit(0);
     }//GEN-LAST:event_nextButtonActionPerformed
+
+    private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged
+        System.out.println("hallo!!!");
+    }//GEN-LAST:event_portChooserItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JPanel buttonPanel;
@@ -134,5 +188,9 @@ public class SS2Wizard extends javax.swing.JFrame {
     private javax.swing.JPanel contentPanel;
     private javax.swing.JLabel headline;
     private javax.swing.JButton nextButton;
+    private javax.swing.JComboBox portChooser;
+    private javax.swing.JLabel portLabel;
+    private javax.swing.JPanel portPanel;
+    private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 }

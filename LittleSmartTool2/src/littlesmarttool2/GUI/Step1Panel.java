@@ -16,7 +16,6 @@ import littlesmarttool2.util.*;
  * @author marcher89
  */
 public class Step1Panel extends StepPanel {
-    private SS2Wizard wizard;
 
     /**
      * Creates new form Step1Panel

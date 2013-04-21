@@ -9,7 +9,6 @@ package littlesmarttool2.GUI;
  * @author marcher89
  */
 public class Step2Panel extends StepPanel {
-    
     /**
      * Creates new form Step1Panel
      */
