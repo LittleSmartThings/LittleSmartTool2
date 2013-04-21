@@ -4,6 +4,8 @@
  */
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.*;
+
 /**
  *
  * @author Rasmus
@@ -12,7 +14,8 @@ public class LANCCommand extends Command {
     
     private byte commandByte1, commandByte2;
     
-    public LANCCommand(String name, String description, CameraModel[] models, byte commandByte1, byte commandByte2)
+    @JsonCreator
+    public LANCCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("commandByte1") byte commandByte1, @JsonProperty("commandByte2") byte commandByte2)
     {
         super(name, description, models);
         this.commandByte1 = commandByte1;

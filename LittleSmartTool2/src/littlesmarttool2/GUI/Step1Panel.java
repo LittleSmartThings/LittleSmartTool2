@@ -4,10 +4,14 @@
  */
 package littlesmarttool2.GUI;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicListUI;
+import littlesmarttool2.GUI.components.ConnectionTypeBox;
 import littlesmarttool2.model.*;
 import littlesmarttool2.util.*;
 
@@ -16,38 +20,87 @@ import littlesmarttool2.util.*;
  * @author marcher89
  */
 public class Step1Panel extends StepPanel {
+    private final ConnectionTypeBox[] connBoxes;
+    private final ButtonGroup connGroup;
 
     /**
      * Creates new form Step1Panel
      */
-    public Step1Panel(SS2Wizard wizard) {
+    public Step1Panel(final SS2Wizard wizard) {
         super(wizard);
         initComponents();
         
-        CameraBrand[] brands = JSON.readObjectFromFile("camera-list.json", CameraBrand[].class);
+        CameraBrand[] brands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
         
+        //Intialize camera brand list
         brandList.setHeadLine("Camera");
         brandList.getList().addListSelectionListener(new ListSelectionListener() {
-
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                wizard.getConfiguration().setCameraBrand((CameraBrand)brandList.getSelectedElement());
+                connGroup.clearSelection();
+                for (ConnectionTypeBox connBox : connBoxes) {
+                    connBox.setEnabled(false);
+                }
                 modelList.setElements(((CameraBrand)brandList.getSelectedElement()).getModels());
             }
         });
-        //brandList.setElements(brands);
+        brandList.setElements(brands);
         
-        
+        //Intialize camera model list
         modelList.setHeadLine("Model");
+        modelList.getList().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                CameraModel selected = (CameraModel)modelList.getSelectedElement();
+                wizard.getConfiguration().setCameraModel(selected);
+                if(selected==null) return;
+                
+                for (ConnectionTypeBox connBox : connBoxes) {
+                    connBox.setEnabled(Arrays.asList(selected.getConnectionTypes()).contains(connBox.getConnectionType()));
+                    if(selected.getConnectionTypes().length==1 && selected.getConnectionTypes()[0] == connBox.getConnectionType())
+                        connBox.setSelected(true);
+                }
+            }
+        });
+        
+        //Initialize connection type boxes
+        connBoxes = new ConnectionTypeBox[ConnectionType.values().length];
+        connGroup = new ButtonGroup();
+        
+        int i = 0;
+        for (ConnectionType connectionType : ConnectionType.values()) {
+            System.out.println(connectionType);
+            connBoxes[i] = new ConnectionTypeBox(connectionType);
+            connBoxes[i].setEnabled(false);
+            connBoxes[i].addToGroup(connGroup);
+            connBoxes[i].addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    wizard.setNextEnabled(connGroup.getSelection() != null);
+                    wizard.getConfiguration().setOutputType(null);
+                    for (ConnectionTypeBox connectionTypeBox : connBoxes) {
+                        if(connectionTypeBox.isSelected()) wizard.getConfiguration().setOutputType(connectionTypeBox.getConnectionType());
+                    }
+                }
+            });
+            
+            outputconnectionsPanel.add(connBoxes[i++]);
+        }
     }
     
     @Override
     public void onDisplay() {
-        //TODO: Do anything??
+        wizard.setNextEnabled(connGroup.getSelection() != null);
     }
 
     @Override
     public void onHide() {
-        //TODO: Do anything??
+        Configuration conf = wizard.getConfiguration();
+        System.out.println("Camera Brand: "+conf.getCameraBrand());
+        System.out.println("Camera Model: "+conf.getCameraModel());
+        System.out.println("Output type: "+ conf.getOutputType());
     }
     
     /**
@@ -62,6 +115,9 @@ public class Step1Panel extends StepPanel {
         cameraPanel = new javax.swing.JPanel();
         brandList = new littlesmarttool2.GUI.components.ListWithHeadline();
         modelList = new littlesmarttool2.GUI.components.ListWithHeadline();
+        outputPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        outputconnectionsPanel = new javax.swing.JPanel();
 
         setName("Choose camera and output type"); // NOI18N
         setLayout(new java.awt.GridLayout(2, 0));
@@ -72,12 +128,27 @@ public class Step1Panel extends StepPanel {
         cameraPanel.add(modelList);
 
         add(cameraPanel);
+
+        outputPanel.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setFont(this.headlineFont);
+        jLabel1.setText("Choose output connection type");
+        jLabel1.setBorder(this.headlineBorder);
+        outputPanel.add(jLabel1, java.awt.BorderLayout.NORTH);
+
+        outputconnectionsPanel.setLayout(new javax.swing.BoxLayout(outputconnectionsPanel, javax.swing.BoxLayout.X_AXIS));
+        outputPanel.add(outputconnectionsPanel, java.awt.BorderLayout.CENTER);
+
+        add(outputPanel);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ListWithHeadline brandList;
     private javax.swing.JPanel cameraPanel;
+    private javax.swing.JLabel jLabel1;
     private littlesmarttool2.GUI.components.ListWithHeadline modelList;
+    private javax.swing.JPanel outputPanel;
+    private javax.swing.JPanel outputconnectionsPanel;
     // End of variables declaration//GEN-END:variables
 
 }

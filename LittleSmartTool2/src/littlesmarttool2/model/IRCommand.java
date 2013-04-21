@@ -4,6 +4,8 @@
  */
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.*;
+
 /**
  *
  * @author Rasmus
@@ -13,7 +15,8 @@ public class IRCommand extends Command {
     private int[] pulsedata;
     private int delayBetweenRepeats, repeats, frequency;
     
-    public IRCommand(String name, String description, CameraModel[] models, int[] pulsedata, int delayBetweenRepeats, int repeats, int frequency)
+    @JsonCreator
+    public IRCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("pulsedata") int[] pulsedata, @JsonProperty("delayBetweenRepeats") int delayBetweenRepeats, @JsonProperty("reapeats") int repeats, @JsonProperty("frequency") int frequency)
     {
         super(name, description, models);
         this.pulsedata = pulsedata;

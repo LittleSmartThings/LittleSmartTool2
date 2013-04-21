@@ -4,6 +4,8 @@
  */
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.*;
+
 /**
  *
  * @author Rasmus
@@ -13,7 +15,8 @@ public abstract class Command {
     private String description;
     private CameraModel[] models;
     
-    public Command(String name, String description, CameraModel[] models)
+    @JsonCreator
+    public Command(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models)
     {
         this.name = name;
         this.description = description;

@@ -4,6 +4,8 @@
  */
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.*;
+
 /**
  *
  * @author Rasmus
@@ -12,7 +14,8 @@ public class WireCommand extends Command {
    
     private int pulseLength, pinConfig;
     
-    public WireCommand(String name, String description, CameraModel[] models, int pulseLength, int pinConfig)
+    @JsonCreator
+    public WireCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("pulseLength") int pulseLength, @JsonProperty("pinConfig") int pinConfig)
     {
         super(name, description, models);
         this.pulseLength = pulseLength;

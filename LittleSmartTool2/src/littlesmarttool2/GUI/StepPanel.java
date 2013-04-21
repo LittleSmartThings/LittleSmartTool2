@@ -4,7 +4,9 @@
  */
 package littlesmarttool2.GUI;
 
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.Border;
 
 /**
  *
@@ -12,6 +14,9 @@ import javax.swing.JPanel;
  */
 public abstract class StepPanel extends JPanel {
     protected SS2Wizard wizard;
+    
+    protected Font headlineFont = new Font("Lucida Grande", 0, 18);
+    protected Border headlineBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
     
     public StepPanel(SS2Wizard wizard){
         this.wizard = wizard;
