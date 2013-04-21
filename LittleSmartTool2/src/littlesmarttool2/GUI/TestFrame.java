@@ -24,8 +24,8 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         int value = Integer.parseInt(args[3]);
         stickInputViewer2.setValue((value - 800) / (2200-800.0));
         stickInputViewer2.repaint();
-        nWayInputViewer1.setN(5);
-        nWayInputViewer1.setValue((int)((value - 800) / (2200-800.0)) % 5);
+        nWayInputViewer1.setN(10);
+        nWayInputViewer1.setValue((int)(((value - 800) / (2200-800.0)) * 10) % 10);
         nWayInputViewer1.repaint();
     }
     
@@ -37,13 +37,12 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         initComponents();
         
         SerialController controller = new SerialController();
-        AutoServoPuller puller = AutoServoPuller.getSingleton();
         
         controller.addResponseListener(this);
         try
         {
             controller.connect(SerialController.getPortNames().get(0));
-            puller.Start(controller);
+            AutoServoPuller.Start(controller);
         }
         catch (Exception e)
         {
