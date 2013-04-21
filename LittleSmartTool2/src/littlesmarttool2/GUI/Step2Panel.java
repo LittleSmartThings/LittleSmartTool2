@@ -4,17 +4,41 @@
  */
 package littlesmarttool2.GUI;
 
+import java.util.ArrayList;
+import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.model.Channel;
+
 /**
  *
  * @author marcher89
  */
-public class Step2Panel extends StepPanel {
+public class Step2Panel extends StepPanel implements ResponseListener {
     /**
      * Creates new form Step1Panel
      */
     public Step2Panel(SS2Wizard wizard) {
         super(wizard);
         initComponents();
+        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+        channelConfigurator1.setChannel(channels.get(0));
+        channelConfigurator2.setChannel(channels.get(1));
+        channelConfigurator3.setChannel(channels.get(2));
+        channelConfigurator4.setChannel(channels.get(3));
+    }
+    
+    @Override
+    public void receiveResponse(char command, String[] args) {
+        if (command != 'S') return;
+        if (args.length < 4) return;
+        try
+        {
+            channelConfigurator1.updateReading(Integer.parseInt(args[0]));
+            channelConfigurator2.updateReading(Integer.parseInt(args[1]));
+            channelConfigurator3.updateReading(Integer.parseInt(args[2]));
+            channelConfigurator4.updateReading(Integer.parseInt(args[3]));
+        }
+        catch (Exception e)
+        {}
     }
     
     @Override
@@ -37,30 +61,41 @@ public class Step2Panel extends StepPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        channelConfigurator1 = new littlesmarttool2.GUI.components.ChannelConfigurator();
+        channelConfigurator2 = new littlesmarttool2.GUI.components.ChannelConfigurator();
+        channelConfigurator3 = new littlesmarttool2.GUI.components.ChannelConfigurator();
+        channelConfigurator4 = new littlesmarttool2.GUI.components.ChannelConfigurator();
 
         setName("Choose control types and calibrate"); // NOI18N
+        setLayout(new java.awt.GridLayout(5, 1, 0, 10));
 
-        jLabel1.setText("Step 2");
+        jPanel1.setLayout(new java.awt.GridLayout(0, 2));
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(151, 151, 151)
-                .add(jLabel1)
-                .addContainerGap(210, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(124, 124, 124)
-                .add(jLabel1)
-                .addContainerGap(160, Short.MAX_VALUE))
-        );
+        jLabel1.setText("<html><h2>Step 2</h2></html>");
+        jPanel1.add(jLabel1);
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("<html>Calibration<br>In order to calibrate for the settings you must connect your StratoSnapper to the desired servo outputs and the receiver as well as connecting your receiver.<br>In the drop down menu above you can select which serial port the stratosnapper is located</html>");
+        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jPanel1.add(jLabel2);
+
+        add(jPanel1);
+        add(channelConfigurator1);
+        add(channelConfigurator2);
+        add(channelConfigurator3);
+        add(channelConfigurator4);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator1;
+    private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator2;
+    private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator3;
+    private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -12,9 +12,9 @@ import java.awt.Graphics2D;
  *
  * @author Rasmus
  */
-public class NWayInputViewer extends javax.swing.JPanel {
+public class NWayInputViewer extends InputViewer {
 
-    private int n = 3, value = 1;
+    private int n = 1;
     
     /**
      * Must be greater than 0!
@@ -23,11 +23,24 @@ public class NWayInputViewer extends javax.swing.JPanel {
     public void setN(int n)
     {
         this.n = n;
+        repaint();
     }
     
-    public void setValue(int value)
+    /**
+     * 0 to (n-1)
+     */
+    private int getValueBlock()
     {
-        this.value = value;
+        double prblock = 1.0 / n;
+        double value = getValuePct();
+        for (int i = 0; i < n; i++)
+        {
+            if (value >= (prblock * i) && value < (prblock * (i+1)))
+                    return i;
+        }
+        //Just in case
+        if (value <= 0) return 0;
+        return n-1;
     }
     
     /**
@@ -48,10 +61,11 @@ public class NWayInputViewer extends javax.swing.JPanel {
         g2.fillRect(0, 0, getWidth(), getHeight());
         int widthPrBox = (getWidth() / n);
         int height = getHeight();
+        int selection = getValueBlock();
         for (int i = 0; i < n; i++)
         {
             int x = widthPrBox * i;
-            if (i == value)
+            if (i == selection)
             {
                 g2.setColor(Color.green);
                 g2.fillRect(x, 0, widthPrBox-4, height-1);

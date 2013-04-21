@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Channel {
     private int id;
-    private int calibLow, calibHigh;
+    private int calibLow = Integer.MAX_VALUE, calibHigh = 0;
     private ControlType controlType;
     
     private ArrayList<Block> blocks = new ArrayList<>();

@@ -8,24 +8,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.RenderingHints;
 
 /**
  *
  * @author Rasmus
  */
-public class StickInputViewer extends javax.swing.JPanel {
-
-    private double value = .5;
-    
-    public void setValue(double value)
-    {
-        this.value = value;
-    }
+public class StickInputViewer extends InputViewer {
     
     private int getValuePosition()
     {
-        return (int)(value * getWidth());
+        return (int)(getValuePct() * getWidth());
     }
     
     /**
@@ -35,26 +27,26 @@ public class StickInputViewer extends javax.swing.JPanel {
         initComponents();
     }
 
-    private Polygon getBottomArrow()
+    private Polygon getBottomArrow(int x)
     {
         int[] xpoints = new int[3], ypoints = new int[3];
         int bottom = getHeight()-1;
-        xpoints[0] = getValuePosition() - 5;
-        xpoints[1] = getValuePosition();
-        xpoints[2] = getValuePosition() + 5;
+        xpoints[0] = x - 5;
+        xpoints[1] = x;
+        xpoints[2] = x + 5;
         ypoints[0] = bottom;
         ypoints[1] = bottom - 5;
         ypoints[2] = bottom;
         return new Polygon(xpoints, ypoints, 3);
     }
     
-    private Polygon getTopArrow()
+    private Polygon getTopArrow(int x)
     {
         int[] xpoints = new int[3], ypoints = new int[3];
         int top = 1;
-        xpoints[0] = getValuePosition() - 5;
-        xpoints[1] = getValuePosition();
-        xpoints[2] = getValuePosition() + 5;
+        xpoints[0] = x - 5;
+        xpoints[1] = x;
+        xpoints[2] = x + 5;
         ypoints[0] = top;
         ypoints[1] = top + 5;
         ypoints[2] = top;
@@ -73,11 +65,15 @@ public class StickInputViewer extends javax.swing.JPanel {
         g2.setColor(Color.black);
         g2.drawRect(0,0,getWidth()-1, getHeight()-1);
         
+        //Draw center
+        //g2.setColor(Color.gray);
+        //g2.fillPolygon(getBottomArrow(getWidth()/2));
+        
         //Draw current value
         g2.setColor(Color.BLACK);
         g2.drawLine(getValuePosition(), 0, getValuePosition(), getHeight());
-        g2.fillPolygon(getBottomArrow());
-        g2.fillPolygon(getTopArrow());
+        g2.fillPolygon(getBottomArrow(getValuePosition()));
+        g2.fillPolygon(getTopArrow(getValuePosition()));
         
     }
     /**

@@ -17,7 +17,10 @@ public class Configuration {
     
     public Configuration()
     {
-        
+        channels.add(new Channel(1));
+        channels.add(new Channel(2));
+        channels.add(new Channel(3));
+        channels.add(new Channel(4));
     }
     
     public OutputType getOutputType()

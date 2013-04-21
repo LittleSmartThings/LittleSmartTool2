@@ -12,14 +12,7 @@ import java.awt.Graphics2D;
  *
  * @author Rasmus
  */
-public class PushbuttonInputViewer extends javax.swing.JPanel {
-
-    private boolean value = true;
-    
-    public void setValue(boolean pressed)
-    {
-        this.value = pressed;
-    }
+public class PushbuttonInputViewer extends InputViewer {
     
     /**
      * Creates new form PushbuttonInputViewer
@@ -32,8 +25,10 @@ public class PushbuttonInputViewer extends javax.swing.JPanel {
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.white);
+        g2.fillRect(0, 0, getWidth(), getHeight());
         //Pressed
-        if (value)
+        if (getValuePct() > .5)
         {
             g2.setColor(Color.green);
             g2.fillOval(0,0, getWidth(), getHeight());

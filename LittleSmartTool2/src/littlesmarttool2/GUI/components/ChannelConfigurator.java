@@ -4,19 +4,49 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.BorderLayout;
+import littlesmarttool2.model.Channel;
 /**
  *
  * @author Rasmus
  */
 public class ChannelConfigurator extends javax.swing.JPanel {
-
+    private Channel channel = new Channel(-1);
+    private InputViewer viewer;
+    
     /**
      * Creates new form ChannelConfigurator
      */
     public ChannelConfigurator() {
         initComponents();
+        viewer = stickInputViewer1;
+        idLabel.setText("Ch. " + channel.getId());
+    }
+    
+    public void setChannel(Channel channel)
+    {
+        this.channel = channel;
+        idLabel.setText("Ch. " + channel.getId());
+    }
+    
+    public void updateReading(int reading)
+    {
+        if (reading > 2500 || reading < 500) return;
+        channel.setCalibLow(Math.min(channel.getCalibLow(), reading));
+        channel.setCalibHigh(Math.max(channel.getCalibHigh(), reading));
+        viewer.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
+        viewer.updateValue(reading);
+        calibrationLabel.setText("R: " + (channel.getCalibHigh()-channel.getCalibLow()));
     }
 
+    private void changeInputViewer(InputViewer newViewer)
+    {
+        inputViewerPanel.removeAll();
+        viewer = newViewer;
+        inputViewerPanel.add(viewer, BorderLayout.CENTER);
+        inputViewerPanel.repaint();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,71 +56,151 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        controllerTypeGroup = new javax.swing.ButtonGroup();
+        idPanel = new javax.swing.JPanel();
+        idLabel = new javax.swing.JLabel();
+        contentPanel = new javax.swing.JPanel();
+        radioButtonPanel = new javax.swing.JPanel();
+        radioPushButton = new javax.swing.JRadioButton();
+        radio2Way = new javax.swing.JRadioButton();
+        radio3Way = new javax.swing.JRadioButton();
+        radioStick = new javax.swing.JRadioButton();
         inputViewerPanel = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        stickInputViewer1 = new littlesmarttool2.GUI.components.StickInputViewer();
+        calibrationPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        calibrationLabel = new javax.swing.JLabel();
 
+        setMinimumSize(new java.awt.Dimension(400, 80));
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(100, 300));
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        idPanel.setPreferredSize(new java.awt.Dimension(50, 324));
+        idPanel.setLayout(new javax.swing.BoxLayout(idPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        jRadioButton1.setText("Push button");
-        jPanel1.add(jRadioButton1);
+        idLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        idLabel.setText("Ch. 1");
+        idPanel.add(idLabel);
 
-        jRadioButton2.setText("2-way switch");
-        jPanel1.add(jRadioButton2);
+        add(idPanel, java.awt.BorderLayout.WEST);
 
-        jRadioButton3.setText("3-way switch");
-        jPanel1.add(jRadioButton3);
+        contentPanel.setLayout(new java.awt.BorderLayout());
 
-        jRadioButton4.setText("Stick");
-        jPanel1.add(jRadioButton4);
+        radioButtonPanel.setPreferredSize(new java.awt.Dimension(100, 300));
+        radioButtonPanel.setLayout(new java.awt.GridLayout(0, 1));
 
-        add(jPanel1, java.awt.BorderLayout.WEST);
+        controllerTypeGroup.add(radioPushButton);
+        radioPushButton.setText("Push button");
+        radioPushButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radioPushButtonItemStateChanged(evt);
+            }
+        });
+        radioButtonPanel.add(radioPushButton);
+
+        controllerTypeGroup.add(radio2Way);
+        radio2Way.setText("2-way switch");
+        radio2Way.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radio2WayItemStateChanged(evt);
+            }
+        });
+        radioButtonPanel.add(radio2Way);
+
+        controllerTypeGroup.add(radio3Way);
+        radio3Way.setText("3-way switch");
+        radio3Way.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radio3WayItemStateChanged(evt);
+            }
+        });
+        radioButtonPanel.add(radio3Way);
+
+        controllerTypeGroup.add(radioStick);
+        radioStick.setSelected(true);
+        radioStick.setText("Stick");
+        radioStick.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radioStickItemStateChanged(evt);
+            }
+        });
+        radioButtonPanel.add(radioStick);
+
+        contentPanel.add(radioButtonPanel, java.awt.BorderLayout.WEST);
 
         inputViewerPanel.setLayout(new java.awt.BorderLayout());
-        add(inputViewerPanel, java.awt.BorderLayout.CENTER);
 
-        jLabel1.setText("Calibration");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(56, Short.MAX_VALUE))
+        javax.swing.GroupLayout stickInputViewer1Layout = new javax.swing.GroupLayout(stickInputViewer1);
+        stickInputViewer1.setLayout(stickInputViewer1Layout);
+        stickInputViewer1Layout.setHorizontalGroup(
+            stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 150, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(75, Short.MAX_VALUE))
+        stickInputViewer1Layout.setVerticalGroup(
+            stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 80, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel4);
+        inputViewerPanel.add(stickInputViewer1, java.awt.BorderLayout.CENTER);
 
-        add(jPanel3, java.awt.BorderLayout.EAST);
+        contentPanel.add(inputViewerPanel, java.awt.BorderLayout.CENTER);
+
+        calibrationPanel.setPreferredSize(new java.awt.Dimension(100, 50));
+
+        jPanel4.setPreferredSize(new java.awt.Dimension(157, 100));
+
+        calibrationLabel.setText("Calibration");
+        calibrationLabel.setToolTipText("");
+        jPanel4.add(calibrationLabel);
+
+        calibrationPanel.add(jPanel4);
+
+        contentPanel.add(calibrationPanel, java.awt.BorderLayout.EAST);
+
+        add(contentPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void radioPushButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radioPushButtonItemStateChanged
+        if (!radioPushButton.isSelected()) return;
+        changeInputViewer(new PushbuttonInputViewer());
+        System.out.println("Push!");
+    }//GEN-LAST:event_radioPushButtonItemStateChanged
+
+    private void radio2WayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radio2WayItemStateChanged
+        if (!radio2Way.isSelected()) return;
+        NWayInputViewer nw = new NWayInputViewer();
+        nw.setN(2);
+        changeInputViewer(nw);
+        System.out.println("2way!");
+    }//GEN-LAST:event_radio2WayItemStateChanged
+
+    private void radio3WayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radio3WayItemStateChanged
+        if (!radio3Way.isSelected()) return;
+        NWayInputViewer nw = new NWayInputViewer();
+        nw.setN(3);
+        changeInputViewer(nw);
+        System.out.println("3way!");
+    }//GEN-LAST:event_radio3WayItemStateChanged
+
+    private void radioStickItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radioStickItemStateChanged
+        if (!radioStick.isSelected()) return;
+        changeInputViewer(new StickInputViewer());
+        System.out.println("Stick!");
+    }//GEN-LAST:event_radioStickItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel calibrationLabel;
+    private javax.swing.JPanel calibrationPanel;
+    private javax.swing.JPanel contentPanel;
+    private javax.swing.ButtonGroup controllerTypeGroup;
+    private javax.swing.JLabel idLabel;
+    private javax.swing.JPanel idPanel;
     private javax.swing.JPanel inputViewerPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JRadioButton radio2Way;
+    private javax.swing.JRadioButton radio3Way;
+    private javax.swing.JPanel radioButtonPanel;
+    private javax.swing.JRadioButton radioPushButton;
+    private javax.swing.JRadioButton radioStick;
+    private littlesmarttool2.GUI.components.StickInputViewer stickInputViewer1;
     // End of variables declaration//GEN-END:variables
 }

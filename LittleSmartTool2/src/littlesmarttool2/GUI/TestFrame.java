@@ -22,11 +22,14 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         if (command != 'S') return;
         if (args.length < 4) return;
         int value = Integer.parseInt(args[3]);
-        stickInputViewer2.setValue((value - 800) / (2200-800.0));
-        stickInputViewer2.repaint();
+        stickInputViewer2.updateBounds(800, 2300);
+        stickInputViewer2.updateValue(value);
         nWayInputViewer1.setN(10);
-        nWayInputViewer1.setValue((int)(((value - 800) / (2200-800.0)) * 10) % 10);
-        nWayInputViewer1.repaint();
+        nWayInputViewer1.updateBounds(800, 2300);
+        nWayInputViewer1.updateValue(value);
+        pushbuttonInputViewer2.updateBounds(800, 2300);
+        pushbuttonInputViewer2.updateValue(value);
+        channelConfigurator1.updateReading(value);
     }
     
     
@@ -85,6 +88,7 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         stickInputViewer2 = new littlesmarttool2.GUI.components.StickInputViewer();
         nWayInputViewer1 = new littlesmarttool2.GUI.components.NWayInputViewer();
         channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
+        channelConfigurator1 = new littlesmarttool2.GUI.components.ChannelConfigurator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -115,7 +119,7 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         nWayInputViewer1.setLayout(nWayInputViewer1Layout);
         nWayInputViewer1Layout.setHorizontalGroup(
             nWayInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 153, Short.MAX_VALUE)
         );
         nWayInputViewer1Layout.setVerticalGroup(
             nWayInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,7 +134,7 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         );
         channelSettingViewer1Layout.setVerticalGroup(
             channelSettingViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 80, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,18 +144,21 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
             .addGroup(layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(stickInputViewer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pushbuttonInputViewer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(stickInputViewer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nWayInputViewer1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(channelSettingViewer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 44, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nWayInputViewer1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(241, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(channelSettingViewer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(channelConfigurator1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,9 +169,11 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
                 .addComponent(nWayInputViewer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pushbuttonInputViewer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(channelSettingViewer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(channelConfigurator1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
 
         pack();
@@ -205,6 +214,7 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator1;
     private littlesmarttool2.GUI.components.ChannelSettingViewer channelSettingViewer1;
     private littlesmarttool2.GUI.components.NWayInputViewer nWayInputViewer1;
     private littlesmarttool2.GUI.components.PushbuttonInputViewer pushbuttonInputViewer2;

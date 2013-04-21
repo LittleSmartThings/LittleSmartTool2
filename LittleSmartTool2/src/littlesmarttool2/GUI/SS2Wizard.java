@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import littlesmarttool2.comm.AutoServoPuller;
+import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Configuration;
 
@@ -57,7 +58,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         for (StepPanel step : stepPanels) {
             cardPanel.add(step, step.getName());
         }
-        
+        controller.addResponseListener((ResponseListener)stepPanels[1]); //Page two need to be a listener
         goToStep(0);
         
         setVisible(true);

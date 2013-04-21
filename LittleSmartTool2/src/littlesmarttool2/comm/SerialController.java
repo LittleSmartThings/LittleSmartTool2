@@ -165,7 +165,8 @@ public class SerialController {
                     for (int i = 0; i < args.length; i++)
                         args[i] = parts[i+1];
                     for (ResponseListener l : responseListeners)
-                        l.receiveResponse(cmd, args);
+                        if (l != null)
+                            l.receiveResponse(cmd, args);
                 }
             } catch (InterruptedException ex) {
                 System.out.println("InterruptedException in SerialCommReader: " + ex.getMessage());
