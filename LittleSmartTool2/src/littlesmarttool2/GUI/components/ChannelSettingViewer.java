@@ -6,6 +6,7 @@ package littlesmarttool2.GUI.components;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -119,10 +120,6 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
             double lower = (block.getLowerThreshold() == null) ? lowerBound : block.getLowerThreshold().getValue();
             double upper = (block.getUpperThreshold() == null) ? upperBound : block.getUpperThreshold().getValue();
             double width = ((upper - lower) / (upperBound-lowerBound)) * getWidth();
-            System.out.println("Trying lower: " + lower);
-            System.out.println("Trying upper: " + upper);
-            System.out.println("Trying width: " + width);
-            System.out.println("B: " + block.getInterval());
             g2.setColor(colors[i % colors.length]);
             g2.fillRect((int)prevWidth, 0, (int)width, getHeight());
             prevWidth += width;
