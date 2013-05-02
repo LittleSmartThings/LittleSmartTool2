@@ -13,14 +13,14 @@ import com.fasterxml.jackson.annotation.*;
 public abstract class Command {
     private String name;
     private String description;
-    private CameraModel[] models;
+    private CameraModel[] cameraModels;
     
     @JsonCreator
-    public Command(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models)
+    public Command(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("cameraModels") CameraModel[] cameraModels)
     {
         this.name = name;
         this.description = description;
-        this.models = models;
+        this.cameraModels = cameraModels;
     }
     
     public String getName()
@@ -34,7 +34,7 @@ public abstract class Command {
     }
     
     public CameraModel[] getCameraModels() {
-        return models;
+        return cameraModels;
     }
     
     @Override

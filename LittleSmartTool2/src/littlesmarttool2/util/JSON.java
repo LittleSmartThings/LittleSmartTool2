@@ -5,10 +5,10 @@
 package littlesmarttool2.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import littlesmarttool2.model.*;
 
 /**
@@ -48,21 +48,93 @@ public class JSON {
     } 
     
     public static void main(String[] args) {
-        /*CameraModel[] models = new CameraModel[]{new CameraModel("Sony - NEX Series","NEX Series"), new CameraModel("Sony - A230, A330", "A230, A330")};
-        Command[] list2 = new Command[]{
-            new IRCommand("IR 1", "This number one", models, new int[]{1,2,3,4,5,6,8,4,2,5,7,4}, 42, 2, 38000),
-            new WireCommand("Wire 2", "This is two too", models, 74, 2),
-            new LANCCommand("LANC 3", "THIS IS LANC!!!", models, (byte)'c', (byte)'r')
-        };
-        writeObjectToFile(list2, "comanndList.json");
+        final String inputFile = null;//"LANC.txt";
         
+        
+        CameraBrand[] brandList = readObjectFromFile("cameraList.json", CameraBrand[].class);
+        ArrayList<CameraModel> modelList = new ArrayList<>();
+        for (CameraBrand cameraBrand : brandList) {
+            modelList.addAll(Arrays.asList(cameraBrand.getModels()));
+        }
+        CameraModel[] models = new CameraModel[modelList.size()];
+        int i = 0;
+        for (CameraModel cameraModel : modelList) {
+            models[i++] = cameraModel;
+        }
+        
+        ArrayList<IRCommand> IRCommandList = new ArrayList<>();
+        ArrayList<WireCommand> wireCommandList = new ArrayList<>();
+        ArrayList<LANCCommand> LANCCommandList = new ArrayList<>();
+        IRCommandList.addAll(Arrays.asList(readObjectFromFile("IRCommandList.json", IRCommand[].class)));
+        wireCommandList.addAll(Arrays.asList(readObjectFromFile("WireCommandList.json", WireCommand[].class)));
+        LANCCommandList.addAll(Arrays.asList(readObjectFromFile("LANCCommandList.json", LANCCommand[].class)));
+        try{
+            BufferedReader read = new BufferedReader(((inputFile==null)?new InputStreamReader(System.in):new FileReader(inputFile)));
+            
+            while(true){
+                if(inputFile!=null){
+                    String line = read.readLine();
+                    String[] parts = line.split(";");
+                    LANCCommandList.add(new LANCCommand(parts[1], parts[1], models, (byte)parts[0].charAt(0), (byte)parts[0].charAt(1)));
+                    continue;
+                }
+                
+                System.out.println("Choose command - 1: IR - 2: Wire - 3: LANC  --- 0: Exit and write to file");
+                int commIndex = Integer.parseInt(read.readLine());
+                if(commIndex==0)
+                    break;
+                System.out.println("Type name of command: ");
+                String name = read.readLine().trim();
+                System.out.println("Type description of command: ");
+                String description = read.readLine().trim();
+                switch(commIndex){
+                    case 1:
+                        IRCommandList.add(new IRCommand(name, description, models, new int[]{1,2,3,4,5,6,7,8,9,10}, 42, 2, 38000));
+                        break;
+                    case 2:
+                        wireCommandList.add(new WireCommand(name, description, models, 74, 2));
+                        break;
+                    case 3:
+                        LANCCommandList.add(new LANCCommand(name, description, models, (byte)'c', (byte)'r'));
+                        break;
+                }
+                System.out.println("----------------------------------------------------------");
+            }
+        }
+        catch (IOException ex) {
+            Logger.getLogger(JSON.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            System.out.print("Writing "+IRCommandList.size()+" IR commands to file... ");
+            Command[] commands = new Command[IRCommandList.size()];
+            i = 0;
+            for (Command command : IRCommandList) {
+                commands[i++]=command;
+            }
+            boolean success = writeObjectToFile(commands, "IRCommandList.json");
+            System.out.println(success?"Success!":"Failure!");
+            
+            System.out.print("Writing "+wireCommandList.size()+" wire commands to file... ");
+            commands = new Command[wireCommandList.size()];
+            i = 0;
+            for (Command command : wireCommandList) {
+                commands[i++]=command;
+            }
+            success = writeObjectToFile(commands, "WireCommandList.json");
+            System.out.println(success?"Success!":"Failure!");
+            
+            System.out.print("Writing "+LANCCommandList.size()+" LANC commands to file... ");
+            commands = new Command[LANCCommandList.size()];
+            i = 0;
+            for (Command command : LANCCommandList) {
+                commands[i++]=command;
+            }
+            success = writeObjectToFile(commands, "LANCCommandList.json");
+            System.out.println(success?"Success!":"Failure!");
+        }
         System.exit(0);
-        CameraBrand[] list = new CameraBrand[]{
-            new CameraBrand("Sony", new CameraModel[]{
-                new CameraModel("Sony - NEX Series","NEX Series"), new CameraModel("Sony - A230, A330", "A230, A330")
-            })
-        };
-        writeObjectToFile(list, "newCameraList.json");*/
+        /*
+        writeObjectToFile(list, "newCameraList.json");
         CameraBrand[] list = readObjectFromFile("camera-list.json", CameraBrand[].class);
         for (CameraBrand cameraBrand : list) {
             for (CameraModel cameraModel : cameraBrand.getModels()) {
@@ -78,5 +150,6 @@ public class JSON {
             }
         }
         writeObjectToFile(list, "cameraList.json");
+        * */
     }
 }
