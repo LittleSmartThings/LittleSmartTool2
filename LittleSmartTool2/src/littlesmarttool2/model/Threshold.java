@@ -9,12 +9,12 @@ package littlesmarttool2.model;
  * @author Rasmus
  */
 public class Threshold {
-    private int value;
+    private int valuePromille;
     private Command upCommand, downCommand;
     
-    public Threshold(int value, Command upCommand, Command downCommand)
+    public Threshold(int valuePromille, Command upCommand, Command downCommand)
     {
-        this.value = value;
+        this.valuePromille = valuePromille;
         this.upCommand = upCommand;
         this.downCommand = downCommand;
     }
@@ -39,13 +39,13 @@ public class Threshold {
         this.downCommand = command;
     }
     
-    public int getValue()
+    public int getValuePromille()
     {
-        return value;
+        return valuePromille;
     }
     
-    public void setValue(int value)
+    public void setValuePromille(int valuePromille)
     {
-        this.value = value;
+        this.valuePromille = valuePromille;
     }
 }

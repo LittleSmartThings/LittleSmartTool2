@@ -14,7 +14,7 @@ import littlesmarttool2.model.Channel;
  */
 public class Step2Panel extends StepPanel implements ResponseListener {
     /**
-     * Creates new form Step1Panel
+     * Creates new form Step2Panel
      */
     public Step2Panel(SS2Wizard wizard) {
         super(wizard);
@@ -63,7 +63,6 @@ public class Step2Panel extends StepPanel implements ResponseListener {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         channelConfigurator1 = new littlesmarttool2.GUI.components.ChannelConfigurator();
         channelConfigurator2 = new littlesmarttool2.GUI.components.ChannelConfigurator();
         channelConfigurator3 = new littlesmarttool2.GUI.components.ChannelConfigurator();
@@ -72,15 +71,11 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         setName("Choose control types and calibrate"); // NOI18N
         setLayout(new java.awt.GridLayout(5, 1, 0, 10));
 
-        jPanel1.setLayout(new java.awt.GridLayout(0, 2));
+        jPanel1.setMinimumSize(new java.awt.Dimension(200, 76));
+        jPanel1.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabel1.setText("<html><h2>Step 2</h2></html>");
+        jLabel1.setText("<html>Set up the channels you will be using by using the following steps:\n<ol>\n<li>Connect to the StratoSnapper (top right corner)</li>\n<li>Choose the type of controller connected to each channel (skip the ones you don't use)</li>\n<li>Calibrate the software by moving your controller as far as it goes in both directions</li>\n</ol>\n</html>");
         jPanel1.add(jLabel1);
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("<html>Calibration<br>In order to calibrate for the settings you must connect your StratoSnapper to the desired servo outputs and the receiver as well as connecting your receiver.<br>In the drop down menu above you can select which serial port the stratosnapper is located</html>");
-        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jPanel1.add(jLabel2);
 
         add(jPanel1);
         add(channelConfigurator1);
@@ -94,7 +89,6 @@ public class Step2Panel extends StepPanel implements ResponseListener {
     private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator3;
     private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 

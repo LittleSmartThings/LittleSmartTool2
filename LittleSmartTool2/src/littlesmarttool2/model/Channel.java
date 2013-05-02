@@ -4,8 +4,6 @@
  */
 package littlesmarttool2.model;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Rasmus
@@ -14,13 +12,12 @@ public class Channel {
     private int id;
     private int calibLow = Integer.MAX_VALUE, calibHigh = 0;
     private ControlType controlType;
-    
-    private ArrayList<Block> blocks = new ArrayList<>();
-    private ArrayList<Threshold> thresholds = new ArrayList<>();
+    private Setting setting;
     
     public Channel(int id)
     {
         this.id = id;
+        setting = new Setting();
     }
     
     public int getId()
@@ -63,14 +60,14 @@ public class Channel {
         controlType = type;
     }
     
-    public ArrayList<Block> getBlocks()
+    public Setting getSetting()
     {
-        return blocks;
+        return setting;
     }
     
-    public ArrayList<Threshold> getThresholds()
+    public Setting setSetting()
     {
-        return thresholds;
+        return setting;
     }
     
 }

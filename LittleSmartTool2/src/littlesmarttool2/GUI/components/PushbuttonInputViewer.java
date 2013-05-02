@@ -29,7 +29,6 @@ public class PushbuttonInputViewer extends InputViewer {
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
         int dim = Math.min(getWidth()-1,getHeight()-1);
-        dim = Math.min(dim, 50); //Max 50 px
         //Pressed
         if (getValuePct() > .5)
         {

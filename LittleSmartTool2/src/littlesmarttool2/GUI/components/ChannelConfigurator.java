@@ -31,12 +31,11 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     
     public void updateReading(int reading)
     {
-        if (reading > 2500 || reading < 500) return;
+        if (reading > 2500 || reading < 500) return; //Must be invalid. TODO: Calibration guidance
         channel.setCalibLow(Math.min(channel.getCalibLow(), reading));
         channel.setCalibHigh(Math.max(channel.getCalibHigh(), reading));
         viewer.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
         viewer.updateValue(reading);
-        calibrationLabel.setText("R: " + (channel.getCalibHigh()-channel.getCalibLow()));
     }
 
     private void changeInputViewer(InputViewer newViewer)
@@ -133,11 +132,11 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         stickInputViewer1.setLayout(stickInputViewer1Layout);
         stickInputViewer1Layout.setHorizontalGroup(
             stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
+            .addGap(0, 292, Short.MAX_VALUE)
         );
         stickInputViewer1Layout.setVerticalGroup(
             stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 80, Short.MAX_VALUE)
+            .addGap(0, 150, Short.MAX_VALUE)
         );
 
         inputViewerPanel.add(stickInputViewer1, java.awt.BorderLayout.CENTER);
@@ -145,14 +144,17 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         contentPanel.add(inputViewerPanel, java.awt.BorderLayout.CENTER);
 
         calibrationPanel.setPreferredSize(new java.awt.Dimension(100, 50));
+        calibrationPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel4.setPreferredSize(new java.awt.Dimension(157, 100));
+        jPanel4.setMinimumSize(new java.awt.Dimension(200, 24));
+        jPanel4.setPreferredSize(new java.awt.Dimension(250, 100));
+        jPanel4.setLayout(new java.awt.BorderLayout());
 
-        calibrationLabel.setText("Calibration");
+        calibrationLabel.setText("Move to activate");
         calibrationLabel.setToolTipText("");
-        jPanel4.add(calibrationLabel);
+        jPanel4.add(calibrationLabel, java.awt.BorderLayout.EAST);
 
-        calibrationPanel.add(jPanel4);
+        calibrationPanel.add(jPanel4, java.awt.BorderLayout.CENTER);
 
         contentPanel.add(calibrationPanel, java.awt.BorderLayout.EAST);
 
