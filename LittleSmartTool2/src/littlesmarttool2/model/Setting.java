@@ -16,7 +16,7 @@ public class Setting {
     private ArrayList<ControlType> types = new ArrayList<>(); 
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Threshold> thresholds = new ArrayList<>();
-    
+    private ArrayList<CameraModel> cameraModels = new ArrayList<>();
     //TODO: If this is to be serialized, should it have a no args constructor 
     //that doesn't add a block?
     
@@ -105,5 +105,10 @@ public class Setting {
     public ArrayList<Threshold> getThresholds()
     {
         return thresholds;
+    }
+    
+    public ArrayList<CameraModel> getCameraModels()
+    {
+        return cameraModels;
     }
 }
