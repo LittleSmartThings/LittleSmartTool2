@@ -30,6 +30,8 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         pushbuttonInputViewer2.updateBounds(800, 2300);
         pushbuttonInputViewer2.updateValue(value);
         channelConfigurator1.updateReading(value);
+        channelSettingViewer1.updateBounds(800, 2300);
+        channelSettingViewer1.updateValue(value);
     }
     
     
@@ -56,8 +58,8 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         ArrayList<Block> blocks = new ArrayList<>();
         ArrayList<Threshold> thresholds = new ArrayList<>();
         
-        Threshold th = new Threshold(20, null, null);
-        Threshold th2 = new Threshold(30, null, null);
+        Threshold th = new Threshold(200, null, null);
+        Threshold th2 = new Threshold(300, null, null);
         thresholds.add(th);
         thresholds.add(th2);
         Block b = new Block(null, null, th, 0);
@@ -67,10 +69,8 @@ public class TestFrame extends javax.swing.JFrame implements ResponseListener {
         blocks.add(b2);
         blocks.add(b3);
         
-        channelSettingViewer1.setBounds(0,100);
         channelSettingViewer1.setBlockList(blocks);
         channelSettingViewer1.setThresholdlist(thresholds);
-        
         
         
     }

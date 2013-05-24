@@ -4,42 +4,46 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.Stroke;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.MouseInputListener;
 import littlesmarttool2.model.Threshold;
 import littlesmarttool2.model.Block;
 /**
  *
  * @author Rasmus
  */
-public class ChannelSettingViewer extends javax.swing.JPanel {
+public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInputListener {
     
     private ArrayList<BlockPressedListener> blockPressedListeners = new ArrayList<>();
     private ArrayList<ThresholdPressedListener> thresholdPressedListeners = new ArrayList<>();
     
-    private static BasicStroke readingStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+    private static BasicStroke readingStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                         BasicStroke.JOIN_MITER, 10.0f, new float[]{5f}, 0.0f);
     
     private Color[] colors = new Color[] {
-        new Color(0xFF, 0xA8, 0xA8),
-        new Color(0xD0, 0xBC, 0xFE),
-        new Color(0x4B, 0xFE, 0x78),
-        new Color(0xB4, 0xD1, 0xB6),
-        new Color(0xED, 0xEF, 0x85)
+        new Color(0xFF, 0xFF, 0xFF)
     };
     
-    private int lowerBound = 0, upperBound = 100;
-    private double readingValue = 0.5;
+    //Everything is in promille. Only the display of current reading is in values between lowerBound to upperBound
+    private int value = 0, lowerBound = 0, upperBound = 1; //For showing reading only!
     private Block selectedBlock;
     private Threshold selectedThreshold;
+    private int dragMin, dragMax;
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Threshold> thresholds = new ArrayList<>();
+    private final int thresholdSelectionWidth = 15;
     
     
     /**
@@ -47,6 +51,102 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
      */
     public ChannelSettingViewer() {
         initComponents();
+        addMouseListener(this);
+        addMouseMotionListener(this);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        try {
+            Robot rbt = new Robot();
+            int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
+            if (selectedThreshold != null)
+            {
+                if (mousePromille < dragMin)
+                {
+                    rbt.mouseMove(e.getXOnScreen()+1, e.getYOnScreen());
+                    return;
+                }
+                if(mousePromille > dragMax)
+                {
+                    rbt.mouseMove(e.getXOnScreen()-1, e.getYOnScreen());
+                    return;
+                }
+                selectedThreshold.setValuePromille((int)(((e.getX()*1.0)/getWidth())*1000));
+                repaint();
+            }
+        } catch (AWTException ex) {
+            Logger.getLogger(ChannelSettingViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        for (Threshold t : thresholds)
+        {
+            if (Math.abs(mousePromille - t.getValuePromille()) < thresholdSelectionWidth)
+            {
+                setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+            }
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
+        System.out.println("Pressed. promille: " + mousePromille);
+        selectedBlock = null;
+        selectedThreshold = null;
+        dragMin = 0 + thresholdSelectionWidth;
+        dragMax = 1000 - thresholdSelectionWidth;
+        for (int i = 0; i < thresholds.size(); i++)
+        {
+            Threshold t = thresholds.get(i);
+            if (Math.abs(mousePromille - t.getValuePromille()) < thresholdSelectionWidth)
+            {
+                System.out.println("Selected threshold");
+                selectedThreshold = t;
+                if (i < thresholds.size()-1)
+                    dragMax = thresholds.get(i+1).getValuePromille() - thresholdSelectionWidth;
+                thresholdPressed(t);
+                return;
+            }
+            dragMin = t.getValuePromille() + thresholdSelectionWidth;
+        }
+        for (Block b : blocks)
+        {
+            int lowerP = (b.getLowerThreshold() == null) ? 0 : b.getLowerThreshold().getValuePromille();
+            int upperP = (b.getUpperThreshold()== null) ? 0 : b.getUpperThreshold().getValuePromille();
+            if (mousePromille >= lowerP && mousePromille < upperP)
+            {
+                System.out.println("Selected block");
+                selectedBlock = b;
+                blockPressed(b);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //
     }
 
     public static interface BlockPressedListener
@@ -89,11 +189,22 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
     {
         this.thresholds = thresholds;
     }
-    
-    public void setBounds(int lowerBound, int upperBound)
+     
+    public void updateBounds(int lowerBound, int upperBound)
     {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+        repaint();
+    }
+    public void updateValue(int value)
+    {
+        this.value = value;
+        repaint();
+    }
+    private double getValuePct()
+    {
+        double span = upperBound - lowerBound;
+        return (value - lowerBound) / span;
     }
     
     private void drawReadingValue(Graphics2D g2)
@@ -101,7 +212,8 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         Stroke defaultStroke = g2.getStroke();
         g2.setStroke(readingStroke);
         g2.setColor(Color.gray);
-        g2.drawLine((int)(readingValue * getWidth()),0,(int)(readingValue * getWidth()),getHeight());
+        int x = (int)(getValuePct() * getWidth());
+        g2.drawLine(x,0,x,getHeight());
         g2.setStroke(defaultStroke);
     }
     
@@ -117,9 +229,9 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         for (int i = 0; i < blocks.size(); i++)
         {
             Block block = blocks.get(i);
-            double lower = (block.getLowerThreshold() == null) ? lowerBound : block.getLowerThreshold().getValuePromille();
-            double upper = (block.getUpperThreshold() == null) ? upperBound : block.getUpperThreshold().getValuePromille();
-            double width = ((upper - lower) / (upperBound-lowerBound)) * getWidth();
+            double lower = (block.getLowerThreshold() == null) ? 0 : block.getLowerThreshold().getValuePromille();
+            double upper = (block.getUpperThreshold() == null) ? 1000 : block.getUpperThreshold().getValuePromille();
+            double width = ((upper - lower) / 1000) * getWidth();
             g2.setColor(colors[i % colors.length]);
             g2.fillRect((int)prevWidth, 0, (int)width, getHeight());
             prevWidth += width;
@@ -131,21 +243,21 @@ public class ChannelSettingViewer extends javax.swing.JPanel {
         for (int i = 0; i < thresholds.size(); i++)
         {
             Threshold threshold = thresholds.get(i);
-            int x = (int)((threshold.getValuePromille() * 1.0 / (upperBound-lowerBound)) * getWidth());
+            int x = (int)((threshold.getValuePromille() * 1.0 / (1000)) * getWidth());
             g2.setColor(Color.black);
             g2.drawLine(x, 0, x, getHeight());
         }
     }
+    
     
     @Override
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawReadingValue(g2);
         drawBlocks(g2);
         drawThresholds(g2);
-        
+        drawReadingValue(g2);
         drawBorder(g2);
     }
     

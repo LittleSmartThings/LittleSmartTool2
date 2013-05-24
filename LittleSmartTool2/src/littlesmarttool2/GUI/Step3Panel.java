@@ -4,6 +4,10 @@
  */
 package littlesmarttool2.GUI;
 
+import java.util.ArrayList;
+import littlesmarttool2.GUI.components.ChannelTabPanel;
+import littlesmarttool2.model.Channel;
+
 /**
  *
  * @author marcher89
@@ -16,6 +20,24 @@ public class Step3Panel extends StepPanel {
     public Step3Panel(SS2Wizard wizard) {
         super(wizard);
         initComponents();
+        
+        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+               
+        ChannelTabPanel tab1 = new ChannelTabPanel();
+        tab1.setChannel(channels.get(0));
+        jTabbedPane1.addTab("Channel 1",tab1);
+        
+        ChannelTabPanel tab2 = new ChannelTabPanel();
+        tab1.setChannel(channels.get(1));
+        jTabbedPane1.addTab("Channel 2",tab2);
+        
+        ChannelTabPanel tab3 = new ChannelTabPanel();
+        tab1.setChannel(channels.get(2));
+        jTabbedPane1.addTab("Channel 3",tab3);
+        
+        ChannelTabPanel tab4 = new ChannelTabPanel();
+        tab1.setChannel(channels.get(3));
+        jTabbedPane1.addTab("Channel 4",tab4);
     }
     
     @Override
@@ -38,30 +60,13 @@ public class Step3Panel extends StepPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
 
         setName("Configure triggers and actions"); // NOI18N
-
-        jLabel1.setText("Step 3");
-
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(114, 114, 114)
-                .add(jLabel1)
-                .addContainerGap(247, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(139, 139, 139)
-                .add(jLabel1)
-                .addContainerGap(145, Short.MAX_VALUE))
-        );
+        setLayout(new java.awt.BorderLayout());
+        add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
