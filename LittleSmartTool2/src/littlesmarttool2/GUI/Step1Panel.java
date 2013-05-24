@@ -102,20 +102,7 @@ public class Step1Panel extends StepPanel {
         System.out.println("Camera Brand: "+conf.getCameraBrand());
         System.out.println("Camera Model: "+conf.getCameraModel());
         System.out.println("Output type: "+ conf.getOutputType());
-        
-        int nb=-1;
-        switch(conf.getOutputType()){
-            case Wire:
-                nb = conf.getCameraModel().getWireCommands().size();
-                break;
-            case IR:
-                nb = conf.getCameraModel().getIRCommands().size();
-                break;
-            case LANC:
-                nb = conf.getCameraModel().getLANCCommands().size();
-                break;
-        }
-        System.out.println("Number of commands found: "+nb);
+        System.out.println("Number of commands found: "+conf.getRelevantCommands().size());
     }
     
     /**

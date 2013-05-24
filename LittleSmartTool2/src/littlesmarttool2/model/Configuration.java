@@ -4,7 +4,8 @@
  */
 package littlesmarttool2.model;
 
-import java.util.ArrayList;
+import java.util.*;
+import static littlesmarttool2.model.ConnectionType.*;
 
 /**
  *
@@ -15,6 +16,7 @@ public class Configuration {
     private CameraModel cameraModel;
     private ConnectionType outputType;
     private ArrayList<Channel> channels = new ArrayList<>();
+    private ArrayList<Command> relevantCommands;
     private int irFreq;
     
     public Configuration()
@@ -54,6 +56,20 @@ public class Configuration {
     public ArrayList<Channel> getChannels()
     {
         return channels;
+    }
+    
+    public List<? extends Command> getRelevantCommands() {
+        if(getCameraModel() == null)
+            return null; //And order pizza
+        switch(getOutputType()){
+            case Wire:
+                return getCameraModel().getWireCommands();
+            case IR:
+                return getCameraModel().getIRCommands();
+            case LANC:
+                return getCameraModel().getLANCCommands();
+        }
+        return null; //And order pizza
     }
     
     public int getIRFreq()
