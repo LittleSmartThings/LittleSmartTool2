@@ -5,6 +5,7 @@
 package littlesmarttool2.model;
 
 import com.fasterxml.jackson.annotation.*;
+import littlesmarttool2.util.JSON;
 
 /**
  *
@@ -13,6 +14,14 @@ import com.fasterxml.jackson.annotation.*;
 public class WireCommand extends Command {
    
     private int pulseLength, pinConfig;
+    
+    private static WireCommand[] array;
+    
+    public static WireCommand[] getArray() {
+        if(null==ModelUtil.wireCommands) 
+            ModelUtil.LoadData();
+        return ModelUtil.wireCommands;
+    }
     
     @JsonCreator
     public WireCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("pulseLength") int pulseLength, @JsonProperty("pinConfig") int pinConfig)

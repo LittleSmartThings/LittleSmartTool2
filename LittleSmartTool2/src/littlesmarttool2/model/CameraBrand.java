@@ -5,6 +5,7 @@
 package littlesmarttool2.model;
 
 import com.fasterxml.jackson.annotation.*;
+import littlesmarttool2.util.JSON;
 
 /**
  *
@@ -12,16 +13,23 @@ import com.fasterxml.jackson.annotation.*;
  */
 public class CameraBrand {
 
+    
+    public static CameraBrand[] getArray() {
+        if(null==ModelUtil.cameraBrands) 
+            ModelUtil.LoadData();
+        return ModelUtil.cameraBrands;
+    }
+
     private String brandName;
     private CameraModel[] models;
 
     @JsonCreator
-    public CameraBrand(@JsonProperty("brandName") String brandName, @JsonProperty("models") CameraModel[] models){
+    private CameraBrand(@JsonProperty("brandName") String brandName, @JsonProperty("models") CameraModel[] models){
         this.brandName = brandName;
         this.models = models;
     }
 
-    public CameraBrand() {
+    private CameraBrand() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

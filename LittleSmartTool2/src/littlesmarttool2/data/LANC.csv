@@ -1,0 +1,209 @@
+18;0;program 1
+18;2;program 2
+18;4;program 3
+18;5;mode (only HDV/AVCHD)
+18;6;program 4
+18;8;program 5
+18;0A;program 6
+18;0C;program 7
+18;0E;program 8
+18;10;program 9
+18;12;program 0 (10: SL-HF950 MKII)
+18;14;program 11 (SL-HF950 MKII)
+18;16;enter, program 12 (SL-HF950 MKII)
+18;18;program 13
+18;1A;program 14
+18;1C;program 15
+18;1E;program 16
+18;20;program +
+18;22;program -
+18;24;
+18;26;
+18;28;x2
+18;2A;power (or viewfinder) off
+18;2B;photo write
+18;2C;eject
+18;2E;main/sub
+18;30;stop
+18;32;pause
+18;33;start/stop
+18;34;play
+18;35;tele (only CCD-V90)
+18;36;rew
+18;37;wide (only CCD-V90)
+18;38;fwd
+18;39;photo capture
+18;3A;rec
+18;3C;rec-pause (some devices)
+18;3E;
+18;40;still
+18;42;
+18;44;x1/10
+18;46;x1/5 (sometimes: vis. scan)
+18;48;
+18;4A;x14
+18;4C;x9
+18;4E;tracking auto/manual
+18;50;search -
+18;52;search +
+18;54;TV/VTR
+18;56;
+18;58;
+18;5A;VTR
+18;5B;date search / photo search / photo scan
+18;5C;
+18;5E;power off
+18;60;rev frame
+18;62;fwd frame
+18;64;
+18;65;edit-search -
+18;66;x1
+18;67;edit-search +
+18;68;
+18;69;rec-review (not i.e. TR-2200)
+18;6A;
+18;6C;sleep
+18;6E;tracking normal
+18;70;
+18;72;
+18;74;rew+play
+18;76;
+18;78;AUX
+18;7A;slow +
+18;7B;tape end search (HDV)
+18;7C;slow -
+18;7E;
+18;80;
+18;82;display mode
+18;84;menu up
+18;86;menu down
+18;88;tracking/fine +
+18;8A;tracking/fine -
+18;8C;counter reset
+18;8E;zero mem
+18;90;index mark
+18;92;index erase
+18;94;shuttle edit +
+18;96;shuttle edit -
+18;98;data code or goto
+18;99;data code or recording parameters
+18;9A;menu
+18;9C;
+18;9E;input select
+18;A0;
+18;A2;execute
+18;A4;quick timer
+18;A6;index
+18;A8;
+18;AA;
+18;AC;index search +, date search 01 (HDV)
+18;AE;index search -, date search -01 (HDV)
+18;B0;tape speed
+18;B2;goto zero / tape return (not DV)
+18;B4;counter display, data screen
+18;B6;open/close (SL-HF950), replay (FauHaEss)
+18;B8;timer display
+18;BA;
+18;BC;
+18;BD;date display off
+18;BE;
+18;BF;date display on
+18;C0;timer set
+18;C2;menu right, next
+18;C4;menu left
+18;C6;timer clear
+18;C8;timer check
+18;CA;timer record
+18;CC;
+18;CE;
+18;D0;audio dub
+18;D2;
+18;D4;edit assemble
+18;D6;edit mark
+18;D8;synchro edit
+18;DA;
+18;DC;digital off (VCR), print (DV)
+18;DE;speed +
+18;E0;speed -
+18;E2;stop motion
+18;E4;
+18;E6;
+18;E8;channel scan / flash motion
+18;EA;
+18;EC;voice boost
+18;EE;
+18;F0;
+18;F2;
+18;F4;
+18;F6;
+18;F8;digital scan
+18;FA;high-speed-rew
+18;FC;still/shuttle (EV-S880)
+18;FE;
+28;0;variable speed zoom Tele: slowest speed
+28;2;variable speed zoom Tele: faster than 00
+28;4;variable speed zoom Tele: faster than 02
+28;6;variable speed zoom Tele: faster than 04
+28;8;variable speed zoom Tele: faster than 06
+28;0A;variable speed zoom Tele: faster than 08
+28;0C;variable speed zoom Tele: faster than 0A
+28;0E;variable speed zoom Tele: fastest speed
+28;10;variable speed zoom Wide: slowest speed
+28;12;variable speed zoom Wide: faster than 10
+28;14;variable speed zoom Wide: faster than 12
+28;16;variable speed zoom Wide: faster than 14
+28;18;variable speed zoom Wide: faster than 16
+28;1A;variable speed zoom Wide: faster than 18
+28;1C;variable speed zoom Wide: faster than 1A
+28;1E;variable speed zoom Wide: fastest speed
+28;21;grid (AVCHD)
+28;25;fader
+28;27;rec start (DV, some cameras)
+28;29;rec stop (DV, some cameras)
+28;30;variable speed zoom Tele (avoiding digital zoom, some cameras): slowest speed
+28;32;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 30
+28;34;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 32
+28;35;Zoom Tele slow (working all cameras since approx. 1996)
+28;36;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 34
+28;37;Zoom Wide slow (working all cameras since approx. 1996)
+28;38;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 36
+28;39;Zoom Tele fast (working all cameras since approx. 1996)
+28;3A;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 38
+28;3B;Zoom Wide fast (working all cameras since approx. 1996)
+28;3C;variable speed zoom Tele (avoiding digital zoom, some cameras): faster than 3A
+28;3E;variable speed zoom Tele (avoiding digital zoom, some cameras): fastest speed
+28;41;Auto-Focus on/off (not if there is a real switch at the camera)
+28;45;Focus manual far
+28;47;Focus manual near
+28;49;White balance toggle (only cameras until approx. 1996)
+28;4B;Backlight (not DV)
+28;51;Backlight (DV)
+28;53;Exposure (models of the early 90's)
+28;61;Shutter (models of the early 90's)
+28;77;White balance reset (not if white balance is selected via menu)
+28;85;Memory impose (models of the early 90's)
+28;87;Color / Mode (models of the early 90's)
+28;89;Superimpose (models of the early 90's)
+1E;1;variable speed zoom Tele: slowest speed
+1E;3;variable speed zoom Tele: faster than 01
+1E;5;variable speed zoom Tele: faster than 03
+1E;7;variable speed zoom Tele: faster than 05
+1E;9;variable speed zoom Tele: faster than 07
+1E;0B;variable speed zoom Tele: faster than 09
+1E;0D;variable speed zoom Tele: faster than 0B
+1E;0F;variable speed zoom Tele: fastest speed
+1E;11;variable speed zoom Wide: slowest speed
+1E;13;variable speed zoom Wide: faster than 11
+1E;15;variable speed zoom Wide: faster than 13
+1E;17;variable speed zoom Wide: faster than 15
+1E;19;variable speed zoom Wide: faster than 17
+1E;1B;variable speed zoom Wide: faster than 19
+1E;1D;variable speed zoom Wide: faster than 1B
+1E;1F;variable speed zoom Wide: fastest speed
+1E;52;photo preview
+1E;58;photo save (or in movie mode: start-stop)
+1E;5E;power off
+1E;94;Zoom Tele slow
+1E;96;Zoom Wide slow
+1E;98;Zoom Tele fast
+1E;9A;Zoom Wide fast

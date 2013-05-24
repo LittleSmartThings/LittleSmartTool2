@@ -36,6 +36,10 @@ public abstract class Command {
     public CameraModel[] getCameraModels() {
         return cameraModels;
     }
+
+    void setCameraModels(CameraModel[] models) {
+        this.cameraModels = models;
+    }
     
     @Override
     public String toString() {
