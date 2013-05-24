@@ -118,7 +118,7 @@ public class SerialController {
     {
         try
         {
-            outStream.write((message + "<").getBytes());
+            outStream.write((message + ">").getBytes());
             outStream.flush();
         }
         catch (IOException e)
