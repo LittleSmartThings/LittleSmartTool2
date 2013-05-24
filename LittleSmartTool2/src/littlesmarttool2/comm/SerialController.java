@@ -107,13 +107,18 @@ public class SerialController {
      */
     public void send(char command, String[] args) throws IOException
     {
+        String tmp = "" + command;
+        if (args != null)
+            for (String s : args)
+                tmp += ";" + s;
+        send(tmp);
+    }
+    
+    public void send(String message) throws IOException
+    {
         try
         {
-            String tmp = "" + command;
-            if (args != null)
-                for (String s : args)
-                    tmp += ";" + s;
-            outStream.write((tmp+">").getBytes());
+            outStream.write((message).getBytes());
             outStream.flush();
         }
         catch (IOException e)
