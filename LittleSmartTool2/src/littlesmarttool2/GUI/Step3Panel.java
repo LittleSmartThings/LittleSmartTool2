@@ -6,14 +6,16 @@ package littlesmarttool2.GUI;
 
 import java.util.ArrayList;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
+import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.model.Channel;
 
 /**
  *
  * @author marcher89
  */
-public class Step3Panel extends StepPanel {
+public class Step3Panel extends StepPanel implements ResponseListener {
 
+    ChannelTabPanel[] tabs = new ChannelTabPanel[4];
     /**
      * Creates new form Step1Panel
      */
@@ -22,22 +24,12 @@ public class Step3Panel extends StepPanel {
         initComponents();
         
         ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
-               
-        ChannelTabPanel tab1 = new ChannelTabPanel();
-        tab1.setChannel(channels.get(0));
-        jTabbedPane1.addTab("Channel 1",tab1);
-        
-        ChannelTabPanel tab2 = new ChannelTabPanel();
-        tab1.setChannel(channels.get(1));
-        jTabbedPane1.addTab("Channel 2",tab2);
-        
-        ChannelTabPanel tab3 = new ChannelTabPanel();
-        tab1.setChannel(channels.get(2));
-        jTabbedPane1.addTab("Channel 3",tab3);
-        
-        ChannelTabPanel tab4 = new ChannelTabPanel();
-        tab1.setChannel(channels.get(3));
-        jTabbedPane1.addTab("Channel 4",tab4);
+        for (int i = 0; i < channels.size(); i++)
+        {
+            tabs[i] = new ChannelTabPanel();
+            tabs[i].setChannel(channels.get(i));
+            jTabbedPane1.addTab("Channel " + (i+1), tabs[i]);
+        }
     }
     
     @Override
@@ -69,4 +61,17 @@ public class Step3Panel extends StepPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void receiveResponse(char command, String[] args) {
+        if (command != 'S') return;
+        if (args.length < 4) return;
+        try
+        {
+            for (int i = 0; i < tabs.length; i++)
+                tabs[i].updateChannelReading(Integer.parseInt(args[i]));
+        }
+        catch (Exception e)
+        {}
+    }
 }

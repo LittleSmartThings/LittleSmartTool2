@@ -19,9 +19,16 @@ public class ChannelTabPanel extends javax.swing.JPanel {
         initComponents();
     }
     
+    public void updateChannelReading(int value)
+    {
+        channelSettingViewer1.updateValue(value);
+        channelSettingViewer1.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
+    }
+    //TODO: Update Bounds on navigate to
     public void setChannel(Channel channel)
     {
         this.channel = channel;
+        channel.getSetting().addSection();
         channelSettingViewer1.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
         channelSettingViewer1.setBlockList(channel.getSetting().getBlocks());
         channelSettingViewer1.setThresholdlist(channel.getSetting().getThresholds());
@@ -36,24 +43,38 @@ public class ChannelTabPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setText("Add threshold");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, java.awt.BorderLayout.NORTH);
+
         javax.swing.GroupLayout channelSettingViewer1Layout = new javax.swing.GroupLayout(channelSettingViewer1);
         channelSettingViewer1.setLayout(channelSettingViewer1Layout);
         channelSettingViewer1Layout.setHorizontalGroup(
             channelSettingViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 420, Short.MAX_VALUE)
         );
         channelSettingViewer1Layout.setVerticalGroup(
             channelSettingViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        add(channelSettingViewer1, java.awt.BorderLayout.NORTH);
+        jPanel2.add(channelSettingViewer1, java.awt.BorderLayout.CENTER);
+
+        add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jLabel1.setText("Config here");
 
@@ -64,21 +85,29 @@ public class ChannelTabPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(155, 155, 155)
                 .addComponent(jLabel1)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addGap(32, 209, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(82, 82, 82)
                 .addComponent(jLabel1)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        channel.getSetting().addSection();
+        channelSettingViewer1.repaint();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ChannelSettingViewer channelSettingViewer1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

@@ -59,6 +59,7 @@ public class SS2Wizard extends javax.swing.JFrame {
             cardPanel.add(step, step.getName());
         }
         controller.addResponseListener((ResponseListener)stepPanels[1]); //Page two need to be a listener
+        controller.addResponseListener((ResponseListener)stepPanels[2]); //Page three need to be a listener
         goToStep(0);
         
         setVisible(true);

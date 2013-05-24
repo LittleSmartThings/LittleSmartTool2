@@ -58,14 +58,19 @@ public class Setting {
      */
     public void addSection()
     {
-        Threshold lastThreshold = thresholds.get(thresholds.size()-1);
-        Block lastBlock = blocks.get(blocks.size()-1);
+        Threshold lastThreshold = (thresholds.isEmpty()) ? null : thresholds.get(thresholds.size()-1);
+        Block lastBlock = (blocks.isEmpty()) ? null : blocks.get(blocks.size()-1);
         
-        int position = (1000-lastThreshold.getValuePromille())/2 + lastThreshold.getValuePromille();
+        
+        int position;
+        if (lastThreshold == null)
+            position = 500; //First th half way
+        else
+            position = (1000-lastThreshold.getValuePromille())/2 + lastThreshold.getValuePromille();
         
         Threshold newThreshold = new Threshold(position, null, null);
         Block newBlock = new Block(null, newThreshold, null, 0);
-        lastBlock.setUpperThreshold(newThreshold);
+        if (lastBlock != null) lastBlock.setUpperThreshold(newThreshold);
         
         thresholds.add(newThreshold);
         blocks.add(newBlock);
