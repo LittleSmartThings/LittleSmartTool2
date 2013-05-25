@@ -22,22 +22,20 @@ public class AutoServoPuller implements ResponseListener {
      */
     public static boolean Start(SerialController controller)
     {
-        AutoServoPuller puller;
         if (pullers.containsKey(controller))
         {
             return true;
         }
-        else
-        {
-            puller = new AutoServoPuller(controller);
-            controller.addResponseListener(puller);
-            pullers.put(controller, puller);
-        }
+        
+        AutoServoPuller puller = new AutoServoPuller(controller);
+        controller.addResponseListener(puller);
+        pullers.put(controller, puller);
+        
         try {        
             controller.send('S', null);
             puller.running = true;
         } catch (IOException ex) {
-            puller.running = false;
+            Stop(controller);
             return false;
         }
         return true;
