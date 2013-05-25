@@ -26,6 +26,7 @@ public class SerialController implements ResponseListener {
     private SerialCommReader reader;
     private SerialPort port;
     private OutputStream outStream;
+    private int syncTimeout;
     
     /**
      * Create a new Serial connection controller
@@ -144,6 +145,26 @@ public class SerialController implements ResponseListener {
         while(!hasResponse && System.currentTimeMillis() < endTime){}
         removeResponseListener(this);
         return response;
+    }
+    
+    public String sendSync(char command, String[] args, int timeoutms) throws IOException{
+        String tmp = "" + command;
+        if (args != null)
+            for (String s : args)
+                tmp += ";" + s;
+        return sendSync(tmp, timeoutms);
+    }
+    
+    public String sendSync(String message) throws IOException {
+        return sendSync(message, syncTimeout);
+    }
+    
+    public String sendSync(char command, String[] args) throws IOException{
+        return sendSync(command, args, syncTimeout);
+    }
+    
+    public void setSyncTimeout(int timeoutms){
+        this.syncTimeout = timeoutms;
     }
 
     @Override
