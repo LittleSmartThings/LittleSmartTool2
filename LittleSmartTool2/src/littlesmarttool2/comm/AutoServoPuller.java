@@ -58,6 +58,7 @@ public class AutoServoPuller implements ResponseListener {
         if (pullers.containsKey(controller))
         {
             pullers.get(controller).running = false;
+            pullers.remove(controller);
         }
     }
     
