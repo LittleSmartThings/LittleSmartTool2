@@ -4,13 +4,10 @@
  */
 package littlesmarttool2.GUI.components;
 
-import java.awt.TrayIcon;
 import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import littlesmarttool2.model.Command;
 import littlesmarttool2.model.Configuration;
-import littlesmarttool2.model.Setting;
 import littlesmarttool2.model.Threshold;
 
 /**
@@ -82,7 +79,7 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setText("Actions going up ->");
+        jLabel2.setText("Action going up ->");
         jPanel1.add(jLabel2, java.awt.BorderLayout.PAGE_START);
 
         upList.setModel(getListModel());
