@@ -20,8 +20,8 @@ import java.util.Enumeration;
  *  connect (via data from static getPortNames)
  * @author Rasmus
  */
-public class SerialController {
-    private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
+public class SerialController implements ResponseListener {
+    private ArrayList<ResponseListener> responseListeners = new ArrayList<ResponseListener>();
     private boolean connected = false;
     private SerialCommReader reader;
     private SerialPort port;
@@ -42,6 +42,10 @@ public class SerialController {
     public void addResponseListener(ResponseListener listener){
         if (!responseListeners.contains(listener))
             responseListeners.add(listener);
+    }
+    public void removeResponseListener(ResponseListener listener)
+    {
+        responseListeners.remove(listener);
     }
     
     /**
@@ -126,6 +130,27 @@ public class SerialController {
             connected = false;
             throw e;
         }
+    }
+    
+    String response;
+    boolean hasResponse = false;
+    public String sendSync(String message, int timeoutms) throws IOException
+    {
+        hasResponse = false;
+        addResponseListener(this);
+        response = null;
+        send(message);
+        long endTime = System.currentTimeMillis() + timeoutms;
+        while(!hasResponse && System.currentTimeMillis() < endTime){}
+        removeResponseListener(this);
+        return response;
+    }
+
+    @Override
+    public void receiveResponse(char command, String[] args) {
+        response = command + "";
+        for (String arg : args) response += ";" + arg;
+        hasResponse = true;
     }
     
     private static class SerialCommReader extends Thread {
