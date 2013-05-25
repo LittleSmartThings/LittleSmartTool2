@@ -51,7 +51,8 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     private int dragMin, dragMax;
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Threshold> thresholds = new ArrayList<>();
-    private final int thresholdSelectionWidth = 15;
+    private final int thresholdSelectionWidth = 5;
+    private final int thresholdMinimumSpacing = 15;
     
     /**
      * Creates new form ChannelSettingViewer
@@ -103,25 +104,23 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     @Override
     public void mousePressed(MouseEvent e) {
         int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
-        System.out.println("Pressed. promille: " + mousePromille);
         selectedBlock = null;
         selectedThreshold = null;
-        dragMin = 0 + thresholdSelectionWidth;
-        dragMax = 1000 - thresholdSelectionWidth;
+        dragMin = 0 + thresholdMinimumSpacing;
+        dragMax = 1000 - thresholdMinimumSpacing;
         for (int i = 0; i < thresholds.size(); i++)
         {
             Threshold t = thresholds.get(i);
             if (Math.abs(mousePromille - t.getValuePromille()) < thresholdSelectionWidth)
             {
-                System.out.println("Selected threshold");
                 selectedThreshold = t;
                 if (i < thresholds.size()-1)
-                    dragMax = thresholds.get(i+1).getValuePromille() - thresholdSelectionWidth;
+                    dragMax = thresholds.get(i+1).getValuePromille() - thresholdMinimumSpacing;
                 thresholdPressed(t);
                 repaint();
                 return;
             }
-            dragMin = t.getValuePromille() + thresholdSelectionWidth;
+            dragMin = t.getValuePromille() + thresholdMinimumSpacing;
         }
         for (Block b : blocks)
         {
@@ -129,7 +128,6 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
             int upperP = (b.getUpperThreshold()== null) ? 1000 : b.getUpperThreshold().getValuePromille();
             if (mousePromille >= lowerP && mousePromille < upperP)
             {
-                System.out.println("Selected block");
                 selectedBlock = b;
                 blockPressed(b);
                 repaint();

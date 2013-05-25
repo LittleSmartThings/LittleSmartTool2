@@ -4,19 +4,29 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.BorderLayout;
+import littlesmarttool2.GUI.components.ChannelSettingViewer.BlockPressedListener;
+import littlesmarttool2.GUI.components.ChannelSettingViewer.ThresholdPressedListener;
+import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Channel;
+import littlesmarttool2.model.Configuration;
+import littlesmarttool2.model.Threshold;
 
 /**
  *
  * @author Rasmus
  */
-public class ChannelTabPanel extends javax.swing.JPanel {
+public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPressedListener, BlockPressedListener {
     private Channel channel;
+    private Configuration config;
     /**
      * Creates new form ChannelTabPanel
      */
-    public ChannelTabPanel() {
+    public ChannelTabPanel(Configuration config) {
         initComponents();
+        this.config = config;
+        channelSettingViewer1.addBlockPressedListener(this);
+        channelSettingViewer1.addThresholdPressedListener(this);
     }
     
     public void updateChannelReading(int value)
@@ -24,11 +34,10 @@ public class ChannelTabPanel extends javax.swing.JPanel {
         channelSettingViewer1.updateValue(value);
         channelSettingViewer1.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
     }
-    //TODO: Update Bounds on navigate to
+    
     public void setChannel(Channel channel)
     {
         this.channel = channel;
-        channel.getSetting().addSection();
         channelSettingViewer1.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
         channelSettingViewer1.setBlockList(channel.getSetting().getBlocks());
         channelSettingViewer1.setThresholdlist(channel.getSetting().getThresholds());
@@ -45,16 +54,19 @@ public class ChannelTabPanel extends javax.swing.JPanel {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        configPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jLabel1.setText("Click on a block or a threshold below to configure");
+        jPanel3.add(jLabel1);
 
         jButton1.setText("Add threshold");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -81,26 +93,8 @@ public class ChannelTabPanel extends javax.swing.JPanel {
 
         add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jLabel1.setText("Config here");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jLabel1)
-                .addContainerGap(209, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(jLabel1)
-                .addContainerGap(71, Short.MAX_VALUE))
-        );
-
-        add(jPanel1, java.awt.BorderLayout.CENTER);
+        configPanel.setLayout(new java.awt.BorderLayout());
+        add(configPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -110,10 +104,26 @@ public class ChannelTabPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ChannelSettingViewer channelSettingViewer1;
+    private javax.swing.JPanel configPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void thresholdPressed(Threshold threshold) {
+        configPanel.removeAll();
+        ThresholdConfigPanel panel = new ThresholdConfigPanel(config, threshold, channel.getSetting());
+        configPanel.add(panel, BorderLayout.CENTER);
+        configPanel.revalidate();
+    }
+
+    @Override
+    public void blockPressed(Block block) {
+        configPanel.removeAll();
+        BlockConfigPanel panel = new BlockConfigPanel(config, block);
+        configPanel.add(panel, BorderLayout.CENTER);
+        configPanel.revalidate();
+    }
 }

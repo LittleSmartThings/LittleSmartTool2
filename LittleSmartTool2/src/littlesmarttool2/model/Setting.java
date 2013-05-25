@@ -5,6 +5,7 @@
 package littlesmarttool2.model;
 
 import java.util.ArrayList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * A setting is a set of thresholds and blocks defining the complete behavior
@@ -25,7 +26,7 @@ public class Setting {
      */
     public Setting()
     {
-        blocks.add(new Block(null, null, null, 0));
+        blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
     }
     
     /**
@@ -47,7 +48,7 @@ public class Setting {
                 divide(5);
                 break;
             default:
-                blocks.add(new Block(null, null, null, 0));
+                blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
         }
     }
     
@@ -68,8 +69,8 @@ public class Setting {
         else
             position = (1000-lastThreshold.getValuePromille())/2 + lastThreshold.getValuePromille();
         
-        Threshold newThreshold = new Threshold(position, null, null);
-        Block newBlock = new Block(null, newThreshold, null, 0);
+        Threshold newThreshold = new Threshold(position, Command.getNothingCommand(), Command.getNothingCommand());
+        Block newBlock = new Block(Command.getNothingCommand(), newThreshold, null, 0);
         if (lastBlock != null) lastBlock.setUpperThreshold(newThreshold);
         
         thresholds.add(newThreshold);
@@ -85,15 +86,25 @@ public class Setting {
         Threshold[] ths = new Threshold[sections+1]; //null in both ends
         for (int i = 0; i < sections-1;i++)
         {
-            ths[i+1] = new Threshold((int)((1000.0/sections)*(i+1)), null, null);
+            ths[i+1] = new Threshold((int)((1000.0/sections)*(i+1)), Command.getNothingCommand(), Command.getNothingCommand());
             thresholds.add(ths[i+1]);
         }
         for (int i = 0; i < sections; i++)
         {
-            blocks.add(new Block(null, ths[i], ths[i+1], 0));
+            blocks.add(new Block(Command.getNothingCommand(), ths[i], ths[i+1], 0));
         }
     }
     
+    public void removeThreshold(Threshold threshold)
+    {
+        Block before, after;
+        for (Block b : blocks)
+        {
+            if (b.getLowerThreshold() == threshold) after = b;
+            if (b.getUpperThreshold() == threshold) before = b;
+        }
+        throw new NotImplementedException(); //TODO
+    }    
     /**
      * Get the list of ControlTypes that fits to this setting
      */

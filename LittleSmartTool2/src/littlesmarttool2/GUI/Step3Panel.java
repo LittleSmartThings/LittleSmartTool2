@@ -23,18 +23,19 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         super(wizard);
         initComponents();
         
-        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
-        for (int i = 0; i < channels.size(); i++)
-        {
-            tabs[i] = new ChannelTabPanel();
-            tabs[i].setChannel(channels.get(i));
-            jTabbedPane1.addTab("Channel " + (i+1), tabs[i]);
-        }
+        
     }
     
     @Override
     public void onDisplay() {
-        //TODO: Do anything??
+        jTabbedPane1.removeAll();
+        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+        for (int i = 0; i < channels.size(); i++)
+        {
+            tabs[i] = new ChannelTabPanel(wizard.getConfiguration());
+            tabs[i].setChannel(channels.get(i));
+            jTabbedPane1.addTab("Channel " + (i+1), tabs[i]);
+        }
     }
 
     @Override
