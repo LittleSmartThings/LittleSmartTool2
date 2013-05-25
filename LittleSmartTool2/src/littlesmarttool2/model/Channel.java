@@ -20,6 +20,12 @@ public class Channel {
         setting = new Setting();
     }
     
+    public int convertPromilleToValue(int promille)
+    {
+        int range = calibHigh - calibLow;
+        return ((range * promille) / 1000) + calibLow;
+    }
+    
     public int getId()
     {
         return id;
