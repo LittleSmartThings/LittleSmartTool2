@@ -12,6 +12,8 @@ import gnu.io.UnsupportedCommOperationException;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Intended use order:
@@ -134,7 +136,7 @@ public class SerialController implements ResponseListener {
     }
     
     String response;
-    boolean hasResponse = false;
+    static boolean hasResponse = false;
     public String sendSync(String message, int timeoutms) throws IOException
     {
         hasResponse = false;
@@ -142,7 +144,11 @@ public class SerialController implements ResponseListener {
         response = null;
         send(message);
         long endTime = System.currentTimeMillis() + timeoutms;
-        while(!hasResponse && System.currentTimeMillis() < endTime){}
+        while(!hasResponse){
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ex) {}
+        }
         removeResponseListener(this);
         return response;
     }
