@@ -16,7 +16,6 @@ public class Configuration {
     private CameraModel cameraModel;
     private ConnectionType outputType;
     private ArrayList<Channel> channels = new ArrayList<>();
-    private ArrayList<Command> relevantCommands;
     private int irFreq;
     
     public Configuration()

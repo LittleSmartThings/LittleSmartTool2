@@ -96,18 +96,22 @@ public class ModelUtil {
             //Thresholds / Triggers
             int cmdId = 0, number = 0;
             for (Threshold threshold : setting.getThresholds()) {
-                sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
-                if(!comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
-                    number+"",//number
-                    servo+"",//servo
-                    channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
-                    "1",//going high
-                    "0",//going low
-                    "10",//hysteresis
-                    cmdId+""//command
-                }).equals("T;1"))
-                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with an up command.");
-                cmdId++;number++;
+                if(threshold.getUpCommand() != Command.getNothingCommand()) {
+                    sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
+                    if(!comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
+                        number+"",//number
+                        servo+"",//servo
+                        channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
+                        "1",//going high
+                        "0",//going low
+                        "10",//hysteresis
+                        cmdId+""//command
+                    }).equals("T;1"))
+                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with an up command.");
+                    cmdId++;number++;
+                }
+                if(threshold.getDownCommand() == Command.getNothingCommand()) 
+                    continue;
                 sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
                 if(!comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
                     number+"",//number
@@ -124,6 +128,8 @@ public class ModelUtil {
 
             //Blocks / Ranges
             for (Block block : setting.getBlocks()) {
+                if(block.getCommand() == Command.getNothingCommand())
+                    continue;
                 int minPromille = block.getLowerThreshold() != null ? block.getLowerThreshold().getValuePromille() : 0;
                 int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille() : 1000;
 
