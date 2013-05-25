@@ -14,6 +14,7 @@ public abstract class Command {
     private String name;
     private String description;
     private CameraModel[] cameraModels;
+    private static Command nothingCommand = new WireCommand("Nothing","Do nothing",null,0,0);
     
     @JsonCreator
     public Command(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("cameraModels") CameraModel[] cameraModels)
@@ -39,6 +40,11 @@ public abstract class Command {
 
     void setCameraModels(CameraModel[] models) {
         this.cameraModels = models;
+    }
+    
+    public static Command getNothingCommand()
+    {
+        return nothingCommand;
     }
     
     @Override
