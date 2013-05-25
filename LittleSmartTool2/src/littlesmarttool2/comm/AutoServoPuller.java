@@ -22,23 +22,20 @@ public class AutoServoPuller implements ResponseListener {
      */
     public static boolean Start(SerialController controller)
     {
-        AutoServoPuller puller;
         if (pullers.containsKey(controller))
         {
-            puller = pullers.get(controller);
+            return true;
         }
-        else
-        {
-            puller = new AutoServoPuller(controller);
-            pullers.put(controller, puller);
-        }   
-        if (puller.running) return true;
+        
+        AutoServoPuller puller = new AutoServoPuller(controller);
         controller.addResponseListener(puller);
+        pullers.put(controller, puller);
+        
         try {        
             controller.send('S', null);
             puller.running = true;
         } catch (IOException ex) {
-            puller.running = false;
+            Stop(controller);
             return false;
         }
         return true;
@@ -57,6 +54,7 @@ public class AutoServoPuller implements ResponseListener {
     {
         if (pullers.containsKey(controller))
         {
+            controller.removeResponseListener(pullers.get(controller));
             pullers.get(controller).running = false;
             pullers.remove(controller);
         }

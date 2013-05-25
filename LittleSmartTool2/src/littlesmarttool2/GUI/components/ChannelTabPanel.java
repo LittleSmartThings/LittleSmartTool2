@@ -5,6 +5,7 @@
 package littlesmarttool2.GUI.components;
 
 import java.awt.BorderLayout;
+import javax.swing.JPanel;
 import littlesmarttool2.GUI.components.ChannelSettingViewer.BlockPressedListener;
 import littlesmarttool2.GUI.components.ChannelSettingViewer.ThresholdPressedListener;
 import littlesmarttool2.model.Block;
@@ -27,6 +28,15 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
         this.config = config;
         channelSettingViewer1.addBlockPressedListener(this);
         channelSettingViewer1.addThresholdPressedListener(this);
+    }
+    
+    void deleteThreshold(Threshold threshold)
+    {
+        channel.getSetting().removeThreshold(threshold);
+        setChannel(channel); //Update
+        configPanel.removeAll();
+        configPanel.add(new JPanel(),BorderLayout.CENTER);
+        configPanel.revalidate();
     }
     
     public void updateChannelReading(int value)
@@ -114,7 +124,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     @Override
     public void thresholdPressed(Threshold threshold) {
         configPanel.removeAll();
-        ThresholdConfigPanel panel = new ThresholdConfigPanel(config, threshold, channel.getSetting());
+        ThresholdConfigPanel panel = new ThresholdConfigPanel(config, threshold, this);
         configPanel.add(panel, BorderLayout.CENTER);
         configPanel.revalidate();
     }

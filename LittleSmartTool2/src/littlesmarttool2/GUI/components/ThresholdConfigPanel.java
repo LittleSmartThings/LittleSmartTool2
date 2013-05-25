@@ -4,7 +4,9 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.TrayIcon;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import littlesmarttool2.model.Command;
 import littlesmarttool2.model.Configuration;
@@ -19,13 +21,13 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
 
     DefaultListModel listModel = new DefaultListModel();
     Threshold threshold;
-    Setting setting;
+    ChannelTabPanel parent;
     /**
      * Creates new form ThresholdConfigPanel
      */
-    public ThresholdConfigPanel(Configuration config, Threshold threshold, Setting setting){
+    public ThresholdConfigPanel(Configuration config, Threshold threshold, ChannelTabPanel parent){
         initComponents();
-        this.setting = setting;
+        this.parent = parent;
         this.threshold = threshold;
         populate(config);
         upList.setSelectedValue(threshold.getUpCommand(), true);
@@ -137,8 +139,8 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
 
     private void deleteThresholdButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteThresholdButtonActionPerformed
         //TODO: Ask user which range to use?
-        setting.removeThreshold(threshold);
-        repaint();
+        //JOptionPane.showConfirmDialog(this, "Do you really want to delete this threshold?\n\rThe block to the right will be removed");
+        parent.deleteThreshold(threshold);
     }//GEN-LAST:event_deleteThresholdButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
