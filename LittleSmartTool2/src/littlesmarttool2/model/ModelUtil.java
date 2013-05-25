@@ -107,7 +107,7 @@ public class ModelUtil {
                 for (Threshold threshold : setting.getThresholds()) {
                     if(threshold.getUpCommand() != Command.getNothingCommand()) {
                         sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
-                        if(!comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
+                        response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
                             number+"",//number
                             servo+"",//servo
                             channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
@@ -115,14 +115,15 @@ public class ModelUtil {
                             "0",//going low
                             "10",//hysteresis
                             cmdId+""//command
-                        }).equals("T;1"))
-                            throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with an up command.");
+                        });
+                        if(!response.equals("T;1"))
+                            throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a trigger point with an up command. Response: "+response);
                         cmdId++;number++;
                     }
                     if(threshold.getDownCommand() == Command.getNothingCommand()) 
                         continue;
                     sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
-                    if(!comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
+                    response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
                         number+"",//number
                         servo+"",//servo
                         channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
@@ -130,8 +131,9 @@ public class ModelUtil {
                         "1",//going low
                         "10",//hysteresis
                         cmdId+""//command
-                    }).equals("T;1"))
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command.");
+                    });
+                    if(!response.equals("T;1"))
+                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command. Response: "+response);
                     cmdId++;number++;
                 }
 
@@ -143,7 +145,7 @@ public class ModelUtil {
                     int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille() : 1000;
 
                     sendCommandToSnapper(comm, block.getCommand(), cmdId);
-                    if(!comm.sendSync('R', new String[]{//------------------------------"R" Range trigger
+                    response = comm.sendSync('R', new String[]{//------------------------------"R" Range trigger
                         number+"",//number
                         servo+"",//servo
                         channel.convertPromilleToValue(maxPromille)+"",//max point
@@ -152,8 +154,9 @@ public class ModelUtil {
                         block.getInterval()+"",//timing range low
                         "1",//expo TODO: What's this?
                         cmdId+""//command
-                    }).equals("R;1"))
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger.");
+                    });
+                    if(!response.equals("R;1"))
+                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger. Response: "+response);
                     cmdId++;number++;
                 }
             }
