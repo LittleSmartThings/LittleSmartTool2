@@ -4,16 +4,19 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-
 /**
  *
  * @author Rasmus
  */
 public class StickInputViewer extends InputViewer {
+    
+    private static BasicStroke readingStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10.0f);
     
     private int getValuePosition()
     {
@@ -31,11 +34,11 @@ public class StickInputViewer extends InputViewer {
     {
         int[] xpoints = new int[3], ypoints = new int[3];
         int bottom = getHeight()-1;
-        xpoints[0] = x - 5;
+        xpoints[0] = x - 6;
         xpoints[1] = x;
-        xpoints[2] = x + 5;
+        xpoints[2] = x + 6;
         ypoints[0] = bottom;
-        ypoints[1] = bottom - 5;
+        ypoints[1] = bottom - 6;
         ypoints[2] = bottom;
         return new Polygon(xpoints, ypoints, 3);
     }
@@ -71,6 +74,7 @@ public class StickInputViewer extends InputViewer {
         //g2.fillPolygon(getBottomArrow(getWidth()/2));
         
         //Draw current value
+        g2.setStroke(readingStroke);
         g2.setColor(Color.BLACK);
         g2.drawLine(getValuePosition(), 0, getValuePosition(), getHeight());
         g2.fillPolygon(getBottomArrow(getValuePosition()));

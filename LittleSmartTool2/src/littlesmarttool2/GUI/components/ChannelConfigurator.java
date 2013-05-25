@@ -150,7 +150,6 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         jPanel4.setPreferredSize(new java.awt.Dimension(250, 100));
         jPanel4.setLayout(new java.awt.BorderLayout());
 
-        calibrationLabel.setText("Move to activate");
         calibrationLabel.setToolTipText("");
         jPanel4.add(calibrationLabel, java.awt.BorderLayout.EAST);
 

@@ -32,19 +32,26 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     private static BasicStroke readingStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                         BasicStroke.JOIN_MITER, 10.0f, new float[]{5f}, 0.0f);
     
+    private static BasicStroke thresholdStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10.0f);
+    
+    private static BasicStroke selectedThresholdStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10.0f);
+    
+    private static Color selectedColor = new Color(200,200,255);
+    
     private Color[] colors = new Color[] {
         new Color(0xFF, 0xFF, 0xFF)
     };
     
-    //Everything is in promille. Only the display of current reading is in values between lowerBound to upperBound
-    private int value = 0, lowerBound = 0, upperBound = 1; //For showing reading only!
+    //Most is in promille. Only the display of current reading is in values between lowerBound to upperBound
+    private int value = 0, lowerBound = 0, upperBound = 1; //For displaying reading only!
     private Block selectedBlock;
     private Threshold selectedThreshold;
     private int dragMin, dragMax;
     private ArrayList<Block> blocks = new ArrayList<>();
     private ArrayList<Threshold> thresholds = new ArrayList<>();
     private final int thresholdSelectionWidth = 15;
-    
     
     /**
      * Creates new form ChannelSettingViewer
@@ -94,11 +101,6 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        //
-    }
-
-    @Override
     public void mousePressed(MouseEvent e) {
         int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
         System.out.println("Pressed. promille: " + mousePromille);
@@ -116,6 +118,7 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
                 if (i < thresholds.size()-1)
                     dragMax = thresholds.get(i+1).getValuePromille() - thresholdSelectionWidth;
                 thresholdPressed(t);
+                repaint();
                 return;
             }
             dragMin = t.getValuePromille() + thresholdSelectionWidth;
@@ -123,17 +126,19 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
         for (Block b : blocks)
         {
             int lowerP = (b.getLowerThreshold() == null) ? 0 : b.getLowerThreshold().getValuePromille();
-            int upperP = (b.getUpperThreshold()== null) ? 0 : b.getUpperThreshold().getValuePromille();
+            int upperP = (b.getUpperThreshold()== null) ? 1000 : b.getUpperThreshold().getValuePromille();
             if (mousePromille >= lowerP && mousePromille < upperP)
             {
                 System.out.println("Selected block");
                 selectedBlock = b;
                 blockPressed(b);
+                repaint();
                 return;
             }
         }
     }
-
+    
+    // <editor-fold desc="Unimplemented mouse listener methods"> 
     @Override
     public void mouseReleased(MouseEvent e) {
         //
@@ -148,7 +153,13 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     public void mouseExited(MouseEvent e) {
         //
     }
-
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //
+    }
+    // </editor-fold>
+    
     public static interface BlockPressedListener
     {
         void blockPressed(Block block);
@@ -233,6 +244,10 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
             double upper = (block.getUpperThreshold() == null) ? 1000 : block.getUpperThreshold().getValuePromille();
             double width = ((upper - lower) / 1000) * getWidth();
             g2.setColor(colors[i % colors.length]);
+            if (block == selectedBlock)
+            {
+                g2.setColor(selectedColor);
+            }
             g2.fillRect((int)prevWidth, 0, (int)width, getHeight());
             prevWidth += width;
         }
@@ -240,13 +255,24 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     
     private void drawThresholds(Graphics2D g2)
     {
+        Stroke defaultStroke = g2.getStroke();
         for (int i = 0; i < thresholds.size(); i++)
         {
             Threshold threshold = thresholds.get(i);
             int x = (int)((threshold.getValuePromille() * 1.0 / (1000)) * getWidth());
-            g2.setColor(Color.black);
+            if (threshold == selectedThreshold)
+            {
+                g2.setStroke(selectedThresholdStroke);
+                g2.setColor(Color.blue);
+            }
+            else
+            {
+                g2.setStroke(thresholdStroke);
+                g2.setColor(Color.black);
+            }
             g2.drawLine(x, 0, x, getHeight());
         }
+        g2.setStroke(defaultStroke);
     }
     
     

@@ -74,7 +74,7 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         jPanel1.setMinimumSize(new java.awt.Dimension(200, 76));
         jPanel1.setLayout(new java.awt.GridLayout(0, 1));
 
-        jLabel1.setText("<html>Set up the channels you will be using by using the following steps:\n<ol>\n<li>Connect to the StratoSnapper (top right corner)</li>\n<li>Choose the type of controller connected to each channel (skip the ones you don't use)</li>\n<li>Calibrate the software by moving your controller as far as it goes in both directions</li>\n</ol>\n</html>");
+        jLabel1.setText("<html>Set up the channels you will be using by following these steps: <ol> <li>Connect to the StratoSnapper (top right corner)</li> <li>Choose the type of controller connected to each channel (skip the ones you don't use)</li> <li>Calibrate the software by moving your controller as far as it goes in both directions</li> </ol> </html>");
         jPanel1.add(jLabel1);
 
         add(jPanel1);

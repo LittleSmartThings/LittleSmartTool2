@@ -44,6 +44,7 @@ public class ChannelTabPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
         jPanel1 = new javax.swing.JPanel();
@@ -53,13 +54,17 @@ public class ChannelTabPanel extends javax.swing.JPanel {
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         jButton1.setText("Add threshold");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, java.awt.BorderLayout.NORTH);
+        jPanel3.add(jButton1);
+
+        jPanel2.add(jPanel3, java.awt.BorderLayout.NORTH);
 
         javax.swing.GroupLayout channelSettingViewer1Layout = new javax.swing.GroupLayout(channelSettingViewer1);
         channelSettingViewer1.setLayout(channelSettingViewer1Layout);
@@ -85,14 +90,14 @@ public class ChannelTabPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(155, 155, 155)
                 .addComponent(jLabel1)
-                .addGap(32, 209, Short.MAX_VALUE))
+                .addContainerGap(209, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(82, 82, 82)
                 .addComponent(jLabel1)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -109,5 +114,6 @@ public class ChannelTabPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 }
