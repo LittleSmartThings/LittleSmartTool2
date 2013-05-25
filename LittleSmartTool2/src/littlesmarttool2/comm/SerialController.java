@@ -215,6 +215,7 @@ public class SerialController implements ResponseListener {
                     String[] args = new String[parts.length-1];
                     for (int i = 0; i < args.length; i++)
                         args[i] = parts[i+1];
+                    System.out.println("Invoking " + responseListeners.size() + " listeners");
                     for (ResponseListener l : responseListeners)
                         if (l != null)
                             l.receiveResponse(cmd, args);
