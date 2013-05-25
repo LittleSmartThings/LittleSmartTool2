@@ -5,7 +5,6 @@
 package littlesmarttool2.model;
 
 import java.util.ArrayList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * A setting is a set of thresholds and blocks defining the complete behavior
