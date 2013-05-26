@@ -30,8 +30,8 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         //wizard.setNextEnabled(false);
         
         Channel ch1 = wizard.getConfiguration().getChannels().get(0);
-        ch1.setCalibLow(300);
-        ch1.setCalibHigh(2000);
+        //ch1.setCalibLow(300);
+        //ch1.setCalibHigh(2000);
         
         channelTester1.setChannel(wizard.getConfiguration().getChannels().get(0));
         channelTester2.setChannel(wizard.getConfiguration().getChannels().get(1));
@@ -123,7 +123,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
             wizard.setHasUploaded(false);
             uploadLabel.setText("An error occurred, please try agian.");
             uploadLabel.setForeground(new Color(0x660000));
-            JOptionPane.showMessageDialog(this, ex, "Something went terribly wrong!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred!", JOptionPane.ERROR_MESSAGE);
             return;
         }
         wizard.setHasUploaded(true);

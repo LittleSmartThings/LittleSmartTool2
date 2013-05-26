@@ -5,6 +5,7 @@
 package littlesmarttool2.model;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,14 +172,17 @@ public class ModelUtil {
             IRCommand ir = (IRCommand) command;
             int[] pulsdata = ir.getPulsedata();
             for (int puls = 1; puls <= (pulsdata.length/2); puls++) {
-                String response = comm.sendSync('I', new String[]{//----------------------------------------------------------------------"I" IR puls
+                String[] cmds = new String[]{//----------------------------------------------------------------------"I" IR puls
                     commandId+"",//command
                     puls+"",//puls number
                     pulsdata[puls*2-2]+"",//timing high
                     pulsdata[puls*2-1]+""//timing low
-                });
+                };
+                String response = comm.sendSync('I', cmds);
                 if(!response.equals("I;1")) //TODO: what about repeats??
-                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set an IR pulse. Response: "+response);
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set an IR pulse.\n"
+                            + "Sent: "+Arrays.deepToString(cmds)+"\n"
+                + "Response: "+response);
             }
             if(!comm.sendSync("K;"+ir.getFrequency()).equals("K;1")){//----------------------------------------------"K" IR Frequency
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR frequency.");
