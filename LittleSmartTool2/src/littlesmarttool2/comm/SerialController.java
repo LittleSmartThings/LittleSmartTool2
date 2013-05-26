@@ -12,8 +12,6 @@ import gnu.io.UnsupportedCommOperationException;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Intended use order:
@@ -23,7 +21,7 @@ import java.util.logging.Logger;
  * @author Rasmus
  */
 public class SerialController implements ResponseListener {
-    private ArrayList<ResponseListener> responseListeners = new ArrayList<ResponseListener>();
+    private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
     private boolean connected = false;
     private SerialCommReader reader;
     private SerialPort port;

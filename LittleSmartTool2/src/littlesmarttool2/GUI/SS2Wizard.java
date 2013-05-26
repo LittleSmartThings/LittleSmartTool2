@@ -192,7 +192,6 @@ public class SS2Wizard extends javax.swing.JFrame {
             System.out.println("tried disconnecting, connected : " + controller.connected());
             return;
         }
-        System.out.println("Selected: " + evt.getItem());
         if (evt.getItem() == selectPortMsg) return;
         try {
             //Connect to the StratoSnapper and begin polling 
@@ -201,13 +200,13 @@ public class SS2Wizard extends javax.swing.JFrame {
             System.out.println("Connected : " + controller.connected());
             AutoServoPuller.Start(controller);
         } catch (NoSuchPortException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("An invalid port was selected ( " + ex.getMessage() + ")");
         } catch (PortInUseException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Selected port was in use ( " + ex.getMessage() + ")");
         } catch (UnsupportedCommOperationException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Unsupported comm operation ( " + ex.getMessage() + ")");
         } catch (IOException ex) {
-            System.out.println("Her");
+            System.out.println("Generic IO exception ( " + ex.getMessage() + ")");
         }
     }//GEN-LAST:event_portChooserItemStateChanged
 
