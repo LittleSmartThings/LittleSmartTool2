@@ -70,16 +70,18 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
         southPanel = new javax.swing.JPanel();
         deleteThresholdButton = new javax.swing.JButton();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("Select an action to be performed when this threshold is passed");
         add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
-        centerPanel.setLayout(new java.awt.GridLayout());
+        centerPanel.setLayout(new java.awt.GridLayout(1, 0, 10, 10));
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setText("Action going up ->");
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("<html>Action going up &#9658;</html>");
         jPanel1.add(jLabel2, java.awt.BorderLayout.PAGE_START);
 
         upList.setModel(getListModel());
@@ -94,9 +96,10 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
 
         centerPanel.add(jPanel1);
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        jPanel2.setLayout(new java.awt.BorderLayout(10, 0));
 
-        jLabel3.setText("Action going down <-");
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("<html>Action going down &#9668;</html>");
         jPanel2.add(jLabel3, java.awt.BorderLayout.PAGE_START);
 
         downList.setModel(getListModel());
@@ -135,8 +138,6 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_downListValueChanged
 
     private void deleteThresholdButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteThresholdButtonActionPerformed
-        //TODO: Ask user which range to use?
-        //JOptionPane.showConfirmDialog(this, "Do you really want to delete this threshold?\n\rThe block to the right will be removed");
         parent.deleteThreshold(threshold);
     }//GEN-LAST:event_deleteThresholdButtonActionPerformed
 

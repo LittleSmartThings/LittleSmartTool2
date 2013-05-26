@@ -7,8 +7,6 @@ package littlesmarttool2.model;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import littlesmarttool2.comm.AutoServoPuller;
 import littlesmarttool2.comm.SerialController;
 import static littlesmarttool2.model.ConnectionType.*;

@@ -66,6 +66,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         repetitionsLabel = new javax.swing.JLabel();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("Select an action to be performed while this block is active");

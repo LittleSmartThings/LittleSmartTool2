@@ -181,9 +181,11 @@ public class SS2Wizard extends javax.swing.JFrame {
         portPanel.setLayout(new javax.swing.BoxLayout(portPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         portLabel.setText("Choose port:");
+        portLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         portPanel.add(portLabel);
 
-        portChooser.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 5));
+        portChooser.setMaximumSize(new java.awt.Dimension(32767, 21));
+        portChooser.setPreferredSize(new java.awt.Dimension(150, 20));
         portChooser.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 portChooserItemStateChanged(evt);

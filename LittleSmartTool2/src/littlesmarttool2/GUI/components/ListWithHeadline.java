@@ -69,7 +69,6 @@ public class ListWithHeadline extends javax.swing.JPanel {
         headline.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         add(headline, java.awt.BorderLayout.NORTH);
 
-        list.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(list);
 

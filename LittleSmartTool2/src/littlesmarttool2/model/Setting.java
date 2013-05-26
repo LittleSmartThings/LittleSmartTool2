@@ -94,7 +94,7 @@ public class Setting {
         }
     }
     
-    public void removeThreshold(Threshold threshold)
+    public void removeThreshold(Threshold threshold, boolean saveBefore)
     {
         Block before = null, after = null;
         for (Block b : blocks)
@@ -106,8 +106,16 @@ public class Setting {
         if (before == null || after == null) 
             throw new IllegalStateException("The configuration was in an illegal state");
         thresholds.remove(threshold);
-        blocks.remove(after);
-        before.setUpperThreshold(after.getUpperThreshold());
+        if (saveBefore)
+        {
+            blocks.remove(after);
+            before.setUpperThreshold(after.getUpperThreshold());
+        }
+        else
+        {
+            blocks.remove(before);
+            after.setLowerThreshold(before.getLowerThreshold());
+        }
     }    
     /**
      * Get the list of ControlTypes that fits to this setting

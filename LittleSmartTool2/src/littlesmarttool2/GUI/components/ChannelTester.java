@@ -13,10 +13,7 @@ import javax.swing.Timer;
 import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.Command;
-import static littlesmarttool2.model.ControlType.PushButton;
-import static littlesmarttool2.model.ControlType.Stick;
-import static littlesmarttool2.model.ControlType.Switch2;
-import static littlesmarttool2.model.ControlType.Switch3;
+import static littlesmarttool2.model.ControlType.*;
 import littlesmarttool2.model.Threshold;
 
 /**
@@ -27,7 +24,6 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
 
     private Timer flashTimer, intervalTimer;
     private InputViewer viewer;
-    private int value;
     private Channel channel;
     private Block currentBlock;
     private int lowerBound;
@@ -86,7 +82,6 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
     public void updateValue(int value)
     {
         viewer.updateValue(value);
-        this.value = value;
         //Block
         Block newBlock = getBlockFromValue(value);
         if (currentBlock == newBlock) return; //If its the same block nothing has changed
@@ -100,7 +95,7 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
             if (newBlock.getCommand() != Command.getNothingCommand())
                 flashText(newBlock.getCommand().getName());
         }
-        if (currentBlock == null) 
+        if (currentBlock == null) //If not leaving a block, no threshold can be triggered
         {
             currentBlock = newBlock;
             return;
@@ -120,18 +115,10 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
             goingUp = true;
         }
         currentBlock = newBlock;
-        if (threshold == null) return;
-        
-        if (goingUp)
-        {
-            if (threshold.getUpCommand() != Command.getNothingCommand())
-                flashText(threshold.getUpCommand().getName());
-        }
-        else
-        {
-            if (threshold.getDownCommand() != Command.getNothingCommand())
-                flashText(threshold.getDownCommand().getName());
-        }
+        if (threshold == null) return; //No threshold passed
+        Command cmd = (goingUp) ? threshold.getUpCommand() : threshold.getDownCommand();
+        if (cmd == Command.getNothingCommand()) return; //Don't show nothing
+        flashText(cmd.getName());
     }
     private void flashText(String text)
     {

@@ -62,7 +62,8 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
         addMouseListener(this);
         addMouseMotionListener(this);
     }
-
+    
+    // <editor-fold desc="Mouse events"> 
     @Override
     public void mouseDragged(MouseEvent e) {
         try {
@@ -138,6 +139,7 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
             }
         }
     }
+    // </editor-fold> 
     
     // <editor-fold desc="Unimplemented mouse listener methods"> 
     @Override
@@ -285,7 +287,7 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
         drawBlocks(g2);
         drawThresholds(g2);
         drawReadingValue(g2);
-        drawBorder(g2);
+        //drawBorder(g2);
     }
     
 
@@ -298,15 +300,17 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 690, Short.MAX_VALUE)
+            .addGap(0, 686, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 75, Short.MAX_VALUE)
+            .addGap(0, 71, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

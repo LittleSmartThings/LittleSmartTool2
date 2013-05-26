@@ -5,11 +5,13 @@
 package littlesmarttool2.GUI.components;
 
 import java.awt.BorderLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import littlesmarttool2.GUI.components.ChannelSettingViewer.BlockPressedListener;
 import littlesmarttool2.GUI.components.ChannelSettingViewer.ThresholdPressedListener;
 import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Channel;
+import littlesmarttool2.model.Command;
 import littlesmarttool2.model.Configuration;
 import littlesmarttool2.model.Threshold;
 
@@ -32,11 +34,40 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     
     void deleteThreshold(Threshold threshold)
     {
-        channel.getSetting().removeThreshold(threshold);
-        setChannel(channel); //Update
+        boolean saveBefore = true;
+        Block before = null, after = null;
+        for (Block b : channel.getSetting().getBlocks())
+        {
+            if (b.getLowerThreshold() == threshold) after = b;
+            if (b.getUpperThreshold() == threshold) before = b;
+        }
+        if (before != null && after != null) 
+        {
+            if (before.getCommand() != Command.getNothingCommand() && after.getCommand() != Command.getNothingCommand())
+            {
+                if (before.getCommand() != after.getCommand())
+                {
+                    //You have to choose
+                    Command choice = (Command)JOptionPane.showInputDialog(this,"Deleting this threshold will merge the two surrounding blocks!\r\n\r\nSince they currently have different actions associated,\r\nyou must choose which of the actions you want to keep!","Choose an action", JOptionPane.WARNING_MESSAGE, null, new Command[]{before.getCommand(), after.getCommand()}, null);
+                    if (choice == null)
+                    {
+                        return;
+                    }
+                    if (choice == after.getCommand())
+                        saveBefore = false;
+                }
+            }
+        }
+        
+        //TODO: Ask user which range to use?
+        //Actually remove the threshold
+        channel.getSetting().removeThreshold(threshold, saveBefore);
+        //Empty config panel
         configPanel.removeAll();
         configPanel.add(new JPanel(),BorderLayout.CENTER);
         configPanel.revalidate();
+        //Update view
+        channelSettingViewer1.repaint();
     }
     
     public void updateChannelReading(int value)
@@ -69,6 +100,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
         channelSettingViewer1 = new littlesmarttool2.GUI.components.ChannelSettingViewer();
         configPanel = new javax.swing.JPanel();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 10));
         setLayout(new java.awt.BorderLayout());
 
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -88,11 +120,13 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.NORTH);
 
+        channelSettingViewer1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         javax.swing.GroupLayout channelSettingViewer1Layout = new javax.swing.GroupLayout(channelSettingViewer1);
         channelSettingViewer1.setLayout(channelSettingViewer1Layout);
         channelSettingViewer1Layout.setHorizontalGroup(
             channelSettingViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
+            .addGap(0, 398, Short.MAX_VALUE)
         );
         channelSettingViewer1Layout.setVerticalGroup(
             channelSettingViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
