@@ -91,14 +91,17 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     @Override
     public void mouseMoved(MouseEvent e) {
         int mousePromille = (int)(((e.getX()*1.0)/getWidth())*1000);
-        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        boolean found = false;
         for (Threshold t : thresholds)
         {
             if (Math.abs(mousePromille - t.getValuePromille()) < thresholdSelectionWidth)
             {
                 setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+                found = true;
             }
         }
+        if (!found)
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     @Override

@@ -10,11 +10,8 @@ import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicListUI;
 import littlesmarttool2.GUI.components.ConnectionTypeBox;
 import littlesmarttool2.model.*;
-import static littlesmarttool2.model.ConnectionType.IR;
-import littlesmarttool2.util.*;
 
 /**
  *
@@ -137,7 +134,7 @@ public class Step1Panel extends StepPanel {
         jLabel1.setBorder(this.headlineBorder);
         outputPanel.add(jLabel1, java.awt.BorderLayout.NORTH);
 
-        outputconnectionsPanel.setLayout(new javax.swing.BoxLayout(outputconnectionsPanel, javax.swing.BoxLayout.X_AXIS));
+        outputconnectionsPanel.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
         outputPanel.add(outputconnectionsPanel, java.awt.BorderLayout.CENTER);
 
         add(outputPanel);

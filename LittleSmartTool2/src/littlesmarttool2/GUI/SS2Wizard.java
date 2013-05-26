@@ -134,7 +134,8 @@ public class SS2Wizard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
-        setPreferredSize(new java.awt.Dimension(1000, 700));
+        setMinimumSize(new java.awt.Dimension(680, 570));
+        setPreferredSize(new java.awt.Dimension(680, 570));
 
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());
@@ -173,6 +174,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         headline.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         upperPanel.add(headline, java.awt.BorderLayout.CENTER);
 
+        portPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));
         portPanel.setLayout(new javax.swing.BoxLayout(portPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         portLabel.setText("Choose port:");

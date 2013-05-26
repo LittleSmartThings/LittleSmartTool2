@@ -27,15 +27,15 @@ public class ConnectionTypeBox extends javax.swing.JPanel {
         switch(connetionType){
             case IR:
                 radioButton.setText("IR");
-                description.setText("This is IR.");
+                description.setText("<html>An IR (infrared) connection requires the use of the supplied IR cable/diode.<br/>The diode should be positioned as close to the cameras IR receiver as possible.</html>");
                 break;
             case Wire:
                 radioButton.setText("Wire");
-                description.setText("This is wire.");
+                description.setText("<html>The Wire connection uses a standard Wire cable connected directly to a port on the camera.</html>");
                 break;
             case LANC:
                 radioButton.setText("LANC");
-                description.setText("This is LANC.");
+                description.setText("<html>The LANC connection uses a cable directly connected to the camera.</html>");
                 break;
         }
     }
@@ -80,6 +80,11 @@ public class ConnectionTypeBox extends javax.swing.JPanel {
         description = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1200, 39));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         radioButton.setText("jRadioButton1");
@@ -89,6 +94,10 @@ public class ConnectionTypeBox extends javax.swing.JPanel {
         description.setText("jLabel1");
         add(description);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        radioButton.setSelected(true);
+    }//GEN-LAST:event_formMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel description;
