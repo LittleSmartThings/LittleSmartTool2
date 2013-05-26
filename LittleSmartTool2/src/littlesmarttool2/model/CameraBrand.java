@@ -24,7 +24,7 @@ public class CameraBrand {
     private CameraModel[] models;
 
     @JsonCreator
-    private CameraBrand(@JsonProperty("brandName") String brandName, @JsonProperty("models") CameraModel[] models){
+    public CameraBrand(@JsonProperty("brandName") String brandName, @JsonProperty("models") CameraModel[] models){
         this.brandName = brandName;
         this.models = models;
     }
