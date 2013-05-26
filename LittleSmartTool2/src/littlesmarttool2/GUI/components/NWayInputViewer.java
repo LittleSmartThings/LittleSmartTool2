@@ -65,11 +65,9 @@ public class NWayInputViewer extends InputViewer {
         Graphics2D g2 = (Graphics2D) g;
         
         g2.setStroke(readingStroke);
-        g2.setRenderingHint(
-        RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         
-        g2.setColor(Color.white);
+        g2.setColor(new Color(240,240,240));
         g2.fillRect(0, 0, getWidth(), getHeight());
         int widthPrBox = (getWidth() / n);
         int height = getHeight();
@@ -80,11 +78,18 @@ public class NWayInputViewer extends InputViewer {
             if (i == selection)
             {
                 g2.setColor(new Color(200,200,255));
-                g2.fillRect(x, 0, widthPrBox-4, height-1);
+                g2.fillRect(x, 0, widthPrBox, height-1);
             }
-            g2.setColor(Color.black);
-            g2.drawRect(x, 0, widthPrBox-4, height-1);
         }
+        g2.setColor(Color.black);
+        for (int i = 0; i < n-1; i++)
+        {
+            int x = widthPrBox * (i+1);
+            g2.drawLine(x,0,x,height);
+        }
+        
+            //g2.drawRect(x, 0, widthPrBox-4, height-1);
+        
     }
     
     /**
@@ -96,15 +101,17 @@ public class NWayInputViewer extends InputViewer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 422, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 84, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

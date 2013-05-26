@@ -18,6 +18,8 @@ public class StickInputViewer extends InputViewer {
     private static BasicStroke readingStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
                         BasicStroke.JOIN_MITER, 10.0f);
     
+    private final int arrowSize = 7;
+    
     private int getValuePosition()
     {
         return (int)(getValuePct() * getWidth());
@@ -33,12 +35,12 @@ public class StickInputViewer extends InputViewer {
     private Polygon getBottomArrow(int x)
     {
         int[] xpoints = new int[3], ypoints = new int[3];
-        int bottom = getHeight()-1;
-        xpoints[0] = x - 6;
+        int bottom = getHeight();
+        xpoints[0] = x - (arrowSize+1);
         xpoints[1] = x;
-        xpoints[2] = x + 6;
+        xpoints[2] = x + (arrowSize+1);
         ypoints[0] = bottom;
-        ypoints[1] = bottom - 6;
+        ypoints[1] = bottom - (arrowSize+1);
         ypoints[2] = bottom;
         return new Polygon(xpoints, ypoints, 3);
     }
@@ -46,12 +48,12 @@ public class StickInputViewer extends InputViewer {
     private Polygon getTopArrow(int x)
     {
         int[] xpoints = new int[3], ypoints = new int[3];
-        int top = 1;
-        xpoints[0] = x - 5;
+        int top = 0;
+        xpoints[0] = x - arrowSize;
         xpoints[1] = x;
-        xpoints[2] = x + 5;
+        xpoints[2] = x + arrowSize;
         ypoints[0] = top;
-        ypoints[1] = top + 5;
+        ypoints[1] = top + arrowSize;
         ypoints[2] = top;
         return new Polygon(xpoints, ypoints, 3);
     }
@@ -63,18 +65,10 @@ public class StickInputViewer extends InputViewer {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         //Clear
-        g2.setColor(Color.white);
+        g2.setColor(new Color(240,240,240));
         g2.fillRect(0, 0, getWidth(), getHeight());
         
         g2.setStroke(readingStroke);
-        
-        //Draw border
-        g2.setColor(Color.black);
-        g2.drawRect(1,1,getWidth()-2, getHeight()-2);
-        
-        //Draw center
-        //g2.setColor(Color.gray);
-        //g2.fillPolygon(getBottomArrow(getWidth()/2));
         
         //Draw current value
         g2.setColor(Color.black);
@@ -92,15 +86,17 @@ public class StickInputViewer extends InputViewer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 443, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 60, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
