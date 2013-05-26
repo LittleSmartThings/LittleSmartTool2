@@ -12,6 +12,10 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import littlesmarttool2.comm.AutoServoPuller;
@@ -42,6 +46,17 @@ public class SS2Wizard extends javax.swing.JFrame {
         } catch (UnsupportedLookAndFeelException ex) {
             
         }
+        try {
+            Logger logger = Logger.getLogger(SS2Wizard.class.getName());
+            FileHandler fh = new FileHandler("SSErrorLog.txt", true);
+            logger.addHandler(fh);
+            logger.setLevel(Level.ALL);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+        } catch (Exception ex) {
+            //DO nothing
+        }
+        
         
         configuration = new Configuration();
         controller = new SerialController();
@@ -49,9 +64,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         initComponents();
         
         //Initialize port chooser
-        ArrayList<String> portNames = SerialController.getPortNames();
-        portNames.add(0, selectPortMsg);
-        portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
+        refreshPortList();
         
         //Initialize step panels
         stepPanels = new StepPanel[]{new Step1Panel(this), new Step2Panel(this), new Step3Panel(this), new Step4Panel(this)};
@@ -221,22 +234,32 @@ public class SS2Wizard extends javax.swing.JFrame {
             System.out.println("Connected : " + controller.connected());
             AutoServoPuller.Start(controller);
         } catch (NoSuchPortException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("An invalid port was selected ( " + ex.getMessage() + ")");
+            JOptionPane.showMessageDialog(this, "The selected port was invalid.\r\nEnsure that you selected the right one or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
+            refreshPortList();
         } catch (PortInUseException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Selected port was in use ( " + ex.getMessage() + ")");
-        } catch (UnsupportedCommOperationException ex) {
-            System.out.println("Unsupported comm operation ( " + ex.getMessage() + ")");
-        } catch (IOException ex) {
-            System.out.println("Generic IO exception ( " + ex.getMessage() + ")");
+            JOptionPane.showMessageDialog(this, "The selected port was in use.\r\nEnsure that you selected the right port, and that no other software uses it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
+        } catch (UnsupportedCommOperationException | IOException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception : " + ex.getClass().getName() + " ( " + ex.getMessage() + ")");
+            JOptionPane.showMessageDialog(this, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_portChooserItemStateChanged
 
-    private void refreshPortListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPortListButtonActionPerformed
+    private void refreshPortList()
+    {
         ArrayList<String> portNames = SerialController.getPortNames();
         portChooser.removeAllItems();
         portNames.add(0, selectPortMsg);
         portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
         System.out.println("Reloaded port list");
+    }
+    
+    private void refreshPortListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPortListButtonActionPerformed
+        refreshPortList();
     }//GEN-LAST:event_refreshPortListButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
