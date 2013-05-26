@@ -22,6 +22,7 @@ import java.util.Enumeration;
  */
 public class SerialController implements ResponseListener {
     private ArrayList<ResponseListener> responseListeners = new ArrayList<>();
+    private ArrayList<ConnectionListener> connectionListeners = new ArrayList<>();
     private boolean connected = false;
     private SerialCommReader reader;
     private SerialPort port;
@@ -47,6 +48,19 @@ public class SerialController implements ResponseListener {
     public void removeResponseListener(ResponseListener listener)
     {
         responseListeners.remove(listener);
+    }
+    
+    /**
+     * Add a connection listener which will get invoked when a 
+     * a connection is either started or stopped.
+     */
+    public void addConnectionListener(ConnectionListener listener){
+        if (!connectionListeners.contains(listener))
+            connectionListeners.add(listener);
+    }
+    public void removeConnectionListener(ConnectionListener listener)
+    {
+        connectionListeners.remove(listener);
     }
     
     /**
@@ -85,6 +99,9 @@ public class SerialController implements ResponseListener {
         outStream = port.getOutputStream();
         reader.setDaemon(true);
         reader.start();
+        for (ConnectionListener l : connectionListeners)
+            if (l != null)
+                l.connectionStateChanged(true);
     }
     
     public void disconnect()
@@ -93,6 +110,9 @@ public class SerialController implements ResponseListener {
         connected = false;
         reader.stopListening();
         port.close();
+        for (ConnectionListener l : connectionListeners)
+            if (l != null)
+                l.connectionStateChanged(false);
     }
     
     /**
@@ -219,7 +239,7 @@ public class SerialController implements ResponseListener {
                     String[] args = new String[parts.length-1];
                     for (int i = 0; i < args.length; i++)
                         args[i] = parts[i+1];
-                    System.out.println("Invoking " + responseListeners.size() + " listeners");
+                    //System.out.println("Invoking " + responseListeners.size() + " listeners");
                     for (ResponseListener l : responseListeners)
                         if (l != null)
                             l.receiveResponse(cmd, args);

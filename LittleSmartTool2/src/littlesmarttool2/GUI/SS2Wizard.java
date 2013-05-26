@@ -27,6 +27,7 @@ public class SS2Wizard extends javax.swing.JFrame {
 
     private StepPanel[] stepPanels;
     private int currentStep = -1;
+    private boolean hasUploaded = false;
     private Configuration configuration;
     private SerialController controller;
     private final String selectPortMsg = "Select port:";
@@ -70,6 +71,14 @@ public class SS2Wizard extends javax.swing.JFrame {
     
     public SerialController getSerialController(){
         return controller;
+    }
+    
+    public void setHasUploaded(boolean hasUploaded){
+        this.hasUploaded = hasUploaded;
+    }
+    
+    public boolean getHasUploaded(){
+        return hasUploaded;
     }
     
     public void setBackEnabled(boolean val) { backButton.setEnabled(val);}
@@ -188,9 +197,10 @@ public class SS2Wizard extends javax.swing.JFrame {
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         if(currentStep < stepPanels.length-1)
             goToStep(currentStep+1);
-        else
-            //TODO: Warn if haven't saved or uploaded configuration
+        else{
+            if(hasUploaded || JOptionPane.showConfirmDialog(this, "Your configuration has not been uploaded to the StratoSnapper2.\nAre you sure, you want to quit?", "Really quit?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION)
             System.exit(0);
+        }
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged
