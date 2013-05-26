@@ -6,6 +6,8 @@ package littlesmarttool2.GUI;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import littlesmarttool2.comm.*;
 import littlesmarttool2.model.Channel;
@@ -58,29 +60,24 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
 
         testerPanel = new javax.swing.JPanel();
         infoPanel = new javax.swing.JPanel();
+        descriptionLabel = new javax.swing.JLabel();
         channelTester1 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester2 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester3 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester4 = new littlesmarttool2.GUI.components.ChannelTester();
         jPanel1 = new javax.swing.JPanel();
-        uploadButton = new javax.swing.JButton();
         uploadLabel = new javax.swing.JLabel();
+        uploadButton = new javax.swing.JButton();
 
         setName("Test and upload"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         testerPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 10));
 
-        org.jdesktop.layout.GroupLayout infoPanelLayout = new org.jdesktop.layout.GroupLayout(infoPanel);
-        infoPanel.setLayout(infoPanelLayout);
-        infoPanelLayout.setHorizontalGroup(
-            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
-        );
-        infoPanelLayout.setVerticalGroup(
-            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 60, Short.MAX_VALUE)
-        );
+        infoPanel.setLayout(new javax.swing.BoxLayout(infoPanel, javax.swing.BoxLayout.LINE_AXIS));
+
+        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/>\nBelow is shown an overview of the 4 channels with the output from each channel shown to the right<br/>\nUse your transmitter to verify that the correct commands are send at the right times.<br>\nPress the \"Upload configuration to StratoSnapper\" button when ready</html>");
+        infoPanel.add(descriptionLabel);
 
         testerPanel.add(infoPanel);
         testerPanel.add(channelTester1);
@@ -90,7 +87,10 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
 
         add(testerPanel, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        uploadLabel.setText("Ready for upload");
+        jPanel1.add(uploadLabel);
 
         uploadButton.setText("Upload configuration to StratoSnapper");
         uploadButton.addActionListener(new java.awt.event.ActionListener() {
@@ -99,9 +99,6 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
             }
         });
         jPanel1.add(uploadButton);
-
-        uploadLabel.setText("Ready for upload");
-        jPanel1.add(uploadLabel);
 
         add(jPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
@@ -114,6 +111,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         try {
             ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
         } catch (IOException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex); //Keep this!
             wizard.setHasUploaded(false);
             uploadLabel.setText("An error occurred, please try agian.");
             uploadLabel.setForeground(new Color(0x660000));
@@ -130,6 +128,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     private littlesmarttool2.GUI.components.ChannelTester channelTester2;
     private littlesmarttool2.GUI.components.ChannelTester channelTester3;
     private littlesmarttool2.GUI.components.ChannelTester channelTester4;
+    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JPanel infoPanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel testerPanel;
