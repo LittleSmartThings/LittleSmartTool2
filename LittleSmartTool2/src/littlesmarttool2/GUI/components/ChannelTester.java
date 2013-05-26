@@ -145,7 +145,10 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
             public void actionPerformed(ActionEvent e) {
                 outputLabel.setForeground(new Color(0,0,0,i));
                 i -= 5;
-                if (i <0) flashTimer.stop();
+                if (i <0){
+                    outputLabel.setText("");
+                    flashTimer.stop();
+                }
             }
         });
         flashTimer.start();
