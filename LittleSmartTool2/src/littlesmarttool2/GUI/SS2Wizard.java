@@ -42,10 +42,13 @@ public class SS2Wizard extends javax.swing.JFrame {
     public SS2Wizard() {
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
-            //UIManager.setLookAndFeel(new WindowsLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {
-            
         }
+        try {
+            UIManager.setLookAndFeel(new WindowsLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+        }
+        
         try {
             Logger logger = Logger.getLogger(SS2Wizard.class.getName());
             FileHandler fh = new FileHandler("SSErrorLog.txt", true);
