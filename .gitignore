@@ -1,4 +1,5 @@
 *.class
+*/SSErrorLog.txt
 
 # Package Files #
 *.war
