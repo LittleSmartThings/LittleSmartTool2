@@ -4,9 +4,10 @@
  */
 package littlesmarttool2.GUI;
 
+import java.awt.Color;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.comm.*;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.ModelUtil;
 
@@ -14,7 +15,7 @@ import littlesmarttool2.model.ModelUtil;
  *
  * @author marcher89
  */
-public class Step4Panel extends StepPanel implements ResponseListener {
+public class Step4Panel extends StepPanel implements ResponseListener, ConnectionListener {
 
     /**
      * Creates new form Step1Panel
@@ -26,7 +27,7 @@ public class Step4Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
-        wizard.setNextEnabled(false);
+        //wizard.setNextEnabled(false);
         
         Channel ch1 = wizard.getConfiguration().getChannels().get(0);
         ch1.setCalibLow(300);
@@ -38,12 +39,17 @@ public class Step4Panel extends StepPanel implements ResponseListener {
         channelTester4.setChannel(wizard.getConfiguration().getChannels().get(3));
         
         //channelTester1.updateBounds(300, 2000);
-        //TODO: Do anything??
+        
+        wizard.getSerialController().addConnectionListener(this);
+        
+        updateUploadLabel();
+        
+        wizard.setHasUploaded(false);
     }
 
     @Override
     public void onHide() {
-        //TODO: Do anything??
+        wizard.getSerialController().removeConnectionListener(this);
     }
     
 
@@ -56,24 +62,18 @@ public class Step4Panel extends StepPanel implements ResponseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        uplaodButton = new javax.swing.JButton();
         testerPanel = new javax.swing.JPanel();
         infoPanel = new javax.swing.JPanel();
         channelTester1 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester2 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester3 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester4 = new littlesmarttool2.GUI.components.ChannelTester();
+        jPanel1 = new javax.swing.JPanel();
+        uploadButton = new javax.swing.JButton();
+        uploadLabel = new javax.swing.JLabel();
 
         setName("Test and upload"); // NOI18N
         setLayout(new java.awt.BorderLayout());
-
-        uplaodButton.setText("Upload configuration to StratoSnapper");
-        uplaodButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uplaodButtonActionPerformed(evt);
-            }
-        });
-        add(uplaodButton, java.awt.BorderLayout.PAGE_END);
 
         testerPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 10));
 
@@ -85,7 +85,7 @@ public class Step4Panel extends StepPanel implements ResponseListener {
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 47, Short.MAX_VALUE)
+            .add(0, 60, Short.MAX_VALUE)
         );
 
         testerPanel.add(infoPanel);
@@ -95,17 +95,41 @@ public class Step4Panel extends StepPanel implements ResponseListener {
         testerPanel.add(channelTester4);
 
         add(testerPanel, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
+
+        uploadButton.setText("Upload configuration to StratoSnapper");
+        uploadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(uploadButton);
+
+        uploadLabel.setText("Ready for upload");
+        jPanel1.add(uploadLabel);
+
+        add(jPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void uplaodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uplaodButtonActionPerformed
+    private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
+        uploadLabel.setText("Now uploading, please wait...");
+        uploadLabel.setForeground(Color.BLACK);
+        repaint();
+        
         try {
             ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
-        } catch (IOException ex) {//TODO: Do something smarter
+        } catch (IOException ex) {
+            wizard.setHasUploaded(false);
+            uploadLabel.setText("An error occurred, please try agian.");
+            uploadLabel.setForeground(new Color(0x660000));
             JOptionPane.showMessageDialog(this, ex, "Something went terribly wrong!", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        JOptionPane.showMessageDialog(this, "Everything was good", "Goooood", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_uplaodButtonActionPerformed
+        wizard.setHasUploaded(true);
+        uploadLabel.setText("The configuration was successfully uploaded.");
+        uploadLabel.setForeground(new Color(0x006600));
+    }//GEN-LAST:event_uploadButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ChannelTester channelTester1;
@@ -113,8 +137,10 @@ public class Step4Panel extends StepPanel implements ResponseListener {
     private littlesmarttool2.GUI.components.ChannelTester channelTester3;
     private littlesmarttool2.GUI.components.ChannelTester channelTester4;
     private javax.swing.JPanel infoPanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel testerPanel;
-    private javax.swing.JButton uplaodButton;
+    private javax.swing.JButton uploadButton;
+    private javax.swing.JLabel uploadLabel;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -130,5 +156,23 @@ public class Step4Panel extends StepPanel implements ResponseListener {
         }
         catch (Exception e)
         {}
+    }
+
+    @Override
+    public void connectionStateChanged(boolean connected) {
+        updateUploadLabel();
+    }
+    
+    private void updateUploadLabel(){
+        if(wizard.getSerialController().connected()){
+            uploadLabel.setText("Ready for upload.");
+            uploadLabel.setForeground(Color.BLACK);
+            uploadButton.setEnabled(true);
+        }
+        else{
+            uploadLabel.setText("Please connect to the StratoSnapper2.");
+            uploadButton.setEnabled(false);
+            uploadLabel.setForeground(new Color(0x660000));
+        }
     }
 }
