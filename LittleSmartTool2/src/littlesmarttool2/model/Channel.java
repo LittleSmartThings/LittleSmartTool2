@@ -11,7 +11,7 @@ package littlesmarttool2.model;
 public class Channel {
     private int id;
     private int calibLow = Integer.MAX_VALUE, calibHigh = 0;
-    private ControlType controlType;
+    private ControlType controlType = ControlType.Stick;
     private Setting setting;
     
     public Channel(int id)

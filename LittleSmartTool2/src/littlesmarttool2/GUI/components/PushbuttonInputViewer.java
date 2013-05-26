@@ -4,9 +4,11 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  *
@@ -14,6 +16,8 @@ import java.awt.Graphics2D;
  */
 public class PushbuttonInputViewer extends InputViewer {
     
+    private static BasicStroke readingStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10.0f);
     /**
      * Creates new form PushbuttonInputViewer
      */
@@ -26,19 +30,22 @@ public class PushbuttonInputViewer extends InputViewer {
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(readingStroke);
+        g2.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
         int dim = Math.min(getWidth()-1,getHeight()-1);
         //Pressed
-        if (getValuePct() > .5)
+        if (getValuePct() >= .5)
         {
-            g2.setColor(Color.green);
-            g2.fillOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim, dim);
+            g2.setColor(new Color(200,200,255));
+            g2.fillOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim-2, dim-2);
         }
         //Border & lines
         g2.setColor(Color.black);
-        //g2.fillOval((getWidth()/2) - (dim/2)) / 2, (getHeight()/2) - (dim/2) / 2, dim/2, dim/2);
-        g2.drawOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim, dim);
+        g2.drawOval((getWidth()/2) - (dim/2), (getHeight()/2) - (dim/2), dim-2, dim-2);
     }
     
     /**

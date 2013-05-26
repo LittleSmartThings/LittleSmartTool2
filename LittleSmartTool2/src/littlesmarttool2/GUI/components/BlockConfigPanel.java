@@ -26,6 +26,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
         populate(config);
         this.block = block;
         jList1.setSelectedValue(block.getCommand(), true);
+        jSlider1.setValue(block.getInterval()/100); //Stored as ms
     }
     
     private void populate(Configuration config)

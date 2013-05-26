@@ -62,20 +62,22 @@ public class StickInputViewer extends InputViewer {
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
-        //Draw border
+        //Clear
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
+        
+        g2.setStroke(readingStroke);
+        
+        //Draw border
         g2.setColor(Color.black);
-        g2.drawRect(0,0,getWidth()-1, getHeight()-1);
+        g2.drawRect(1,1,getWidth()-2, getHeight()-2);
         
         //Draw center
         //g2.setColor(Color.gray);
         //g2.fillPolygon(getBottomArrow(getWidth()/2));
         
         //Draw current value
-        g2.setStroke(readingStroke);
-        g2.setColor(Color.BLACK);
+        g2.setColor(Color.black);
         g2.drawLine(getValuePosition(), 0, getValuePosition(), getHeight());
         g2.fillPolygon(getBottomArrow(getValuePosition()));
         g2.fillPolygon(getTopArrow(getValuePosition()));

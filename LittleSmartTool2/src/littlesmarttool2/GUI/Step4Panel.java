@@ -5,16 +5,16 @@
 package littlesmarttool2.GUI;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.ModelUtil;
 
 /**
  *
  * @author marcher89
  */
-public class Step4Panel extends StepPanel {
+public class Step4Panel extends StepPanel implements ResponseListener {
 
     /**
      * Creates new form Step1Panel
@@ -27,6 +27,17 @@ public class Step4Panel extends StepPanel {
     @Override
     public void onDisplay() {
         wizard.setNextEnabled(false);
+        
+        Channel ch1 = wizard.getConfiguration().getChannels().get(0);
+        ch1.setCalibLow(300);
+        ch1.setCalibHigh(2000);
+        
+        channelTester1.setChannel(wizard.getConfiguration().getChannels().get(0));
+        channelTester2.setChannel(wizard.getConfiguration().getChannels().get(1));
+        channelTester3.setChannel(wizard.getConfiguration().getChannels().get(2));
+        channelTester4.setChannel(wizard.getConfiguration().getChannels().get(3));
+        
+        //channelTester1.updateBounds(300, 2000);
         //TODO: Do anything??
     }
 
@@ -46,6 +57,12 @@ public class Step4Panel extends StepPanel {
     private void initComponents() {
 
         uplaodButton = new javax.swing.JButton();
+        testerPanel = new javax.swing.JPanel();
+        infoPanel = new javax.swing.JPanel();
+        channelTester1 = new littlesmarttool2.GUI.components.ChannelTester();
+        channelTester2 = new littlesmarttool2.GUI.components.ChannelTester();
+        channelTester3 = new littlesmarttool2.GUI.components.ChannelTester();
+        channelTester4 = new littlesmarttool2.GUI.components.ChannelTester();
 
         setName("Test and upload"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -56,7 +73,28 @@ public class Step4Panel extends StepPanel {
                 uplaodButtonActionPerformed(evt);
             }
         });
-        add(uplaodButton, java.awt.BorderLayout.CENTER);
+        add(uplaodButton, java.awt.BorderLayout.PAGE_END);
+
+        testerPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 10));
+
+        org.jdesktop.layout.GroupLayout infoPanelLayout = new org.jdesktop.layout.GroupLayout(infoPanel);
+        infoPanel.setLayout(infoPanelLayout);
+        infoPanelLayout.setHorizontalGroup(
+            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 400, Short.MAX_VALUE)
+        );
+        infoPanelLayout.setVerticalGroup(
+            infoPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 47, Short.MAX_VALUE)
+        );
+
+        testerPanel.add(infoPanel);
+        testerPanel.add(channelTester1);
+        testerPanel.add(channelTester2);
+        testerPanel.add(channelTester3);
+        testerPanel.add(channelTester4);
+
+        add(testerPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void uplaodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uplaodButtonActionPerformed
@@ -70,6 +108,27 @@ public class Step4Panel extends StepPanel {
     }//GEN-LAST:event_uplaodButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private littlesmarttool2.GUI.components.ChannelTester channelTester1;
+    private littlesmarttool2.GUI.components.ChannelTester channelTester2;
+    private littlesmarttool2.GUI.components.ChannelTester channelTester3;
+    private littlesmarttool2.GUI.components.ChannelTester channelTester4;
+    private javax.swing.JPanel infoPanel;
+    private javax.swing.JPanel testerPanel;
     private javax.swing.JButton uplaodButton;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void receiveResponse(char command, String[] args) {
+        if (command != 'S') return;
+        if (args.length < 4) return;
+        try
+        {
+            channelTester1.updateValue(Integer.parseInt(args[0]));
+            channelTester2.updateValue(Integer.parseInt(args[1]));
+            channelTester3.updateValue(Integer.parseInt(args[2]));
+            channelTester4.updateValue(Integer.parseInt(args[3]));
+        }
+        catch (Exception e)
+        {}
+    }
 }

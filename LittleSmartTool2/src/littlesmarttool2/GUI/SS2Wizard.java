@@ -4,6 +4,7 @@
  */
 package littlesmarttool2.GUI;
 
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -11,8 +12,6 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import littlesmarttool2.comm.AutoServoPuller;
@@ -38,8 +37,9 @@ public class SS2Wizard extends javax.swing.JFrame {
     public SS2Wizard() {
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
+            //UIManager.setLookAndFeel(new WindowsLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         configuration = new Configuration();
@@ -60,9 +60,8 @@ public class SS2Wizard extends javax.swing.JFrame {
         }
         controller.addResponseListener((ResponseListener)stepPanels[1]); //Page two need to be a listener
         controller.addResponseListener((ResponseListener)stepPanels[2]); //Page three need to be a listener
+        controller.addResponseListener((ResponseListener)stepPanels[3]); //Page four need to be a listener
         goToStep(0);
-        
-        setVisible(true);
     }
     
     public Configuration getConfiguration(){
@@ -109,6 +108,7 @@ public class SS2Wizard extends javax.swing.JFrame {
         portPanel = new javax.swing.JPanel();
         portLabel = new javax.swing.JLabel();
         portChooser = new javax.swing.JComboBox();
+        refreshPortListButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
@@ -164,6 +164,14 @@ public class SS2Wizard extends javax.swing.JFrame {
         });
         portPanel.add(portChooser);
 
+        refreshPortListButton.setText("Refresh");
+        refreshPortListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshPortListButtonActionPerformed(evt);
+            }
+        });
+        portPanel.add(refreshPortListButton);
+
         upperPanel.add(portPanel, java.awt.BorderLayout.EAST);
 
         contentPanel.add(upperPanel, java.awt.BorderLayout.NORTH);
@@ -192,7 +200,10 @@ public class SS2Wizard extends javax.swing.JFrame {
             System.out.println("tried disconnecting, connected : " + controller.connected());
             return;
         }
-        if (evt.getItem() == selectPortMsg) return;
+        if (evt.getItem() == selectPortMsg) 
+        {
+            return;
+        }
         try {
             //Connect to the StratoSnapper and begin polling 
             System.out.println("Connecting: " + evt.getItem());
@@ -210,6 +221,14 @@ public class SS2Wizard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_portChooserItemStateChanged
 
+    private void refreshPortListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPortListButtonActionPerformed
+        ArrayList<String> portNames = SerialController.getPortNames();
+        portChooser.removeAllItems();
+        portNames.add(0, selectPortMsg);
+        portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
+        System.out.println("Reloaded port list");
+    }//GEN-LAST:event_refreshPortListButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JPanel buttonPanel;
@@ -220,6 +239,7 @@ public class SS2Wizard extends javax.swing.JFrame {
     private javax.swing.JComboBox portChooser;
     private javax.swing.JLabel portLabel;
     private javax.swing.JPanel portPanel;
+    private javax.swing.JButton refreshPortListButton;
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 }

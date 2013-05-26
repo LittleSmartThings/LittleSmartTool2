@@ -4,9 +4,11 @@
  */
 package littlesmarttool2.GUI.components;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  *
@@ -15,6 +17,9 @@ import java.awt.Graphics2D;
 public class NWayInputViewer extends InputViewer {
 
     private int n = 1;
+    
+    private static BasicStroke readingStroke = new BasicStroke(2.0f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10.0f);
     
     /**
      * Must be greater than 0!
@@ -46,8 +51,9 @@ public class NWayInputViewer extends InputViewer {
     /**
      * Creates new form NWayInputViewer
      */
-    public NWayInputViewer() {
+    public NWayInputViewer(int n) {
         initComponents();
+        this.n = n;
     }
 
     //private void getBox
@@ -57,6 +63,11 @@ public class NWayInputViewer extends InputViewer {
     {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        
+        g2.setStroke(readingStroke);
+        g2.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
         
         g2.setColor(Color.white);
         g2.fillRect(0, 0, getWidth(), getHeight());
@@ -68,7 +79,7 @@ public class NWayInputViewer extends InputViewer {
             int x = widthPrBox * i;
             if (i == selection)
             {
-                g2.setColor(Color.green);
+                g2.setColor(new Color(200,200,255));
                 g2.fillRect(x, 0, widthPrBox-4, height-1);
             }
             g2.setColor(Color.black);

@@ -17,6 +17,7 @@ public class LittleSmartTool2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new SS2Wizard();
+       SS2Wizard wizard = new SS2Wizard();
+       wizard.setVisible(true);
     }
 }
