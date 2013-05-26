@@ -25,7 +25,7 @@ public class ModelUtil {
     static LANCCommand[] lancCommands;
     
     public static void LoadData() {
-        cameraBrands = JSON.readObjectFromFile("../data/cameraList.json", CameraBrand[].class);
+        cameraBrands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
         
         HashMap<String, CameraModel> map = new HashMap<>();
         
@@ -39,9 +39,9 @@ public class ModelUtil {
         CameraModel[] models;
         int i;
         
-        irCommands = JSON.readObjectFromFile("../data/IRCommandList.json", IRCommand[].class);
-        wireCommands = JSON.readObjectFromFile("../data/WireCommandList.json", WireCommand[].class);
-        lancCommands = JSON.readObjectFromFile("../data/LANCCommandList.json", LANCCommand[].class);
+        irCommands = JSON.readObjectFromFile("IRCommandList.json", IRCommand[].class);
+        wireCommands = JSON.readObjectFromFile("WireCommandList.json", WireCommand[].class);
+        lancCommands = JSON.readObjectFromFile("LANCCommandList.json", LANCCommand[].class);
         
         for (IRCommand command : irCommands) {
             models = new CameraModel[command.getCameraModels().length];
