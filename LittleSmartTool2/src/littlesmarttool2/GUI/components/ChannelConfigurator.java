@@ -5,7 +5,10 @@
 package littlesmarttool2.GUI.components;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Channel;
+import littlesmarttool2.model.Command;
 import littlesmarttool2.model.ControlType;
 /**
  *
@@ -45,6 +48,19 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         viewer = newViewer;
         inputViewerPanel.add(viewer, BorderLayout.CENTER);
         inputViewerPanel.revalidate();
+    }
+    private void tryDefaultDivide(ControlType type)
+    {
+        ArrayList<Block> blocks = channel.getSetting().getBlocks();
+         //Don't do anything if settings were made
+        if (blocks.size() > 5 || blocks.size() == 4) return;
+        for (Block b : blocks)
+        {
+            if (b.getCommand() != Command.getNothingCommand())
+                return;
+        }
+        //No settings were made. Divide
+        channel.getSetting().defaultDivision(type);
     }
     
     /**
@@ -164,12 +180,14 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     private void radioPushButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radioPushButtonItemStateChanged
         if (!radioPushButton.isSelected()) return;
         channel.setControlType(ControlType.PushButton);
+        tryDefaultDivide(ControlType.PushButton);
         changeInputViewer(new PushbuttonInputViewer());
     }//GEN-LAST:event_radioPushButtonItemStateChanged
 
     private void radio2WayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radio2WayItemStateChanged
         if (!radio2Way.isSelected()) return;
         channel.setControlType(ControlType.Switch2);
+        tryDefaultDivide(ControlType.Switch2);
         NWayInputViewer nw = new NWayInputViewer(2);
         changeInputViewer(nw);
     }//GEN-LAST:event_radio2WayItemStateChanged
@@ -177,6 +195,7 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     private void radio3WayItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radio3WayItemStateChanged
         if (!radio3Way.isSelected()) return;
         channel.setControlType(ControlType.Switch3);
+        tryDefaultDivide(ControlType.Switch3);
         NWayInputViewer nw = new NWayInputViewer(3);
         changeInputViewer(nw);
     }//GEN-LAST:event_radio3WayItemStateChanged
@@ -184,6 +203,7 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     private void radioStickItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radioStickItemStateChanged
         if (!radioStick.isSelected()) return;
         channel.setControlType(ControlType.Stick);
+        tryDefaultDivide(ControlType.Stick);
         changeInputViewer(new StickInputViewer());
     }//GEN-LAST:event_radioStickItemStateChanged
 

@@ -227,7 +227,6 @@ public class SS2Wizard extends javax.swing.JFrame {
         if (evt.getStateChange() == ItemEvent.DESELECTED)
         {
             controller.disconnect();
-            System.out.println("tried disconnecting, connected : " + controller.connected());
             return;
         }
         if (evt.getItem() == selectPortMsg) 
@@ -236,22 +235,19 @@ public class SS2Wizard extends javax.swing.JFrame {
         }
         try {
             //Connect to the StratoSnapper and begin polling 
-            System.out.println("Connecting: " + evt.getItem());
+            System.out.println("Connecting to: " + evt.getItem());
             controller.connect(evt.getItem().toString());
-            System.out.println("Connected : " + controller.connected());
+            System.out.println("Connected to: " + controller.connected());
             AutoServoPuller.Start(controller);
         } catch (NoSuchPortException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("An invalid port was selected ( " + ex.getMessage() + ")");
             JOptionPane.showMessageDialog(this, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
             refreshPortList();
         } catch (PortInUseException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Selected port was in use ( " + ex.getMessage() + ")");
             JOptionPane.showMessageDialog(this, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
         } catch (UnsupportedCommOperationException | IOException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Exception : " + ex.getClass().getName() + " ( " + ex.getMessage() + ")");
             JOptionPane.showMessageDialog(this, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_portChooserItemStateChanged
@@ -262,7 +258,6 @@ public class SS2Wizard extends javax.swing.JFrame {
         portChooser.removeAllItems();
         portNames.add(0, selectPortMsg);
         portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
-        System.out.println("Reloaded port list");
     }
     
     private void refreshPortListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPortListButtonActionPerformed

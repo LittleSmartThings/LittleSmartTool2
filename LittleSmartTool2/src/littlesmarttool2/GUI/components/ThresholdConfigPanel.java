@@ -59,14 +59,14 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         centerPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        upList = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         downList = new javax.swing.JList();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        upList = new javax.swing.JList();
         southPanel = new javax.swing.JPanel();
         deleteThresholdButton = new javax.swing.JButton();
 
@@ -77,6 +77,24 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
         add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
         centerPanel.setLayout(new java.awt.GridLayout(1, 0, 10, 10));
+
+        jPanel2.setLayout(new java.awt.BorderLayout(10, 0));
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("<html>&#9668; Action going down</html>");
+        jPanel2.add(jLabel3, java.awt.BorderLayout.PAGE_START);
+
+        downList.setModel(getListModel());
+        downList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                downListValueChanged(evt);
+            }
+        });
+        jScrollPane2.setViewportView(downList);
+
+        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        centerPanel.add(jPanel2);
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -95,24 +113,6 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         centerPanel.add(jPanel1);
-
-        jPanel2.setLayout(new java.awt.BorderLayout(10, 0));
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("<html>Action going down &#9668;</html>");
-        jPanel2.add(jLabel3, java.awt.BorderLayout.PAGE_START);
-
-        downList.setModel(getListModel());
-        downList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                downListValueChanged(evt);
-            }
-        });
-        jScrollPane2.setViewportView(downList);
-
-        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-        centerPanel.add(jPanel2);
 
         add(centerPanel, java.awt.BorderLayout.CENTER);
 

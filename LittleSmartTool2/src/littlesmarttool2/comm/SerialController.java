@@ -148,7 +148,7 @@ public class SerialController implements ResponseListener {
         }
         catch (IOException e)
         {
-            connected = false;
+            disconnect();
             throw e;
         }
     }
@@ -239,16 +239,13 @@ public class SerialController implements ResponseListener {
                     String[] args = new String[parts.length-1];
                     for (int i = 0; i < args.length; i++)
                         args[i] = parts[i+1];
-                    //System.out.println("Invoking " + responseListeners.size() + " listeners");
                     for (ResponseListener l : responseListeners)
                         if (l != null)
                             l.receiveResponse(cmd, args);
                 }
             } catch (InterruptedException ex) {
-                System.out.println("InterruptedException in SerialCommReader: " + ex.getMessage());
-            } /*catch (IOException ex) {
-                System.out.println("IOException in SerialCommReader: " + ex.getMessage());
-            }*/
+                //Don't do anything
+            }
         }
     }
 }

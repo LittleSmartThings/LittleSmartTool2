@@ -37,7 +37,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Set up the channels you will be using by following these steps: &lt;ol&gt; &lt;li&gt;Connect to the StratoSnapper (top right corner)&lt;/li&gt; &lt;li&gt;Choose the type of controller connected to each channel (skip the ones you don&apos;t use)&lt;/li&gt; &lt;li&gt;Calibrate the software by moving your controller as far as it goes in both directions&lt;/li&gt; &lt;/ol&gt; &lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Set up the channels you will be using by following these steps:&#xa;&lt;ol&gt; &#xa;&#x9;&lt;li&gt;Connect to the StratoSnapper (top right corner)&lt;/li&gt; &#xa;&#x9;&lt;li&gt;Choose the type of controller connected to each channel (skip the channels you don&apos;t use)&lt;/li&gt; &#xa;&#x9;&lt;li&gt;Calibrate the software by moving your controller as far as it goes in both directions&lt;/li&gt; &#xa;&lt;/ol&gt;&#xa;&lt;/html&gt;"/>
           </Properties>
         </Component>
       </SubComponents>

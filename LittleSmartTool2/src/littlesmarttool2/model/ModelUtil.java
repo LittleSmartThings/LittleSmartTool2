@@ -128,7 +128,7 @@ public class ModelUtil {
                         channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
                         "0",//going high
                         "1",//going low
-                        "10",//hysteresis
+                        "50",//hysteresis
                         cmdId+""//command
                     });
                     if(!response.equals("T;1"))
@@ -141,7 +141,8 @@ public class ModelUtil {
                     if(block.getCommand() == Command.getNothingCommand())
                         continue;
                     int minPromille = block.getLowerThreshold() != null ? block.getLowerThreshold().getValuePromille() : 0;
-                    int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille() : 1000;
+                    //Max is exclusive, except for the highest block
+                    int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
 
                     sendCommandToSnapper(comm, block.getCommand(), cmdId);
                     response = comm.sendSync('R', new String[]{//------------------------------"R" Range trigger

@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import littlesmarttool2.comm.*;
-import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.ModelUtil;
 
 /**

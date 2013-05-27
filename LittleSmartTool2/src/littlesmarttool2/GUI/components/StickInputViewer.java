@@ -19,10 +19,23 @@ public class StickInputViewer extends InputViewer {
                         BasicStroke.JOIN_MITER, 10.0f);
     
     private final int arrowSize = 7;
+    private final int absLower = 500;
+    private final int absUpper = 2500;
     
+    private int getLowerCalibPos()
+    {
+        double span = absUpper - absLower;
+        return (int)(((lowerBound - absLower) / span) * getWidth());
+    }
+    private int getUpperCalibPos()
+    {
+        double span = absUpper - absLower;
+        return (int)(((upperBound - absLower) / span) * getWidth());
+    }   
     private int getValuePosition()
     {
-        return (int)(getValuePct() * getWidth());
+        double span = absUpper - absLower;
+        return (int)(((value - absLower) / span) * getWidth());
     }
     
     /**
@@ -68,6 +81,10 @@ public class StickInputViewer extends InputViewer {
         g2.setColor(new Color(240,240,240));
         g2.fillRect(0, 0, getWidth(), getHeight());
         
+        //Draw calib
+        g2.setColor(new Color(0,0,0,20));
+        g2.fillRect(0, 0, getLowerCalibPos(), getHeight());
+        g2.fillRect(getUpperCalibPos(), 0, getWidth()-getUpperCalibPos(), getHeight());
         g2.setStroke(readingStroke);
         
         //Draw current value

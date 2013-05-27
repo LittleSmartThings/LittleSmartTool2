@@ -5,6 +5,10 @@
 package littlesmarttool2.model;
 
 import java.util.ArrayList;
+import static littlesmarttool2.model.ControlType.PushButton;
+import static littlesmarttool2.model.ControlType.Stick;
+import static littlesmarttool2.model.ControlType.Switch2;
+import static littlesmarttool2.model.ControlType.Switch3;
 
 /**
  * A setting is a set of thresholds and blocks defining the complete behavior
@@ -25,15 +29,14 @@ public class Setting {
      */
     public Setting()
     {
-        blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
+        divide(5);
+        //blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
     }
     
-    /**
-     * Initialize a new Setting specialized to a specific control type
-     * @param type The ControlType to initialize this setting for
-     */
-    public Setting(ControlType type)
+    public void defaultDivision(ControlType type)
     {
+        blocks.clear();
+        thresholds.clear();
         switch(type)
         {
             case Switch2:

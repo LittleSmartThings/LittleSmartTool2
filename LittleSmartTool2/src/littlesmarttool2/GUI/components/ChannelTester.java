@@ -86,7 +86,6 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         //Block
         Block newBlock = getBlockFromValue(value);
         if (currentBlock == newBlock) return; //If its the same block nothing has changed
-        System.out.println("New block: " + newBlock);
         intervalTimer.stop();
         if (newBlock.getInterval() != 0){
             intervalTimer.setDelay(newBlock.getInterval());
@@ -126,17 +125,21 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
     private void flashText(String text)
     {
         if (flashTimer != null) flashTimer.stop();
-        outputLabel.setText(text);
-        outputLabel.setForeground(new Color(0,0,0,254));
+        //outputLabel.setText(text);
+        outputArea.setText(text);
+        //outputLabel.setForeground(new Color(0,0,0,254));
+        outputArea.setForeground(new Color(0,0,0,254));
         flashTimer = new Timer(10,null);
         flashTimer.addActionListener(new ActionListener() {
             int i = 254;
             @Override
             public void actionPerformed(ActionEvent e) {
-                outputLabel.setForeground(new Color(0,0,0,i));
+                //outputLabel.setForeground(new Color(0,0,0,i));
+                outputArea.setForeground(new Color(0,0,0,i));
                 i -= 5;
                 if (i <0){
-                    outputLabel.setText("");
+                    //outputLabel.setText("");
+                    outputArea.setText("");
                     flashTimer.stop();
                 }
             }
@@ -157,7 +160,7 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         idLabel = new javax.swing.JLabel();
         viewerPanel = new javax.swing.JPanel();
         outputPanel = new javax.swing.JPanel();
-        outputLabel = new javax.swing.JLabel();
+        outputArea = new javax.swing.JTextArea();
 
         setMinimumSize(new java.awt.Dimension(114, 60));
         setLayout(new java.awt.BorderLayout());
@@ -179,17 +182,21 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         outputPanel.setPreferredSize(new java.awt.Dimension(150, 14));
         outputPanel.setLayout(new javax.swing.BoxLayout(outputPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        outputLabel.setMaximumSize(new java.awt.Dimension(100, 14));
-        outputLabel.setMinimumSize(new java.awt.Dimension(80, 14));
-        outputLabel.setPreferredSize(new java.awt.Dimension(80, 14));
-        outputPanel.add(outputLabel);
+        outputArea.setEditable(false);
+        outputArea.setBackground(new java.awt.Color(240, 240, 240));
+        outputArea.setColumns(20);
+        outputArea.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        outputArea.setLineWrap(true);
+        outputArea.setRows(5);
+        outputArea.setWrapStyleWord(true);
+        outputPanel.add(outputArea);
 
         add(outputPanel, java.awt.BorderLayout.LINE_END);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel idLabel;
     private javax.swing.JPanel idPanel;
-    private javax.swing.JLabel outputLabel;
+    private javax.swing.JTextArea outputArea;
     private javax.swing.JPanel outputPanel;
     private javax.swing.JPanel viewerPanel;
     // End of variables declaration//GEN-END:variables

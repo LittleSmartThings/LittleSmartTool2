@@ -9,7 +9,7 @@ package littlesmarttool2.GUI.components;
  * @author Rasmus
  */
 public abstract class InputViewer extends javax.swing.JPanel {
-    private int value = 50, lowerBound = 0, upperBound = 100;
+    protected int value = 50, lowerBound = 0, upperBound = 100;
     
     public void updateValue(int value)
     {
