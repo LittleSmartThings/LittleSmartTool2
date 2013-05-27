@@ -105,7 +105,14 @@ public class ModelUtil {
                 int cmdId = 1, number = 1;
                 for (Threshold threshold : setting.getThresholds()) {
                     if(threshold.getUpCommand() != Command.getNothingCommand()) {
-                        sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
+                        if (threshold.getUpCommand().getClass() == WireCommand.class)
+                        {
+                            cmdId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
+                        }
+                        else
+                        {
+                            sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
+                        }
                         response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
                             number+"",//number
                             servo+"",//servo
@@ -121,7 +128,14 @@ public class ModelUtil {
                     }
                     if(threshold.getDownCommand() == Command.getNothingCommand()) 
                         continue;
-                    sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
+                    if (threshold.getDownCommand().getClass() == WireCommand.class)
+                    {
+                        cmdId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
+                    }
+                    else
+                    {
+                        sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
+                    }
                     response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
                         number+"",//number
                         servo+"",//servo
@@ -144,7 +158,14 @@ public class ModelUtil {
                     //Max is exclusive, except for the highest block
                     int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
 
-                    sendCommandToSnapper(comm, block.getCommand(), cmdId);
+                    if (block.getCommand().getClass() == WireCommand.class)
+                    {
+                        cmdId = ((WireCommand)block.getCommand()).getPinConfig();
+                    }
+                    else
+                    {
+                        sendCommandToSnapper(comm, block.getCommand(), cmdId);
+                    }
                     response = comm.sendSync('R', new String[]{//------------------------------"R" Range trigger
                         number+"",//number
                         servo+"",//servo
@@ -185,11 +206,6 @@ public class ModelUtil {
             }
             if(!comm.sendSync("K;"+ir.getFrequency()).equals("K;1")){//----------------------------------------------"K" IR Frequency
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR frequency.");
-            }else return;
-        }
-        if(command.getClass() == WireCommand.class){
-            if(!comm.sendSync(commandId+";").equals("???")){ //TODO: What to do?-------------------------------------"??" Wire Command
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a wire command.");
             }else return;
         }
         if(command.getClass() == LANCCommand.class){
