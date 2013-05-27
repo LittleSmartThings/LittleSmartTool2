@@ -173,7 +173,7 @@ public class ModelUtil {
                         channel.convertPromilleToValue(minPromille)+"",//min point
                         block.getInterval()+"",//timing range high
                         block.getInterval()+"",//timing range low
-                        "1",//expo TODO: What's this?
+                        "1",//expo
                         cmdId+""//command
                     });
                     if(!response.equals("R;1"))
@@ -191,6 +191,10 @@ public class ModelUtil {
         if(command.getClass() == IRCommand.class){
             IRCommand ir = (IRCommand) command;
             int[] pulsdata = ir.getPulsedata();
+            
+            if(!comm.sendSync("G;"+ir.getRepeats()+";"+ir.getDelayBetweenRepeats()).equals("G;1"))//-----------------"G" IR Repetitions
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR repetitions property.");
+            
             for (int puls = 1; puls <= (pulsdata.length/2); puls++) {
                 String[] cmds = new String[]{//----------------------------------------------------------------------"I" IR puls
                     commandId+"",//command
