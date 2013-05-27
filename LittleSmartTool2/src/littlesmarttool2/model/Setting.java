@@ -61,12 +61,13 @@ public class Setting {
         Threshold lastThreshold = (thresholds.isEmpty()) ? null : thresholds.get(thresholds.size()-1);
         Block lastBlock = (blocks.isEmpty()) ? null : blocks.get(blocks.size()-1);
         
-        
         int position;
         if (lastThreshold == null)
-            position = 500; //First th half way
+            position = 500; //First threshold half way
         else
             position = (1000-lastThreshold.getValuePromille())/2 + lastThreshold.getValuePromille();
+        
+        if (position > 998) return; //Don't add too many
         
         Threshold newThreshold = new Threshold(position, Command.getNothingCommand(), Command.getNothingCommand());
         Block newBlock = new Block(Command.getNothingCommand(), newThreshold, null, 0);

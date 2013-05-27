@@ -48,18 +48,18 @@ public class SS2Wizard extends javax.swing.JFrame {
             UIManager.setLookAndFeel(new WindowsLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {
         }
-        
+
         try {
             Logger logger = Logger.getLogger(SS2Wizard.class.getName());
-            FileHandler fh = new FileHandler("SSErrorLog.txt", true);
+            FileHandler fh = new FileHandler("SSLog.txt", true);
             logger.addHandler(fh);
             logger.setLevel(Level.ALL);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
+            logger.log(Level.INFO, "OS: {0}. ", System.getProperty("os.name"));
         } catch (Exception ex) {
             //DO nothing
         }
-        
         
         configuration = new Configuration();
         controller = new SerialController();
@@ -243,12 +243,12 @@ public class SS2Wizard extends javax.swing.JFrame {
         } catch (NoSuchPortException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("An invalid port was selected ( " + ex.getMessage() + ")");
-            JOptionPane.showMessageDialog(this, "The selected port was invalid.\r\nEnsure that you selected the right one or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
             refreshPortList();
         } catch (PortInUseException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Selected port was in use ( " + ex.getMessage() + ")");
-            JOptionPane.showMessageDialog(this, "The selected port was in use.\r\nEnsure that you selected the right port, and that no other software uses it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
         } catch (UnsupportedCommOperationException | IOException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Exception : " + ex.getClass().getName() + " ( " + ex.getMessage() + ")");

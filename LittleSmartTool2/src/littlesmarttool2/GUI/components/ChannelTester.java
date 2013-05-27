@@ -70,6 +70,7 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
     {
         ArrayList<Block> blocks = channel.getSetting().getBlocks();
         int promille = ((value - lowerBound) * 1000) / (upperBound - lowerBound);
+        promille = Math.min(999, Math.max(0,promille)); //Stay inside bounds
         for (Block b : blocks)
         {
             int blockLower = (b.getLowerThreshold() == null) ? 0 : b.getLowerThreshold().getValuePromille();
@@ -85,9 +86,11 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         //Block
         Block newBlock = getBlockFromValue(value);
         if (currentBlock == newBlock) return; //If its the same block nothing has changed
+        System.out.println("New block: " + newBlock);
         intervalTimer.stop();
         if (newBlock.getInterval() != 0){
             intervalTimer.setDelay(newBlock.getInterval());
+            intervalTimer.setInitialDelay(newBlock.getInterval());
             intervalTimer.start();
         }
         else
@@ -170,6 +173,10 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         viewerPanel.setLayout(new java.awt.BorderLayout());
         add(viewerPanel, java.awt.BorderLayout.CENTER);
 
+        outputPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        outputPanel.setMaximumSize(new java.awt.Dimension(200, 14));
+        outputPanel.setMinimumSize(new java.awt.Dimension(100, 14));
+        outputPanel.setPreferredSize(new java.awt.Dimension(150, 14));
         outputPanel.setLayout(new javax.swing.BoxLayout(outputPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         outputLabel.setMaximumSize(new java.awt.Dimension(100, 14));
