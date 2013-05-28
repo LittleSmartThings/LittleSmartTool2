@@ -262,6 +262,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         }
         @Override
         public void run() {
+            boolean error = false;
             try {
                 SerialCommand connect = controller.connect(port,15000);
                 dotsTimer.stop();
@@ -273,19 +274,29 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
                 refreshPortList();
+                error = true;
             } catch (PortInUseException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
+                error = true;
             } catch (UnsupportedCommOperationException | IOException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
+                error = true;
             } catch (TimeoutException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.","Connection timed out", JOptionPane.ERROR_MESSAGE);
+                error = true;
             }
             finally
             {
                 connecting = false;
+                dotsTimer.stop();
+            }
+            if (error)
+            {
+                connectedLabel.setForeground(new Color(0x660000));
+                connectedLabel.setText("Connection error");
             }
         }    
     }
@@ -298,7 +309,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             connectedLabel.setText("Not connected");
             return;
         }
-        if (evt.getItem() == selectPortMsg) return;
+        if (evt.getItem().equals(selectPortMsg)) return;
         if (connecting) return; //TODO: Handle this somehow?
         connectedLabel.setText("Connecting");
         connectedLabel.setForeground(Color.orange);
