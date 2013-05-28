@@ -40,6 +40,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     public boolean shouldStartServoPuller = false;
     private Timer servoPullerTimer = new Timer(50, null);
     private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
+    private boolean connecting = false;
     
     /**
      * Creates new form SS2Wizard
@@ -77,6 +78,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 if (!connected)
                 {
                     connectedLabel.setText("Not connected");
+                    connectedLabel.setForeground(new Color(0x660000));
                     portChooser.setSelectedIndex(0);
                 }
             }
@@ -94,7 +96,6 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     public void startAutoServoPulling()
     {
         servoPullerTimer.start();
-        System.out.println("Starting auto servo pulling");
     }
     
     public Configuration getConfiguration(){
@@ -218,6 +219,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         });
         portPanel.add(refreshPortListButton);
 
+        connectedLabel.setForeground(new java.awt.Color(102, 0, 0));
         connectedLabel.setText("Not connected");
         connectedLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
         connectedLabel.setMaximumSize(new java.awt.Dimension(110, 14));
@@ -247,34 +249,71 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         }
     }//GEN-LAST:event_nextButtonActionPerformed
 
+    private class SerialConnector implements Runnable
+    {
+        String port;
+        SS2Wizard wizard;
+        Timer dotsTimer;
+        public SerialConnector(String port, SS2Wizard wizard, Timer dotsTimer)
+        {
+            this.port = port;
+            this.wizard = wizard;
+            this.dotsTimer = dotsTimer;
+        }
+        @Override
+        public void run() {
+            try {
+                SerialCommand connect = controller.connect(port,15000);
+                dotsTimer.stop();
+                int[] v = connect.convertArgsToInt();
+                connectedLabel.setForeground(new Color(0x006600));
+                connectedLabel.setText("Connected (v. " + v[1] + "." + v[2] + ")");
+                servoPullerTimer.start();
+            } catch (NoSuchPortException ex) {
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(wizard, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
+                refreshPortList();
+            } catch (PortInUseException ex) {
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(wizard, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
+            } catch (UnsupportedCommOperationException | IOException ex) {
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(wizard, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
+            } catch (TimeoutException ex) {
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(wizard, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.","Connection timed out", JOptionPane.ERROR_MESSAGE);
+            }
+            finally
+            {
+                connecting = false;
+            }
+        }    
+    }
+    
     private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged
         if (evt.getStateChange() == ItemEvent.DESELECTED)
         {
             controller.disconnect();
+            connectedLabel.setForeground(new Color(0x660000));
+            connectedLabel.setText("Not connected");
             return;
         }
         if (evt.getItem() == selectPortMsg) return;
-        
-        try {
-            connectedLabel.setText("Connecting...");
-            SerialCommand connect = controller.connect(evt.getItem().toString(),15000); //TODO: Other thread
-            int[] v = connect.convertArgsToInt();
-            connectedLabel.setText("Connected (v. " + v[1] + "." + v[2] + ")");
-            servoPullerTimer.start();
-        } catch (NoSuchPortException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
-            refreshPortList();
-        } catch (PortInUseException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
-        } catch (UnsupportedCommOperationException | IOException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.","Connection timed out", JOptionPane.ERROR_MESSAGE);
-        }
+        if (connecting) return; //TODO: Handle this somehow?
+        connectedLabel.setText("Connecting");
+        connectedLabel.setForeground(Color.orange);
+        Timer dotsTimer = new Timer(500,new ActionListener() {
+            int dots = 1;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String d = (dots == 1) ? "." : ((dots == 2) ? ".." : "...");
+                connectedLabel.setText("Connecting"+d);
+                dots++;
+                if (dots > 3) dots = 1;
+            }
+        });
+        dotsTimer.start();
+        new Thread(new SerialConnector(portChooser.getSelectedItem().toString(), this, dotsTimer)).start();
     }//GEN-LAST:event_portChooserItemStateChanged
 
     private void refreshPortList()
@@ -304,23 +343,6 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 
-    public void receiveResponse(char command, String[] args) {
-        if (command != 'V') return;
-        if (args.length < 8) return;
-        String type = args[0];
-        String mainVersion = args[1];
-        String subVersion = args[2];
-        String year = args[3];
-        String month = args[4];
-        String day = args[5];
-        String hour = args[6];
-        String min = args[7];
-        connectedLabel.setText(String.format("Connected! (v. %s.%s)",mainVersion,subVersion));
-        Logger.getLogger(SS2Wizard.class.getName()).log(Level.INFO, "Connected to Stratosnapper2. Firmware version: {0}.{1} Built:{2}/{3}/{4} {5}:{6}",new String[]{mainVersion,subVersion,year,month,day,hour,min});
-        
-        shouldStartServoPuller = false;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
@@ -335,10 +357,10 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             servoPullerTimer.stop();
             controller.disconnect();
             connectedLabel.setText("Not connected");
+            connectedLabel.setForeground(new Color(0x660000));
             portChooser.setSelectedIndex(0);
         } catch (TimeoutException ex) {
             //TODO: Count timeouts (if more than x, stop)
         }
-        
     }
 }
