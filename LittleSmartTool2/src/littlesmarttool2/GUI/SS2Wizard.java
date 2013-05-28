@@ -325,12 +325,9 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         try {
             //Servo puller timer tick
-            System.out.println("Pulling servo value");
             String reading = controller.send("S", 150);
-            System.out.println("Pulled servo value");
             SerialCommand cmd = SerialCommand.fromMessage(reading);
             if (cmd.getCommand() != 'S') throw new IOException("Unexpected answer from device");
-            System.out.println("Invoking listeners");
             for (ResponseListener l : servoReadingListeners)
                 if (l != null)
                     l.receiveResponse(cmd.getCommand(), cmd.getArgs());
@@ -340,7 +337,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             connectedLabel.setText("Not connected");
             portChooser.setSelectedIndex(0);
         } catch (TimeoutException ex) {
-            System.out.println("Timeout! :(");
+            //TODO: Count timeouts (if more than x, stop)
         }
         
     }
