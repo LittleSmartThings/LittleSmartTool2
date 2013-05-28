@@ -7,7 +7,7 @@ package littlesmarttool2.model;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import littlesmarttool2.comm.AutoServoPuller;
+import java.util.concurrent.TimeoutException;
 import littlesmarttool2.comm.SerialController;
 import static littlesmarttool2.model.ConnectionType.*;
 import littlesmarttool2.util.JSON;
@@ -73,127 +73,129 @@ public class ModelUtil {
         }
     }
     
-    public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException {
-        try{
-            AutoServoPuller.Stop(comm);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {/*Cough*/}
-            comm.setSyncTimeout(1000);
-            String response = comm.sendSync('F', new String[]{"1"});
-            if(!response.equals("F;1"))//--------------------------------"F" Clear EEPROM
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to clear the EEPROM. Response: "+response);
-            switch(conf.getOutputType()){
-                case IR:
-                    if(!comm.sendSync('O', new String[]{"1"}).equals("O;1"))//------------------------"O" Output mode: IR
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to IR.");
-                    break;
-                case Wire:
-                    if(!comm.sendSync('O', new String[]{"2"}).equals("O;1"))//------------------------"O" Output mode: Wire
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to wire.");
-                    break;
-                case LANC:
-                    if(!comm.sendSync('O', new String[]{"3"}).equals("O;1"))//------------------------"O" Output mode: LANC
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to LANC.");
-                    break;
-            }
-            for (Channel channel : conf.getChannels()) {
-                int servo = channel.getId();
-                Setting setting = channel.getSetting();
+    public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException, TimeoutException {
+        System.out.print("Clearing EEPROM...");
+        String response = comm.send('F', new String[]{"1"}, 5000);
+        System.out.println("done");
+        if(!response.equals("F;1"))//--------------------------------"F" Clear EEPROM
+            throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to clear the EEPROM. Response: "+response);
+        System.out.print("Switching output type...");
+        switch(conf.getOutputType()){
+            case IR:
+                if(!comm.send('O', new String[]{"1"},10000).equals("O;1"))//------------------------"O" Output mode: IR
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to IR.");
+                break;
+            case Wire:
+                if(!comm.send('O', new String[]{"2"},10000).equals("O;1"))//------------------------"O" Output mode: Wire
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to wire.");
+                break;
+            case LANC:
+                if(!comm.send('O', new String[]{"3"},10000).equals("O;1"))//------------------------"O" Output mode: LANC
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the output mode to LANC.");
+                break;
+        }
+        System.out.println("done");
+        for (Channel channel : conf.getChannels()) {
+            int servo = channel.getId();
+            Setting setting = channel.getSetting();
 
-                //Thresholds / Triggers
-                int cmdId = 1, number = 1;
-                for (Threshold threshold : setting.getThresholds()) {
-                    if(threshold.getUpCommand() != Command.getNothingCommand()) {
-                        if (threshold.getUpCommand().getClass() == WireCommand.class)
-                        {
-                            cmdId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
-                        }
-                        else
-                        {
-                            sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
-                        }
-                        response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
-                            number+"",//number
-                            servo+"",//servo
-                            channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
-                            "1",//going high
-                            "0",//going low
-                            "10",//hysteresis
-                            cmdId+""//command
-                        });
-                        if(!response.equals("T;1"))
-                            throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a trigger point with an up command. Response: "+response);
-                        cmdId++;number++;
-                    }
-                    if(threshold.getDownCommand() == Command.getNothingCommand()) 
-                        continue;
-                    if (threshold.getDownCommand().getClass() == WireCommand.class)
+            //Thresholds / Triggers
+            int cmdId = 1, number = 1;
+            for (Threshold threshold : setting.getThresholds()) {
+                if(threshold.getUpCommand() != Command.getNothingCommand()) {
+                    if (threshold.getUpCommand().getClass() == WireCommand.class)
                     {
-                        cmdId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
+                        cmdId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
                     }
                     else
                     {
-                        sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
+                        sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
                     }
-                    response = comm.sendSync('T', new String[]{//------------------------------"T" Trigger point
+                    System.out.print("Sending trigger...");
+                    response = comm.send('T', new String[]{//------------------------------"T" Trigger point
                         number+"",//number
                         servo+"",//servo
                         channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
-                        "0",//going high
-                        "1",//going low
-                        "50",//hysteresis
+                        "1",//going high
+                        "0",//going low
+                        "10",//hysteresis
                         cmdId+""//command
-                    });
+                    }, 1000);
+                    System.out.println("done");
                     if(!response.equals("T;1"))
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command. Response: "+response);
+                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a trigger point with an up command. Response: "+response);
                     cmdId++;number++;
                 }
-
-                //Blocks / Ranges
-                for (Block block : setting.getBlocks()) {
-                    if(block.getCommand() == Command.getNothingCommand())
-                        continue;
-                    int minPromille = block.getLowerThreshold() != null ? block.getLowerThreshold().getValuePromille() : 0;
-                    //Max is exclusive, except for the highest block
-                    int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
-
-                    if (block.getCommand().getClass() == WireCommand.class)
-                    {
-                        cmdId = ((WireCommand)block.getCommand()).getPinConfig();
-                    }
-                    else
-                    {
-                        sendCommandToSnapper(comm, block.getCommand(), cmdId);
-                    }
-                    response = comm.sendSync('R', new String[]{//------------------------------"R" Range trigger
-                        number+"",//number
-                        servo+"",//servo
-                        channel.convertPromilleToValue(maxPromille)+"",//max point
-                        channel.convertPromilleToValue(minPromille)+"",//min point
-                        block.getInterval()+"",//timing range high
-                        block.getInterval()+"",//timing range low
-                        "1",//expo
-                        cmdId+""//command
-                    });
-                    if(!response.equals("R;1"))
-                        throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger. Response: "+response);
-                    cmdId++;number++;
+                if(threshold.getDownCommand() == Command.getNothingCommand()) 
+                    continue;
+                if (threshold.getDownCommand().getClass() == WireCommand.class)
+                {
+                    cmdId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
                 }
+                else
+                {
+                    sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
+                }
+                System.out.print("Sending trigger...");
+                response = comm.send('T', new String[]{//------------------------------"T" Trigger point
+                    number+"",//number
+                    servo+"",//servo
+                    channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
+                    "0",//going high
+                    "1",//going low
+                    "50",//hysteresis
+                    cmdId+""//command
+                },1000);
+                System.out.println("done");
+                if(!response.equals("T;1"))
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command. Response: "+response);
+                cmdId++;number++;
             }
-        }
-        finally{
-            AutoServoPuller.Start(comm);
+
+            //Blocks / Ranges
+            for (Block block : setting.getBlocks()) {
+                if(block.getCommand() == Command.getNothingCommand())
+                    continue;
+                int minPromille = block.getLowerThreshold() != null ? block.getLowerThreshold().getValuePromille() : 0;
+                //Max is exclusive, except for the highest block
+                int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
+
+                if (block.getCommand().getClass() == WireCommand.class)
+                {
+                    cmdId = ((WireCommand)block.getCommand()).getPinConfig();
+                }
+                else
+                {
+                    sendCommandToSnapper(comm, block.getCommand(), cmdId);
+                }
+                System.out.print("Sending range...");
+                response = comm.send('R', new String[]{//------------------------------"R" Range trigger
+                    number+"",//number
+                    servo+"",//servo
+                    channel.convertPromilleToValue(maxPromille)+"",//max point
+                    channel.convertPromilleToValue(minPromille)+"",//min point
+                    block.getInterval()+"",//timing range high
+                    block.getInterval()+"",//timing range low
+                    "1",//expo
+                    cmdId+""//command
+                },1000);
+                System.out.println("done");
+                if(!response.equals("R;1"))
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger. Response: "+response);
+                cmdId++;number++;
+            }
         }
     }
     
-    private static void sendCommandToSnapper(SerialController comm, Command command, int commandId) throws IOException{
+    private static void sendCommandToSnapper(SerialController comm, Command command, int commandId) throws IOException, TimeoutException{
         if(command.getClass() == IRCommand.class){
             IRCommand ir = (IRCommand) command;
             int[] pulsdata = ir.getPulsedata();
             
-            if(!comm.sendSync("G;"+ir.getRepeats()+";"+ir.getDelayBetweenRepeats()).equals("G;1"))//-----------------"G" IR Repetitions
+            System.out.print("Sending IR repetition info...");
+            if(!comm.send("G;"+commandId+";"+ir.getRepeats()+";"+ir.getDelayBetweenRepeats(),5000).equals("G;1"))//-----------------"G" IR Repetitions
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR repetitions property.");
+            System.out.println("done");
             
             for (int puls = 1; puls <= (pulsdata.length/2); puls++) {
                 String[] cmds = new String[]{//----------------------------------------------------------------------"I" IR puls
@@ -202,26 +204,33 @@ public class ModelUtil {
                     pulsdata[puls*2-2]+"",//timing high
                     pulsdata[puls*2-1]+""//timing low
                 };
-                String response = comm.sendSync('I', cmds);
+                System.out.print("Sending IR command part " + puls + " ...");
+                String response = comm.send('I', cmds,5000);
+                System.out.println("done");
                 if(!response.equals("I;1")) //TODO: what about repeats??
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set an IR pulse.\n"
                             + "Sent: "+Arrays.deepToString(cmds)+"\n"
                 + "Response: "+response);
             }
-            if(!comm.sendSync("K;"+ir.getFrequency()).equals("K;1")){//----------------------------------------------"K" IR Frequency
+            if(!comm.send("K;"+ir.getFrequency(),5000).equals("K;1")){//----------------------------------------------"K" IR Frequency
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR frequency.");
             }else return;
         }
         if(command.getClass() == LANCCommand.class){
             LANCCommand lanc = (LANCCommand)command;
-            String response = comm.sendSync('L', new String[]{//------------------------------------------------------------"L" LANC Command
+            String response = comm.send('L', new String[]{//------------------------------------------------------------"L" LANC Command
                 commandId+"",//command
                 lanc.getCommandByte0()+"",//byte 0
                 lanc.getCommandByte1()+"" //byte 1
-            });
+            },5000);
+            System.out.print("Sending LANC command...");
             if(!response.equals("L;1")){ 
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a LANC command. Response: "+response);
-            } else return;
+            } else 
+            {
+                System.out.println("done");
+                return;
+            }
         }
     }
 }

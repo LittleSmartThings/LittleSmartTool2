@@ -6,7 +6,7 @@ package littlesmarttool2.comm;
 
 /**
  *
- * @author marcher89
+ * @author Rasmus
  */
 public interface ConnectionListener {
     void connectionStateChanged(boolean connected);

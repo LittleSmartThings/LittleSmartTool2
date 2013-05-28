@@ -9,17 +9,19 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import littlesmarttool2.comm.AutoServoPuller;
+import littlesmarttool2.comm.ConnectionListener;
 import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.comm.SerialCommand;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Configuration;
 
@@ -27,7 +29,7 @@ import littlesmarttool2.model.Configuration;
  *
  * @author marcher89
  */
-public class SS2Wizard extends javax.swing.JFrame {
+public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
     private StepPanel[] stepPanels;
     private int currentStep = -1;
@@ -35,36 +37,26 @@ public class SS2Wizard extends javax.swing.JFrame {
     private Configuration configuration;
     private SerialController controller;
     private final String selectPortMsg = "Select port:";
+    public boolean shouldStartServoPuller = false;
+    private Timer servoPullerTimer = new Timer(50, null);
+    private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
     
     /**
      * Creates new form SS2Wizard
      */
     public SS2Wizard() {
+        
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
-        } catch (UnsupportedLookAndFeelException ex) {
-        }
+        } catch (UnsupportedLookAndFeelException ex) {}
         try {
             UIManager.setLookAndFeel(new WindowsLookAndFeel());
-        } catch (UnsupportedLookAndFeelException ex) {
-        }
-
-        try {
-            Logger logger = Logger.getLogger(SS2Wizard.class.getName());
-            FileHandler fh = new FileHandler("SSLog.txt", true);
-            logger.addHandler(fh);
-            logger.setLevel(Level.ALL);
-            SimpleFormatter formatter = new SimpleFormatter();
-            fh.setFormatter(formatter);
-            logger.log(Level.INFO, "OS: {0}. ", System.getProperty("os.name"));
-        } catch (Exception ex) {
-            //DO nothing
-        }
+        } catch (UnsupportedLookAndFeelException ex) {}
+        initComponents();
+        
         
         configuration = new Configuration();
         controller = new SerialController();
-        
-        initComponents();
         
         //Initialize port chooser
         refreshPortList();
@@ -75,10 +67,34 @@ public class SS2Wizard extends javax.swing.JFrame {
         for (StepPanel step : stepPanels) {
             cardPanel.add(step, step.getName());
         }
-        controller.addResponseListener((ResponseListener)stepPanels[1]); //Page two need to be a listener
-        controller.addResponseListener((ResponseListener)stepPanels[2]); //Page three need to be a listener
-        controller.addResponseListener((ResponseListener)stepPanels[3]); //Page four need to be a listener
+        servoReadingListeners.add((ResponseListener)stepPanels[1]);
+        servoReadingListeners.add((ResponseListener)stepPanels[2]);
+        servoReadingListeners.add((ResponseListener)stepPanels[3]);
+
+        controller.addConnectionListener(new ConnectionListener() {
+            @Override
+            public void connectionStateChanged(boolean connected) {
+                if (!connected)
+                {
+                    connectedLabel.setText("Not connected");
+                    portChooser.setSelectedIndex(0);
+                }
+            }
+        });
+        
+        servoPullerTimer.addActionListener(this);
         goToStep(0);
+    }
+    
+    public void stopAutoServoPulling()
+    {
+        servoPullerTimer.stop();
+    }
+    
+    public void startAutoServoPulling()
+    {
+        servoPullerTimer.start();
+        System.out.println("Starting auto servo pulling");
     }
     
     public Configuration getConfiguration(){
@@ -134,11 +150,12 @@ public class SS2Wizard extends javax.swing.JFrame {
         portLabel = new javax.swing.JLabel();
         portChooser = new javax.swing.JComboBox();
         refreshPortListButton = new javax.swing.JButton();
+        connectedLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
-        setMinimumSize(new java.awt.Dimension(680, 570));
-        setPreferredSize(new java.awt.Dimension(680, 570));
+        setMinimumSize(new java.awt.Dimension(750, 570));
+        setPreferredSize(new java.awt.Dimension(750, 570));
 
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());
@@ -201,6 +218,13 @@ public class SS2Wizard extends javax.swing.JFrame {
         });
         portPanel.add(refreshPortListButton);
 
+        connectedLabel.setText("Not connected");
+        connectedLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
+        connectedLabel.setMaximumSize(new java.awt.Dimension(110, 14));
+        connectedLabel.setMinimumSize(new java.awt.Dimension(110, 14));
+        connectedLabel.setPreferredSize(new java.awt.Dimension(110, 14));
+        portPanel.add(connectedLabel);
+
         upperPanel.add(portPanel, java.awt.BorderLayout.EAST);
 
         contentPanel.add(upperPanel, java.awt.BorderLayout.NORTH);
@@ -229,16 +253,14 @@ public class SS2Wizard extends javax.swing.JFrame {
             controller.disconnect();
             return;
         }
-        if (evt.getItem() == selectPortMsg) 
-        {
-            return;
-        }
+        if (evt.getItem() == selectPortMsg) return;
+        
         try {
-            //Connect to the StratoSnapper and begin polling 
-            System.out.println("Connecting to: " + evt.getItem());
-            controller.connect(evt.getItem().toString());
-            System.out.println("Connected to: " + controller.connected());
-            AutoServoPuller.Start(controller);
+            connectedLabel.setText("Connecting...");
+            SerialCommand connect = controller.connect(evt.getItem().toString(),15000); //TODO: Other thread
+            int[] v = connect.convertArgsToInt();
+            connectedLabel.setText("Connected (v. " + v[1] + "." + v[2] + ")");
+            servoPullerTimer.start();
         } catch (NoSuchPortException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
@@ -249,6 +271,9 @@ public class SS2Wizard extends javax.swing.JFrame {
         } catch (UnsupportedCommOperationException | IOException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
+        } catch (TimeoutException ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.","Connection timed out", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_portChooserItemStateChanged
 
@@ -268,6 +293,7 @@ public class SS2Wizard extends javax.swing.JFrame {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel cardPanel;
+    private javax.swing.JLabel connectedLabel;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JLabel headline;
     private javax.swing.JButton nextButton;
@@ -277,4 +303,45 @@ public class SS2Wizard extends javax.swing.JFrame {
     private javax.swing.JButton refreshPortListButton;
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
+
+    public void receiveResponse(char command, String[] args) {
+        if (command != 'V') return;
+        if (args.length < 8) return;
+        String type = args[0];
+        String mainVersion = args[1];
+        String subVersion = args[2];
+        String year = args[3];
+        String month = args[4];
+        String day = args[5];
+        String hour = args[6];
+        String min = args[7];
+        connectedLabel.setText(String.format("Connected! (v. %s.%s)",mainVersion,subVersion));
+        Logger.getLogger(SS2Wizard.class.getName()).log(Level.INFO, "Connected to Stratosnapper2. Firmware version: {0}.{1} Built:{2}/{3}/{4} {5}:{6}",new String[]{mainVersion,subVersion,year,month,day,hour,min});
+        
+        shouldStartServoPuller = false;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            //Servo puller timer tick
+            System.out.println("Pulling servo value");
+            String reading = controller.send("S", 150);
+            System.out.println("Pulled servo value");
+            SerialCommand cmd = SerialCommand.fromMessage(reading);
+            if (cmd.getCommand() != 'S') throw new IOException("Unexpected answer from device");
+            System.out.println("Invoking listeners");
+            for (ResponseListener l : servoReadingListeners)
+                if (l != null)
+                    l.receiveResponse(cmd.getCommand(), cmd.getArgs());
+        } catch (IOException ex) {
+            servoPullerTimer.stop();
+            controller.disconnect();
+            connectedLabel.setText("Not connected");
+            portChooser.setSelectedIndex(0);
+        } catch (TimeoutException ex) {
+            System.out.println("Timeout! :(");
+        }
+        
+    }
 }

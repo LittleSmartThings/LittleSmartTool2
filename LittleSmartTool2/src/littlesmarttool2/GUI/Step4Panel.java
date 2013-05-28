@@ -6,6 +6,7 @@ package littlesmarttool2.GUI;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -108,8 +109,10 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         repaint();
         
         try {
+            wizard.stopAutoServoPulling();
             ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
-        } catch (IOException ex) {
+            wizard.startAutoServoPulling();
+        } catch (IOException | TimeoutException ex) {
             Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex); //Keep this!
             wizard.setHasUploaded(false);
             uploadLabel.setText("An error occurred, please try agian.");
