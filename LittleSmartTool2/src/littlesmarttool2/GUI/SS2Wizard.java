@@ -31,17 +31,19 @@ import littlesmarttool2.model.Configuration;
  */
 public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
+    private static final String SELECT_PORT_MESSAGE = "Select port:";
+    
     private StepPanel[] stepPanels;
     private int currentStep = -1;
     private boolean hasUploaded = false;
     private Configuration configuration;
     private SerialController controller;
-    private final String selectPortMsg = "Select port:";
-    public boolean shouldStartServoPuller = false;
     private Timer servoPullerTimer = new Timer(50, null);
     private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
     private boolean connecting = false;
     private boolean waitingForServoResponse = false;
+    private int servoRequestTimeoutCount = 0;
+    private static final int MAX_SERVO_REQUEST_TIMEOUT_COUNT = 10;
     
     /**
      * Creates new form SS2Wizard
@@ -310,7 +312,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             connectedLabel.setText("Not connected");
             return;
         }
-        if (evt.getItem().equals(selectPortMsg)) return;
+        if (evt.getItem().equals(SELECT_PORT_MESSAGE)) return;
         if (connecting) return; //TODO: Handle this somehow?
         connectedLabel.setText("Connecting");
         connectedLabel.setForeground(Color.orange);
@@ -332,7 +334,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     {
         ArrayList<String> portNames = SerialController.getPortNames();
         portChooser.removeAllItems();
-        portNames.add(0, selectPortMsg);
+        portNames.add(0, SELECT_PORT_MESSAGE);
         portChooser.setModel(new DefaultComboBoxModel(portNames.toArray()));
     }
     
@@ -364,6 +366,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             String reading = controller.send("S", 1000);
             SerialCommand cmd = SerialCommand.fromMessage(reading);
             if (cmd.getCommand() != 'S') throw new IOException("Unexpected answer from device");
+            servoRequestTimeoutCount = 0;
             for (ResponseListener l : servoReadingListeners)
                 if (l != null)
                     l.receiveResponse(cmd.getCommand(), cmd.getArgs());
@@ -375,6 +378,17 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             portChooser.setSelectedIndex(0);
         } catch (TimeoutException ex) {
             //TODO: Count timeouts (if more than x, stop)
+            servoRequestTimeoutCount++;
+            if (servoRequestTimeoutCount > MAX_SERVO_REQUEST_TIMEOUT_COUNT)
+            {
+                servoPullerTimer.stop();
+                controller.disconnect();
+                connectedLabel.setText("Not connected");
+                connectedLabel.setForeground(new Color(0x660000));
+                portChooser.setSelectedIndex(0);
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, "Servo reading request timed out " + servoRequestTimeoutCount + " times in a row. Disconnecting.", ex);
+                JOptionPane.showMessageDialog(this, "The connected Stratosnapper is not responding.\r\nMake sure that it is properly connected, and that the right port is selected.", "No response from Stratosnapper", JOptionPane.ERROR_MESSAGE);
+            }
         }
         finally
         {
