@@ -103,12 +103,14 @@ public class ModelUtil {
             int cmdId = 1, number = 1;
             for (Threshold threshold : setting.getThresholds()) {
                 if(threshold.getUpCommand() != Command.getNothingCommand()) {
+                    int sendId;
                     if (threshold.getUpCommand().getClass() == WireCommand.class)
                     {
-                        cmdId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
+                        sendId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
                     }
                     else
                     {
+                        sendId=cmdId;
                         sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
                     }
                     System.out.print("Sending trigger...");
@@ -119,21 +121,24 @@ public class ModelUtil {
                         "1",//going high
                         "0",//going low
                         "10",//hysteresis
-                        cmdId+""//command
+                        sendId+""//command
                     }, 1000);
                     System.out.println("done");
                     if(!response.equals("T;1"))
                         throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a trigger point with an up command. Response: "+response);
                     cmdId++;number++;
                 }
+                
                 if(threshold.getDownCommand() == Command.getNothingCommand()) 
                     continue;
+                int sendId;
                 if (threshold.getDownCommand().getClass() == WireCommand.class)
                 {
-                    cmdId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
+                    sendId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
                 }
                 else
                 {
+                    sendId = cmdId;
                     sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
                 }
                 System.out.print("Sending trigger...");
@@ -144,7 +149,7 @@ public class ModelUtil {
                     "0",//going high
                     "1",//going low
                     "50",//hysteresis
-                    cmdId+""//command
+                    sendId+""//command
                 },1000);
                 System.out.println("done");
                 if(!response.equals("T;1"))
@@ -160,12 +165,14 @@ public class ModelUtil {
                 //Max is exclusive, except for the highest block
                 int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
 
+                int sendId;
                 if (block.getCommand().getClass() == WireCommand.class)
                 {
-                    cmdId = ((WireCommand)block.getCommand()).getPinConfig();
+                    sendId = ((WireCommand)block.getCommand()).getPinConfig();
                 }
                 else
                 {
+                    sendId = cmdId;
                     sendCommandToSnapper(comm, block.getCommand(), cmdId);
                 }
                 System.out.print("Sending range...");
@@ -177,7 +184,7 @@ public class ModelUtil {
                     block.getInterval()+"",//timing range high
                     block.getInterval()+"",//timing range low
                     "1",//expo
-                    cmdId+""//command
+                    sendId+""//command
                 },1000);
                 System.out.println("done");
                 if(!response.equals("R;1"))
