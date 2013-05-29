@@ -107,16 +107,12 @@ public class ModelUtil {
             int cmdId = 1, number = 1;
             for (Threshold threshold : setting.getThresholds()) {
                 if(threshold.getUpCommand() != Command.getNothingCommand()) {
-                    int sendId;
-                    if (threshold.getUpCommand().getClass() == WireCommand.class)
-                    {
-                        sendId = ((WireCommand)threshold.getUpCommand()).getPinConfig();
-                    }
-                    else
-                    {
-                        sendId=cmdId;
-                        sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
-                    }
+                    
+                    int sendId = (threshold.getUpCommand().getClass() == WireCommand.class) ?
+                            ((WireCommand)threshold.getUpCommand()).getPinConfig() :
+                            cmdId;
+                    
+                    sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
                     System.out.print("Sending trigger...");
                     response = comm.send('T', new String[]{//------------------------------"T" Trigger point
                         number+"",//number
@@ -135,16 +131,12 @@ public class ModelUtil {
                 
                 if(threshold.getDownCommand() == Command.getNothingCommand()) 
                     continue;
-                int sendId;
-                if (threshold.getDownCommand().getClass() == WireCommand.class)
-                {
-                    sendId = ((WireCommand)threshold.getDownCommand()).getPinConfig();
-                }
-                else
-                {
-                    sendId = cmdId;
-                    sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
-                }
+                
+                int sendId = (threshold.getDownCommand().getClass() == WireCommand.class) ?
+                        ((WireCommand)threshold.getDownCommand()).getPinConfig() :
+                        cmdId;
+                
+                sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
                 System.out.print("Sending trigger...");
                 response = comm.send('T', new String[]{//------------------------------"T" Trigger point
                     number+"",//number
@@ -169,16 +161,11 @@ public class ModelUtil {
                 //Max is exclusive, except for the highest block
                 int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
 
-                int sendId;
-                if (block.getCommand().getClass() == WireCommand.class)
-                {
-                    sendId = ((WireCommand)block.getCommand()).getPinConfig();
-                }
-                else
-                {
-                    sendId = cmdId;
-                    sendCommandToSnapper(comm, block.getCommand(), cmdId);
-                }
+                int sendId = (block.getCommand().getClass() == WireCommand.class) ?
+                        ((WireCommand)block.getCommand()).getPinConfig() :
+                        cmdId;
+                
+                sendCommandToSnapper(comm, block.getCommand(), cmdId);
                 System.out.print("Sending range...");
                 response = comm.send('R', new String[]{//------------------------------"R" Range trigger
                     number+"",//number
@@ -237,6 +224,19 @@ public class ModelUtil {
             System.out.print("Sending LANC command...");
             if(!response.equals("L;1")){ 
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a LANC command. Response: "+response);
+            } else 
+            {
+                System.out.println("done");
+                return;
+            }
+        }
+        if(command.getClass() == WireCommand.class){
+            String response = comm.send('P', new String[]{//------------------------------------------------------------"L" LANC Command
+                ((WireCommand)command).getPulseLength()+""//time in ms
+            },5000);
+            System.out.print("Sending wire pulse length");
+            if(!response.equals("P;1")){ 
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the wire pulse length. Response: "+response);
             } else 
             {
                 System.out.println("done");
