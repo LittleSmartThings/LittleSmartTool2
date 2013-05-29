@@ -151,7 +151,7 @@ public class ModelUtil {
                 if(!response.equals("T;1"))
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command. Response: "+response);
                 cmdId++;number++;
-            }
+            } //End for (threshold : thresholds
 
             //Blocks / Ranges
             for (Block block : setting.getBlocks()) {
@@ -181,8 +181,10 @@ public class ModelUtil {
                 if(!response.equals("R;1"))
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger. Response: "+response);
                 cmdId++;number++;
-            }
-        }
+            } //End for (block : blocks)
+        } //End for (channel : channels)
+        if(!comm.send("M",10000).equals("M;1"))//-----------------"M" Store to EEPROM
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM");
     }
     
     private static void sendCommandToSnapper(SerialController comm, Command command, int commandId) throws IOException, TimeoutException{
@@ -210,38 +212,33 @@ public class ModelUtil {
                             + "Sent: "+Arrays.deepToString(cmds)+"\n"
                 + "Response: "+response);
             }
-            if(!comm.send("K;"+ir.getFrequency(),5000).equals("K;1")){//----------------------------------------------"K" IR Frequency
+            if(!comm.send("K;"+ir.getFrequency(),5000).equals("K;1"))//----------------------------------------------"K" IR Frequency
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the IR frequency.");
-            }else return;
+            
+            if(!comm.send("M",10000).equals("M;1"))//-----------------"M" Store to EEPROM
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM");
+            
         }
-        if(command.getClass() == LANCCommand.class){
+        else if(command.getClass() == LANCCommand.class){
             LANCCommand lanc = (LANCCommand)command;
+            System.out.print("Sending LANC command...");
             String response = comm.send('L', new String[]{//------------------------------------------------------------"L" LANC Command
                 commandId+"",//command
                 lanc.getCommandByte0()+"",//byte 0
                 lanc.getCommandByte1()+"" //byte 1
             },5000);
-            System.out.print("Sending LANC command...");
-            if(!response.equals("L;1")){ 
+            if(!response.equals("L;1"))
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a LANC command. Response: "+response);
-            } else 
-            {
-                System.out.println("done");
-                return;
-            }
+            System.out.println("done");
         }
-        if(command.getClass() == WireCommand.class){
+        else if(command.getClass() == WireCommand.class){
+            System.out.print("Sending wire pulse length");
             String response = comm.send('P', new String[]{//------------------------------------------------------------"L" LANC Command
                 ((WireCommand)command).getPulseLength()+""//time in ms
             },5000);
-            System.out.print("Sending wire pulse length");
-            if(!response.equals("P;1")){ 
+            if(!response.equals("P;1"))
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the wire pulse length. Response: "+response);
-            } else 
-            {
-                System.out.println("done");
-                return;
-            }
+            System.out.println("done");
         }
     }
 }
