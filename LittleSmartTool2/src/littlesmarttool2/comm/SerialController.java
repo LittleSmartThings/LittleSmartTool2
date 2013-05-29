@@ -148,6 +148,7 @@ public class SerialController {
      */
     public synchronized String send(String message, int timeOut) throws IOException, TimeoutException
     {
+        System.out.println("Sending: >>>" + message + "<<<");
         long endTime = System.currentTimeMillis() + timeOut;
         
         //Clear eventual abandoned messages
@@ -156,6 +157,9 @@ public class SerialController {
         String read = INIT_STRING;
         while (INIT_STRING.equals(read))
         {
+            if (System.currentTimeMillis() > endTime)
+                throw new TimeoutException("Connection timeout exceeded");
+            
             //Actually send message
             outStream.write((message + ">").getBytes());
             outStream.flush();
@@ -164,17 +168,18 @@ public class SerialController {
                 read = inReader.readLine();
                 if (read.charAt(0) != message.charAt(0))
                 {
+                    System.out.println("\tDiscarding: >>>" + read + "<<<");
                     read = INIT_STRING; //Nothing was read (*woosh*)
                     //NOTE: U's are also ignored
                 }
             }
             catch (IOException ex)
             {
-                if (System.currentTimeMillis() > endTime)
-                    throw new TimeoutException("Connection timeout exceeded");
+                //Nothing to read
             }
             //The write - tryRead cycle continues until timeout
         }
+        System.out.println("\tReceived: >>>" + read + "<<<");
         return read;
     }
     

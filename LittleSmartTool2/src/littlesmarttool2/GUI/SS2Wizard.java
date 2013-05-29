@@ -41,6 +41,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     private Timer servoPullerTimer = new Timer(50, null);
     private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
     private boolean connecting = false;
+    private boolean waitingForServoResponse = false;
     
     /**
      * Creates new form SS2Wizard
@@ -356,9 +357,11 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (waitingForServoResponse) return;
         try {
+            waitingForServoResponse = true;
             //Servo puller timer tick
-            String reading = controller.send("S", 150);
+            String reading = controller.send("S", 1000);
             SerialCommand cmd = SerialCommand.fromMessage(reading);
             if (cmd.getCommand() != 'S') throw new IOException("Unexpected answer from device");
             for (ResponseListener l : servoReadingListeners)
@@ -372,6 +375,10 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             portChooser.setSelectedIndex(0);
         } catch (TimeoutException ex) {
             //TODO: Count timeouts (if more than x, stop)
+        }
+        finally
+        {
+            waitingForServoResponse = false;
         }
     }
 }
