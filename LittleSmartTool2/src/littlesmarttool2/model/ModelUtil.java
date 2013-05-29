@@ -71,6 +71,10 @@ public class ModelUtil {
             }
             command.setCameraModels(models);
         }
+        System.out.println("Loaded " + cameraBrands.length + " camera brands.");
+        System.out.println("Loaded " + irCommands.length + " IR commands.");
+        System.out.println("Loaded " + lancCommands.length + " LANC commands.");
+        System.out.println("Loaded " + wireCommands.length + " wire commands.");
     }
     
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException, TimeoutException {
