@@ -27,6 +27,7 @@ public class CameraModel {
         this.identifier = identifier;
         this.modelName = modelName;
         this.connectionTypes = connectionTypes;
+        updateConnectionTypes();
     }
 
     public String getIdentifier() {
@@ -55,19 +56,34 @@ public class CameraModel {
     
     void addWireCommand(WireCommand command){
         wireCommands.add(command);
+        updateConnectionTypes();
     }
     
     void addIRCommand(IRCommand command){
         irCommands.add(command);
+        updateConnectionTypes();
     }
     
     void addLANCCommand(LANCCommand command){
         lancCommands.add(command);
+        updateConnectionTypes();
     }
     
     @Override
     public String toString() {
         return getModelName();
+    }
+
+    private void updateConnectionTypes() {
+        int i = 0;
+        if(wireCommands.size() > 0) i++;
+        if(irCommands.size() > 0) i++;
+        if(lancCommands.size() > 0) i++;
+        connectionTypes = new ConnectionType[i];
+        i = 0;
+        if(wireCommands.size() > 0) connectionTypes[i++] = ConnectionType.Wire;
+        if(irCommands.size() > 0) connectionTypes[i++] = ConnectionType.IR;
+        if(lancCommands.size() > 0) connectionTypes[i++] = ConnectionType.LANC;
     }
 
 }
