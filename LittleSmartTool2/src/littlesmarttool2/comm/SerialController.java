@@ -141,7 +141,7 @@ public class SerialController {
     public synchronized String send(String message, int timeOut) throws IOException, TimeoutException
     {
         long endTime = System.currentTimeMillis() + timeOut;
-        System.err.println("Sending >>>" + message + "<<<");
+        //System.err.println("Sending >>>" + message + "<<<");
         
         try {
             port.enableReceiveTimeout(timeOut);
@@ -169,7 +169,7 @@ public class SerialController {
                 }
             }
         }
-        System.err.println("Received >>>" + read + "<<<");
+        //System.err.println("Received >>>" + read + "<<<");
         return read;
     }
     

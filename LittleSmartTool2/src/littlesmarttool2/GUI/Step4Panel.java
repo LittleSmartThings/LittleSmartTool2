@@ -106,6 +106,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
         
         uploadLabel.setText("Now uploading, please wait...");
+        uploadButton.setEnabled(false);
         uploadLabel.setForeground(Color.BLACK);
         repaint();
         
@@ -151,11 +152,13 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
                 uploadLabel.setText("An error occurred, please try agian.");
                 uploadLabel.setForeground(new Color(0x660000));
                 JOptionPane.showMessageDialog(panel, ex.getMessage(), "An error occurred!", JOptionPane.ERROR_MESSAGE);
+                uploadButton.setEnabled(true);
                 return;
             }
             wizard.setHasUploaded(true);
             uploadLabel.setText("The configuration was successfully uploaded.");
             uploadLabel.setForeground(new Color(0x006600));
+            uploadButton.setEnabled(true);
         }
     }
     

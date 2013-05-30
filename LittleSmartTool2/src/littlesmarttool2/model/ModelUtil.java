@@ -96,7 +96,7 @@ public class ModelUtil {
         if(!response.equals("F;1"))//--------------------------------"F" Clear EEPROM
             throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to clear the EEPROM. Response: "+response);
         System.out.print("Switching output type...");
-        listener.update("Switching output type");
+        listener.update("Setting output type (" + conf.getOutputType() + ")");
         switch(conf.getOutputType()){
             case IR:
                 if(!comm.send('O', new String[]{"1"},10000, howManyTimesShouldITry).equals("O;1"))//------------------------"O" Output mode: IR
@@ -191,6 +191,7 @@ public class ModelUtil {
                 rangeNumber++;
             } //End for (block : blocks)
         } //End for (channel : channels)
+        listener.update("Saving configuration to EEPROM");
         if(!comm.send("M",10000, howManyTimesShouldITry).equals("M;1"))//-----------------"M" Store to EEPROM
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM.");
     }
