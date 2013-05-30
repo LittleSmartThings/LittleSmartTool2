@@ -17,6 +17,7 @@ public class Configuration {
     private ConnectionType outputType;
     private ArrayList<Channel> channels = new ArrayList<>();
     private int irFreq;
+    private int maxIRPulse, maxIR, maxLANC, maxTriggers, maxRanges;
     
     public Configuration()
     {
@@ -78,6 +79,118 @@ public class Configuration {
     public void setIRFreq(int freq)
     {
         this.irFreq = freq;
+    }
+    
+
+    public int getMaxRanges() {
+        return this.maxRanges;
+    }
+    public void setMaxRanges(int maxRanges) {
+        this.maxRanges = maxRanges;
+    }
+    public int getRemainingRanges(){
+        int nb = 0;
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(block.getCommand() != Command.getNothingCommand()) nb++;
+            }
+        }
+        return maxRanges - nb;
+    }
+
+    public int getMaxTriggers() {
+       return this.maxTriggers;
+    }
+    public void setMaxTriggers(int maxTriggers) {
+        this.maxTriggers = maxTriggers;
+    }
+    public int getRemainingTriggers(){
+        int nb = 0;
+        for (Channel channel : getChannels()) {
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(threshold.getUpCommand() != Command.getNothingCommand()) nb++;
+                if(threshold.getDownCommand() != Command.getNothingCommand()) nb++;
+            }
+        }
+        return maxTriggers - nb;
+    }
+
+    
+    public int getMaxLANC() {
+        return this.maxLANC;
+    }
+    public void setMaxLANC(int maxLANC) {
+        this.maxLANC = maxLANC;
+    }
+    public int getRemainingLANC(){
+        HashSet<Command> commands = new HashSet<>();
+        int nb = 0;
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(block.getCommand().getClass() == LANCCommand.class &&
+                   !commands.contains(block.getCommand())) {
+                    commands.add(block.getCommand());
+                    nb++;
+                }
+            }
+            
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(threshold.getUpCommand().getClass() == LANCCommand.class &&
+                   !commands.contains(threshold.getUpCommand())) {
+                    commands.add(threshold.getUpCommand());
+                    nb++;
+                }
+                if(threshold.getDownCommand().getClass() == LANCCommand.class &&
+                   !commands.contains(threshold.getDownCommand())) {
+                    commands.add(threshold.getDownCommand());
+                    nb++;
+                }
+            }
+        }
+        return maxLANC - nb;
+    }
+
+    
+    public int getMaxIR() {
+        return this.maxIR;
+    }
+    public void setMaxIR(int maxIR) {
+        this.maxIR = maxIR;
+    }
+    public int getRemainingIR(){
+        HashSet<Command> commands = new HashSet<>();
+        int nb = 0;
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(block.getCommand().getClass() == IRCommand.class &&
+                   !commands.contains(block.getCommand())) {
+                    commands.add(block.getCommand());
+                    nb++;
+                }
+            }
+            
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(threshold.getUpCommand().getClass() == IRCommand.class &&
+                   !commands.contains(threshold.getUpCommand())) {
+                    commands.add(threshold.getUpCommand());
+                    nb++;
+                }
+                if(threshold.getDownCommand().getClass() == IRCommand.class &&
+                   !commands.contains(threshold.getDownCommand())) {
+                    commands.add(threshold.getDownCommand());
+                    nb++;
+                }
+            }
+        }
+        return maxIR - nb;
+    }
+
+    
+    public int getMaxIRPulse() {
+        return this.maxIRPulse;
+    }
+    public void setMaxIRPulse(int maxIRPulse) {
+        this.maxIRPulse = maxIRPulse;
     }
     
 }
