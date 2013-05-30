@@ -84,6 +84,8 @@ public class ModelUtil {
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException, TimeoutException {
         commandMap = new HashMap<>();
         currentCommand = 1;
+        int rangeNumber = 1, triggerNumber = 1;
+        
         System.out.print("Clearing EEPROM...");
         String response = comm.send('F', new String[]{"1"}, 5000, howManyTimesShouldITry);
         System.out.println("done");
@@ -105,12 +107,15 @@ public class ModelUtil {
                 break;
         }
         System.out.println("done");
+        
+        if(!comm.send("N;1",10000, howManyTimesShouldITry).equals("N;1"))//-----------------"N" Turn output off
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to turn output off.");
+        
         for (Channel channel : conf.getChannels()) {
             int servo = channel.getId();
             Setting setting = channel.getSetting();
 
             //Thresholds / Triggers
-            int cmdId = 1, number = 1;
             for (Threshold threshold : setting.getThresholds()) {
                 if(threshold.getUpCommand() != Command.getNothingCommand()) {
                     
@@ -118,7 +123,7 @@ public class ModelUtil {
                     
                     System.out.print("Sending trigger...");
                     response = comm.send('T', new String[]{//------------------------------"T" Trigger point
-                        number+"",//number
+                        triggerNumber+"",//number
                         servo+"",//servo
                         channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
                         "1",//going high
@@ -129,7 +134,7 @@ public class ModelUtil {
                     System.out.println("done");
                     if(!response.equals("T;1"))
                         throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a trigger point with an up command. Response: "+response);
-                    cmdId++;number++;
+                    triggerNumber++;
                 }
                 
                 if(threshold.getDownCommand() == Command.getNothingCommand()) 
@@ -139,7 +144,7 @@ public class ModelUtil {
                 
                 System.out.print("Sending trigger...");
                 response = comm.send('T', new String[]{//------------------------------"T" Trigger point
-                    number+"",//number
+                    triggerNumber+"",//number
                     servo+"",//servo
                     channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
                     "0",//going high
@@ -150,7 +155,7 @@ public class ModelUtil {
                 System.out.println("done");
                 if(!response.equals("T;1"))
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a trigger point with a down command. Response: "+response);
-                cmdId++;number++;
+                triggerNumber++;
             } //End for (threshold : thresholds
 
             //Blocks / Ranges
@@ -164,7 +169,7 @@ public class ModelUtil {
                 int sendId = sendCommandToSnapper(comm, block.getCommand());
                 System.out.print("Sending range...");
                 response = comm.send('R', new String[]{//------------------------------"R" Range trigger
-                    number+"",//number
+                    rangeNumber+"",//number
                     servo+"",//servo
                     channel.convertPromilleToValue(maxPromille)+"",//max point
                     channel.convertPromilleToValue(minPromille)+"",//min point
@@ -176,13 +181,11 @@ public class ModelUtil {
                 System.out.println("done");
                 if(!response.equals("R;1"))
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to a range trigger. Response: "+response);
-                cmdId++;number++;
+                rangeNumber++;
             } //End for (block : blocks)
         } //End for (channel : channels)
         if(!comm.send("M",10000, howManyTimesShouldITry).equals("M;1"))//-----------------"M" Store to EEPROM
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM.");
-        if(!comm.send("N;1",10000, howManyTimesShouldITry).equals("N;1"))//-----------------"N" Turn output off
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to turn output off.");
     }
     
     private static int sendCommandToSnapper(SerialController comm, Command command) throws IOException, TimeoutException{
