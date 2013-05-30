@@ -4,10 +4,13 @@
  */
 package littlesmarttool2.model;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
+import littlesmarttool2.comm.ProgrammingUpdateListener;
 import littlesmarttool2.comm.SerialController;
 import static littlesmarttool2.model.ConnectionType.*;
 import littlesmarttool2.util.JSON;
@@ -81,17 +84,19 @@ public class ModelUtil {
         System.out.println("Loaded " + wireCommands.length + " wire commands.");
     }
     
-    public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException, TimeoutException {
+    public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
         commandMap = new HashMap<>();
         currentCommand = 1;
         int rangeNumber = 1, triggerNumber = 1;
-        
+
         System.out.print("Clearing EEPROM...");
+        listener.update("Clearing EEPROM");
         String response = comm.send('F', new String[]{"1"}, 5000, howManyTimesShouldITry);
         System.out.println("done");
         if(!response.equals("F;1"))//--------------------------------"F" Clear EEPROM
             throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to clear the EEPROM. Response: "+response);
         System.out.print("Switching output type...");
+        listener.update("Switching output type");
         switch(conf.getOutputType()){
             case IR:
                 if(!comm.send('O', new String[]{"1"},10000, howManyTimesShouldITry).equals("O;1"))//------------------------"O" Output mode: IR
@@ -116,6 +121,7 @@ public class ModelUtil {
             Setting setting = channel.getSetting();
 
             //Thresholds / Triggers
+            listener.update("Sending triggers for channel " + channel.getId());
             for (Threshold threshold : setting.getThresholds()) {
                 if(threshold.getUpCommand() != Command.getNothingCommand()) {
                     
@@ -158,6 +164,7 @@ public class ModelUtil {
                 triggerNumber++;
             } //End for (threshold : thresholds
 
+            listener.update("Sending ranges for channel " + channel.getId());
             //Blocks / Ranges
             for (Block block : setting.getBlocks()) {
                 if(block.getCommand() == Command.getNothingCommand())

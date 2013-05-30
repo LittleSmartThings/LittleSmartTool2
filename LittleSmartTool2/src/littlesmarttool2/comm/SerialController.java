@@ -88,8 +88,8 @@ public class SerialController {
         if (cmd.getCommand() != 'V')
             throw new IOException("Connected device gave unknown answer");
 
-        invokeConnectionChangedListeners(true);
         connected = true;
+        invokeConnectionChangedListeners(true);
         
         return cmd;
     }

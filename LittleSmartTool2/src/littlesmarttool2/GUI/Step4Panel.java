@@ -104,11 +104,15 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     }// </editor-fold>//GEN-END:initComponents
 
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
+        
         uploadLabel.setText("Now uploading, please wait...");
         uploadLabel.setForeground(Color.BLACK);
         repaint();
         
-        try {
+        Thread t = new Thread(new SSProgrammerRunnable(this));
+        t.start();
+        
+        /*try {
             wizard.stopAutoServoPulling();
             ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
             wizard.startAutoServoPulling();
@@ -119,12 +123,42 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
             uploadLabel.setForeground(new Color(0x660000));
             JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred!", JOptionPane.ERROR_MESSAGE);
             return;
-        }
-        wizard.setHasUploaded(true);
-        uploadLabel.setText("The configuration was successfully uploaded.");
-        uploadLabel.setForeground(new Color(0x006600));
+        }*/
+        
     }//GEN-LAST:event_uploadButtonActionPerformed
 
+    private class SSProgrammerRunnable implements Runnable
+    {
+        Step4Panel panel;
+        public SSProgrammerRunnable(Step4Panel panel)
+        {
+            this.panel = panel;
+        }
+        @Override
+        public void run() {
+            try {
+                wizard.stopAutoServoPulling();
+                ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController(), new ProgrammingUpdateListener(){
+                    @Override
+                    public void update(String message) {
+                        uploadLabel.setText(message);
+                    } 
+                });
+                wizard.startAutoServoPulling();
+            } catch (IOException | TimeoutException ex) {
+                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex); //Keep this!
+                wizard.setHasUploaded(false);
+                uploadLabel.setText("An error occurred, please try agian.");
+                uploadLabel.setForeground(new Color(0x660000));
+                JOptionPane.showMessageDialog(panel, ex.getMessage(), "An error occurred!", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            wizard.setHasUploaded(true);
+            uploadLabel.setText("The configuration was successfully uploaded.");
+            uploadLabel.setForeground(new Color(0x006600));
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ChannelTester channelTester1;
     private littlesmarttool2.GUI.components.ChannelTester channelTester2;
@@ -159,6 +193,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     }
     
     private void updateUploadLabel(){
+        System.out.println("IT IS CALLED");
         if(wizard.getSerialController().connected()){
             uploadLabel.setText("Ready for upload.");
             uploadLabel.setForeground(Color.BLACK);
