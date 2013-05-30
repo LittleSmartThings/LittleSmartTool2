@@ -158,7 +158,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
-        setIconImage(new ImageIcon("./img/rocket.png").getImage());
+        setIconImage(new ImageIcon("./img/rocket_gloss.png").getImage());
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 570));
         setPreferredSize(new java.awt.Dimension(800, 570));
