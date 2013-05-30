@@ -23,6 +23,9 @@ public class ModelUtil {
     static WireCommand[] wireCommands;
     static LANCCommand[] lancCommands;
     
+    static HashMap<Command,Integer> commandMap;
+    static int currentCommand;
+    
     public static void LoadData() {
         cameraBrands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
         
@@ -78,6 +81,8 @@ public class ModelUtil {
     }
     
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm) throws IOException, TimeoutException {
+        commandMap = new HashMap<>();
+        currentCommand = 1;
         System.out.print("Clearing EEPROM...");
         String response = comm.send('F', new String[]{"1"}, 5000);
         System.out.println("done");
@@ -108,11 +113,8 @@ public class ModelUtil {
             for (Threshold threshold : setting.getThresholds()) {
                 if(threshold.getUpCommand() != Command.getNothingCommand()) {
                     
-                    int sendId = (threshold.getUpCommand().getClass() == WireCommand.class) ?
-                            ((WireCommand)threshold.getUpCommand()).getPinConfig() :
-                            cmdId;
+                    int sendId = sendCommandToSnapper(comm, threshold.getUpCommand());
                     
-                    sendCommandToSnapper(comm, threshold.getUpCommand(), cmdId);
                     System.out.print("Sending trigger...");
                     response = comm.send('T', new String[]{//------------------------------"T" Trigger point
                         number+"",//number
@@ -132,11 +134,8 @@ public class ModelUtil {
                 if(threshold.getDownCommand() == Command.getNothingCommand()) 
                     continue;
                 
-                int sendId = (threshold.getDownCommand().getClass() == WireCommand.class) ?
-                        ((WireCommand)threshold.getDownCommand()).getPinConfig() :
-                        cmdId;
+                int sendId = sendCommandToSnapper(comm, threshold.getDownCommand());
                 
-                sendCommandToSnapper(comm, threshold.getDownCommand(), cmdId);
                 System.out.print("Sending trigger...");
                 response = comm.send('T', new String[]{//------------------------------"T" Trigger point
                     number+"",//number
@@ -161,11 +160,7 @@ public class ModelUtil {
                 //Max is exclusive, except for the highest block
                 int maxPromille = block.getUpperThreshold() != null ? block.getUpperThreshold().getValuePromille()-1 : 1000;
 
-                int sendId = (block.getCommand().getClass() == WireCommand.class) ?
-                        ((WireCommand)block.getCommand()).getPinConfig() :
-                        cmdId;
-                
-                sendCommandToSnapper(comm, block.getCommand(), cmdId);
+                int sendId = sendCommandToSnapper(comm, block.getCommand());
                 System.out.print("Sending range...");
                 response = comm.send('R', new String[]{//------------------------------"R" Range trigger
                     number+"",//number
@@ -184,11 +179,30 @@ public class ModelUtil {
             } //End for (block : blocks)
         } //End for (channel : channels)
         if(!comm.send("M",10000).equals("M;1"))//-----------------"M" Store to EEPROM
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM");
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM.");
+        if(!comm.send("N;1",10000).equals("N;1"))//-----------------"N" Turn output off
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to turn output off.");
     }
     
-    private static void sendCommandToSnapper(SerialController comm, Command command, int commandId) throws IOException, TimeoutException{
+    private static int sendCommandToSnapper(SerialController comm, Command command) throws IOException, TimeoutException{
+        
+        if(command.getClass() == WireCommand.class){
+            System.out.print("Sending wire pulse length");
+            String response = comm.send('P', new String[]{//------------------------------------------------------------"L" LANC Command
+                ((WireCommand)command).getPulseLength()+""//time in ms
+            },5000);
+            if(!response.equals("P;1"))
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the wire pulse length. Response: "+response);
+            System.out.println("done");
+            return ((WireCommand)command).getPinConfig();
+        }
+        
+        if(commandMap.containsKey(command)) return commandMap.get(command);
+        
         if(command.getClass() == IRCommand.class){
+            int commandId = currentCommand++;
+            commandMap.put(command, commandId);
+            
             IRCommand ir = (IRCommand) command;
             int[] pulsdata = ir.getPulsedata();
             
@@ -217,9 +231,12 @@ public class ModelUtil {
             
             if(!comm.send("M",10000).equals("M;1"))//-----------------"M" Store to EEPROM
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM");
-            
+            return commandId;
         }
         else if(command.getClass() == LANCCommand.class){
+            int commandId = currentCommand++;
+            commandMap.put(command, commandId);
+            
             LANCCommand lanc = (LANCCommand)command;
             System.out.print("Sending LANC command...");
             String response = comm.send('L', new String[]{//------------------------------------------------------------"L" LANC Command
@@ -230,15 +247,8 @@ public class ModelUtil {
             if(!response.equals("L;1"))
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to send a LANC command. Response: "+response);
             System.out.println("done");
+            return commandId;
         }
-        else if(command.getClass() == WireCommand.class){
-            System.out.print("Sending wire pulse length");
-            String response = comm.send('P', new String[]{//------------------------------------------------------------"L" LANC Command
-                ((WireCommand)command).getPulseLength()+""//time in ms
-            },5000);
-            if(!response.equals("P;1"))
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set the wire pulse length. Response: "+response);
-            System.out.println("done");
-        }
+        return -1;
     }
 }
