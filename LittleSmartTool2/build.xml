@@ -13,6 +13,7 @@
     
     <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
     <copydir src="src/littlesmarttool2/data" dest="data"/>
+    <copydir src="img/" dest="dist/img"/>
     <copyfile src="lib/com-fasterxml-jackson.jar" dest="dist/com-fasterxml-jackson.jar"/>
     <copyfile src="lib/com-fasterxml-jackson-annotations.jar" dest="dist/com-fasterxml-jackson-annotations.jar"/>
     <copyfile src="lib/com-fasterxml-jackson-databind.jar" dest="dist/com-fasterxml-jackson-databind.jar"/>
