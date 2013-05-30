@@ -158,8 +158,8 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StratoSnapper 2");
-        setMinimumSize(new java.awt.Dimension(750, 570));
-        setPreferredSize(new java.awt.Dimension(750, 570));
+        setMinimumSize(new java.awt.Dimension(800, 570));
+        setPreferredSize(new java.awt.Dimension(800, 570));
 
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());
@@ -225,9 +225,10 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         connectedLabel.setForeground(new java.awt.Color(102, 0, 0));
         connectedLabel.setText("Not connected");
         connectedLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        connectedLabel.setMaximumSize(new java.awt.Dimension(110, 14));
-        connectedLabel.setMinimumSize(new java.awt.Dimension(110, 14));
-        connectedLabel.setPreferredSize(new java.awt.Dimension(110, 14));
+        connectedLabel.setMaximumSize(new java.awt.Dimension(150, 14));
+        connectedLabel.setMinimumSize(new java.awt.Dimension(130, 14));
+        connectedLabel.setPreferredSize(new java.awt.Dimension(130, 14));
+        connectedLabel.setRequestFocusEnabled(false);
         portPanel.add(connectedLabel);
 
         upperPanel.add(portPanel, java.awt.BorderLayout.EAST);
