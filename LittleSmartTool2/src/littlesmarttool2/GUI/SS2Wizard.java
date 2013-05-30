@@ -270,6 +270,8 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 SerialCommand connect = controller.connect(port,15000);
                 dotsTimer.stop();
                 int[] v = connect.convertArgsToInt();
+                if(!controller.send("N;1", 1000).equals("N;1"))//------------------------"N" Disable output
+                    throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to disable output.");
                 connectedLabel.setForeground(new Color(0x006600));
                 connectedLabel.setText("Connected (v. " + v[1] + "." + v[2] + ")");
                 servoPullerTimer.start();
