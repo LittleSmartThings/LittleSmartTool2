@@ -11,76 +11,32 @@
     <description>Builds, tests, and runs the project LittleSmartTool2.</description>
     <import file="nbproject/build-impl.xml"/>
     
-    <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
-    <copydir src="src/littlesmarttool2/data" dest="data"/>
-    <copydir src="img/" dest="dist/img"/>
-    <copyfile src="lib/com-fasterxml-jackson.jar" dest="dist/com-fasterxml-jackson.jar"/>
-    <copyfile src="lib/com-fasterxml-jackson-annotations.jar" dest="dist/com-fasterxml-jackson-annotations.jar"/>
-    <copyfile src="lib/com-fasterxml-jackson-databind.jar" dest="dist/com-fasterxml-jackson-databind.jar"/>
-    <copyfile src="lib/RXTXcomm.jar" dest="dist/RXTXcomm.jar"/>
-    <copyfile src="lib/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
-    <copyfile src="lib/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/>
-    <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
+    <target name="sslibs" depends="clean,jar">
+        <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
+        <copydir src="src/littlesmarttool2/data" dest="data"/>
+        <copydir src="img/" dest="dist/img"/>
+        <copyfile src="lib/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
+        <copyfile src="lib/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/>
+        <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
+    </target>
+        
+    <target name="Winx86" depends="sslibs">
+        <delete file="dist/librxtxSerial.jnilib"/>
+        
+        <delete file="dist/rxtxParallel.dll"/>
+        <delete file="dist/rxtxSerial.dll"/>
+       
+        <copyfile src="lib/win_x86/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
+        <copyfile src="lib/win_x86/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/> 
+    </target>
     
-    <!--
+    <target name="Winx64" depends="sslibs">
+        <delete file="dist/librxtxSerial.jnilib"/>
+    </target>
+    
+    <target name="MacOSX" depends="sslibs">
+        <delete file="dist/rxtxParallel.dll"/>
+        <delete file="dist/rxtxSerial.dll"/>
+    </target>
 
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
-
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
-      -post-clean:               called after cleaning build products
-
-    (Targets beginning with '-' are not intended to be called on their own.)
-
-    Example of inserting an obfuscator after compilation could look like this:
-
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
-
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
-
-
-    Another way to customize the build is by overriding existing main targets.
-    The targets of interest are: 
-
-      -init-macrodef-javac:     defines macro for javac compilation
-      -init-macrodef-junit:     defines macro for junit execution
-      -init-macrodef-debug:     defines macro for class debugging
-      -init-macrodef-java:      defines macro for class execution
-      -do-jar-with-manifest:    JAR building (if you are using a manifest)
-      -do-jar-without-manifest: JAR building (if you are not using a manifest)
-      run:                      execution of project 
-      -javadoc-build:           Javadoc generation
-      test-report:              JUnit report generation
-
-    An example of overriding the target for project execution could look like this:
-
-        <target name="run" depends="LittleSmartTool2-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
-
-    Notice that the overridden target depends on the jar target and not only on 
-    the compile target as the regular run target does. Again, for a list of available 
-    properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file. 
-
-    -->
 </project>
