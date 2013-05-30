@@ -10,6 +10,16 @@
 <project name="LittleSmartTool2" default="default" basedir=".">
     <description>Builds, tests, and runs the project LittleSmartTool2.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
+    <copydir src="src/littlesmarttool2/data" dest="data"/>
+    <copyfile src="lib/com-fasterxml-jackson.jar" dest="dist/com-fasterxml-jackson.jar"/>
+    <copyfile src="lib/com-fasterxml-jackson-annotations.jar" dest="dist/com-fasterxml-jackson-annotations.jar"/>
+    <copyfile src="lib/com-fasterxml-jackson-databind.jar" dest="dist/com-fasterxml-jackson-databind.jar"/>
+    <copyfile src="lib/RXTXcomm.jar" dest="dist/RXTXcomm.jar"/>
+    <copyfile src="lib/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
+    <copyfile src="lib/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/>
+    
     <!--
 
     There exist several targets which are by default empty and which can be 

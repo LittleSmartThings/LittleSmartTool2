@@ -21,11 +21,8 @@ public class JSON {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
-            InputStream stream = JSON.class.getResourceAsStream("../data/"+filename);
-
             // read from file, convert it to user class
-            T value = mapper.readValue(stream, clazz);
-            //camList = mapper.readValue(new File(file), CameraList.class);
+            T value = mapper.readValue(new File("./data/"+filename), clazz);
             return value;
         } catch (IOException e) {
             e.printStackTrace();

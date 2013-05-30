@@ -1,6 +1,6 @@
 *.class
 */SSLog.txt*
-
+/LittleSmartTool2/data
 # Package Files #
 *.war
 *.ear

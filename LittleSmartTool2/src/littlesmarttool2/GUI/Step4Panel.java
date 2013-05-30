@@ -196,7 +196,6 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     }
     
     private void updateUploadLabel(){
-        System.out.println("IT IS CALLED");
         if(wizard.getSerialController().connected()){
             uploadLabel.setText("Ready for upload.");
             uploadLabel.setForeground(Color.BLACK);
