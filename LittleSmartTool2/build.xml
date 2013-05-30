@@ -11,6 +11,48 @@
     <description>Builds, tests, and runs the project LittleSmartTool2.</description>
     <import file="nbproject/build-impl.xml"/>
     
+    <target name="-post-jar"> 
+<echo file="${dist.dir}/README.txt">Stratosnapper 2 Configuration Utility
+30/05/2013
+
+This is the configuration utility for Stratosnapper 2.
+
+
+Installation:
+
+    1. Unzip the the archive
+
+    2. Run LittleSmartTool2.jar by "java -jar LittleSmartTool2.jar"
+        2a. On Windows, you can run LittleSmartTool2.exe instead.
+
+
+Troubleshooting:
+
+    The serial driver for Macs has an issue on some computers
+    The program will report that the serial port is in use, even if it isn't.
+    To alleviate this run the following two commands:
+        mkdir /var/lock
+        chmod 777 /var/lock
+
+
+    If the utility is unable to connect to the Stratosnapper and reports "Connection timed out"
+    it is possibly because the Stratosnapper is busy sending commands to the camera.
+    To be able to connect, you must turn of your RC receiver giving input to the Stratosnapper
+    before connecting the utility to the Stratosnapper. After connecting you should turn
+    the receiver back on, to calibrate the utility and set up your configuration.
+
+
+The utility relies on two third party libraries, both under LGPL license:
+
+    * The RXTX library for Serial communication (http://rxtx.qbang.org/)
+
+    * The FasterXML Jackson library for JSON serialization (http://wiki.fasterxml.com/JacksonHome)
+
+
+</echo> 
+    </target> 
+    
+    
     <target name="sslibs" depends="clean,jar">
         <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
         <copydir src="src/littlesmarttool2/data" dest="data"/>
