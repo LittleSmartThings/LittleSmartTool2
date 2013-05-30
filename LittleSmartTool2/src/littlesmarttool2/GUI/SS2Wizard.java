@@ -334,6 +334,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
 
     private void refreshPortList()
     {
+        controller.disconnect();
         ArrayList<String> portNames = SerialController.getPortNames();
         portChooser.removeAllItems();
         portNames.add(0, SELECT_PORT_MESSAGE);
