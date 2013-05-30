@@ -290,7 +290,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 error = true;
             } catch (TimeoutException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(wizard, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.\r\nIf this error persists, try turning your RC receiver off, then try connecting to the Stratosnapper again, and finally turn your RC receiver back on.","Connection timed out", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(wizard, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.\r\nIf this error persists, try turning your RC receiver off,\r\nthen try connecting to the Stratosnapper again,\r\nand finally turn your RC receiver back on.","Connection timed out", JOptionPane.ERROR_MESSAGE);
                 error = true;
             }
             finally
