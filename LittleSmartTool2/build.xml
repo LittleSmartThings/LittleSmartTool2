@@ -20,6 +20,7 @@
     <copyfile src="lib/RXTXcomm.jar" dest="dist/RXTXcomm.jar"/>
     <copyfile src="lib/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
     <copyfile src="lib/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/>
+    <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
     
     <!--
 
