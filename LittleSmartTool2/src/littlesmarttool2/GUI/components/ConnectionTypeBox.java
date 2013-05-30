@@ -99,11 +99,13 @@ public class ConnectionTypeBox extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        radioButton.setSelected(true);
+        if (super.isEnabled())
+            radioButton.setSelected(true);
     }//GEN-LAST:event_formMouseClicked
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        radioButton.setSelected(true);
+        if (super.isEnabled())
+            radioButton.setSelected(true);
     }//GEN-LAST:event_formMousePressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
