@@ -17,6 +17,7 @@ import littlesmarttool2.model.ControlType;
 public class ChannelConfigurator extends javax.swing.JPanel {
     private Channel channel = new Channel(-1);
     private InputViewer viewer;
+    private int lastValue;
     
     /**
      * Creates new form ChannelConfigurator
@@ -36,6 +37,8 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     public void updateReading(int reading)
     {
         if (reading > 2500 || reading < 500) return; //Must be invalid. TODO: Calibration guidance
+        resetCalibButton.setEnabled(true);
+        lastValue = reading;
         channel.setCalibLow(Math.min(channel.getCalibLow(), reading));
         channel.setCalibHigh(Math.max(channel.getCalibHigh(), reading));
         viewer.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
@@ -85,7 +88,7 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         stickInputViewer1 = new littlesmarttool2.GUI.components.StickInputViewer();
         calibrationPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        calibrationLabel = new javax.swing.JLabel();
+        resetCalibButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(400, 60));
         setLayout(new java.awt.BorderLayout());
@@ -149,11 +152,11 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         stickInputViewer1.setLayout(stickInputViewer1Layout);
         stickInputViewer1Layout.setHorizontalGroup(
             stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 292, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
         stickInputViewer1Layout.setVerticalGroup(
             stickInputViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 60, Short.MAX_VALUE)
+            .addGap(0, 54, Short.MAX_VALUE)
         );
 
         inputViewerPanel.add(stickInputViewer1, java.awt.BorderLayout.CENTER);
@@ -163,12 +166,18 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         calibrationPanel.setPreferredSize(new java.awt.Dimension(100, 50));
         calibrationPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel4.setMinimumSize(new java.awt.Dimension(200, 24));
+        jPanel4.setMinimumSize(new java.awt.Dimension(250, 24));
         jPanel4.setPreferredSize(new java.awt.Dimension(250, 100));
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
-        calibrationLabel.setToolTipText("");
-        jPanel4.add(calibrationLabel, java.awt.BorderLayout.EAST);
+        resetCalibButton.setText("<html><center>Reset<br/>calibration</center></html>");
+        resetCalibButton.setEnabled(false);
+        resetCalibButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetCalibButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(resetCalibButton);
 
         calibrationPanel.add(jPanel4, java.awt.BorderLayout.CENTER);
 
@@ -207,8 +216,15 @@ public class ChannelConfigurator extends javax.swing.JPanel {
         changeInputViewer(new StickInputViewer());
     }//GEN-LAST:event_radioStickItemStateChanged
 
+    private void resetCalibButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetCalibButtonActionPerformed
+        resetCalibButton.setEnabled(false);
+        channel.setCalibLow(lastValue);
+        channel.setCalibHigh(lastValue);
+        viewer.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
+        viewer.updateValue(lastValue);
+    }//GEN-LAST:event_resetCalibButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel calibrationLabel;
     private javax.swing.JPanel calibrationPanel;
     private javax.swing.JPanel contentPanel;
     private javax.swing.ButtonGroup controllerTypeGroup;
@@ -221,6 +237,7 @@ public class ChannelConfigurator extends javax.swing.JPanel {
     private javax.swing.JPanel radioButtonPanel;
     private javax.swing.JRadioButton radioPushButton;
     private javax.swing.JRadioButton radioStick;
+    private javax.swing.JButton resetCalibButton;
     private littlesmarttool2.GUI.components.StickInputViewer stickInputViewer1;
     // End of variables declaration//GEN-END:variables
 }
