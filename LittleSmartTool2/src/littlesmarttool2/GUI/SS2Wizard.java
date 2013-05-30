@@ -302,7 +302,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             {
                 connectedLabel.setForeground(new Color(0x660000));
                 connectedLabel.setText("Connection error");
-                portNames.add(0, SELECT_PORT_MESSAGE);
+                portChooser.setSelectedIndex(0);
             }
         }    
     }
