@@ -8,12 +8,18 @@
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
 <project name="LittleSmartTool2" default="default" basedir=".">
-    <description>Builds, tests, and runs the project LittleSmartTool2.</description>
+    <description>Builds, packs the project LittleSmartTool2.</description>
     <import file="nbproject/build-impl.xml"/>
     
+    <property name="version.number" value="0.1"/>
+    <property name="ssfw.version" value="0.2"/>
+    <tstamp/>
+    
     <target name="-post-jar"> 
-<echo file="${dist.dir}/README.txt">Stratosnapper 2 Configuration Utility
-30/05/2013
+<echo file="${dist.dir}/README.txt">Stratosnapper 2 Configuration Utility (LittleSmartTool2)
+LittleSmartThings - http://littlesmartthings.com
+Version ${version.number} (built ${TODAY})
+For StratoSnapper 2 firmware version ${ssfw.version}
 
 This is the configuration utility for Stratosnapper 2.
 
@@ -23,7 +29,7 @@ Installation:
     1. Unzip the the archive
 
     2. Run LittleSmartTool2.jar by "java -jar LittleSmartTool2.jar"
-        2a. On Windows, you can run LittleSmartTool2.exe instead.
+       On Windows, you can run LittleSmartTool2.exe instead.
 
 
 Troubleshooting:
@@ -51,34 +57,65 @@ The utility relies on two third party libraries, both under LGPL license:
 
 </echo> 
     </target> 
+        
+    <property name="launch4j.dir" location="./launch4j/" />
+    <property name="jarbundler.dir" location="./jarbundler/" />
+    <taskdef name="launch4j"
+    classname="net.sf.launch4j.ant.Launch4jTask"
+    classpath="${launch4j.dir}/launch4j.jar
+        :${launch4j.dir}/lib/xstream.jar" />
+    <taskdef name="jarbundler" 
+        classname="net.sourceforge.jarbundler.JarBundler" 
+        classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
     
-    
-    <target name="sslibs" depends="clean,jar">
+    <target name="ssbase" depends="clean,jar">
         <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
         <copydir src="src/littlesmarttool2/data" dest="data"/>
         <copydir src="img/" dest="dist/img"/>
-        <copyfile src="lib/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
-        <copyfile src="lib/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/>
-        <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
+        <mkdir dir="dist/logs"/>
     </target>
-        
-    <target name="Winx86" depends="sslibs">
-        <delete file="dist/librxtxSerial.jnilib"/>
-        
-        <delete file="dist/rxtxParallel.dll"/>
-        <delete file="dist/rxtxSerial.dll"/>
-       
+
+    <target name="exewrap" depends="ssbase">
+        <launch4j configFile="./l4jconf.xml" 
+                  fileVersion="${version.number}.0.0" 
+                  txtFileVersion="${version.number}.0.0" 
+                  productVersion="${version.number}.0.0" 
+                  txtProductVersion="${version.number}.0.0" />
+    </target>
+    
+    <target name="appwrap" depends="ssbase">
+        <jarbundler dir="dist"
+            name="LittleSmartTool2"
+            mainclass="littlesmarttool2.LittleSmartTool2" 
+            jar="LittleSmartTool2.jar" 
+            version="${version.number}.0"
+            icon="img/rocket_gloss.icns"/>
+    </target>
+                        
+    <target name="Winx86" depends="ssbase,exewrap">
         <copyfile src="lib/win_x86/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
         <copyfile src="lib/win_x86/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/> 
+        <zip basedir="dist/" destfile="SS2Config_${version.number}_win_x86.zip" description="StratoSnapper 2 Configuration Utility for Windows x86"/>
     </target>
     
-    <target name="Winx64" depends="sslibs">
-        <delete file="dist/librxtxSerial.jnilib"/>
+    <target name="Winx64" depends="ssbase,exewrap">
+        <copyfile src="lib/win_x64/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
+        <copyfile src="lib/win_x64/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/> 
+        <zip basedir="dist/" destfile="SS2Config_${version.number}_win_x64.zip" description="StratoSnapper 2 Configuration Utility for Windows x64"/>
     </target>
     
-    <target name="MacOSX" depends="sslibs">
-        <delete file="dist/rxtxParallel.dll"/>
-        <delete file="dist/rxtxSerial.dll"/>
+    <target name="MacOSX" depends="ssbase,appwrap">
+        <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
+        <zip basedir="dist/" destfile="SS2Config_${version.number}_OSX.zip" description="StratoSnapper 2 Configuration Utility for OSX"/>
+    </target>
+    
+    <target name="AllOSs">
+        <delete file="SS2Config_${version.number}_OSX.zip"/>
+        <delete file="SS2Config_${version.number}_win_x64.zip"/>
+        <delete file="SS2Config_${version.number}_win_x86.zip"/>
+        <antcall target="Winx86"/>
+        <antcall target="Winx64"/>
+        <antcall target="MacOSX"/>
     </target>
 
 </project>

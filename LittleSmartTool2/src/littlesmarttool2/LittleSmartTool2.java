@@ -22,7 +22,7 @@ public class LittleSmartTool2 {
     public static void main(String[] args) {
         try {
             Logger logger = Logger.getLogger(SS2Wizard.class.getName());
-            FileHandler fh = new FileHandler("SSLog.txt", true);
+            FileHandler fh = new FileHandler("logs/SSLog.txt", true);
             logger.addHandler(fh);
             logger.setLevel(Level.ALL);
             SimpleFormatter formatter = new SimpleFormatter();

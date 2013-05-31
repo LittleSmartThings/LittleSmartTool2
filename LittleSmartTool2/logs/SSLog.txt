@@ -1,0 +1,2 @@
+maj 31, 2013 9:08:03 AM littlesmarttool2.LittleSmartTool2 main
+INFO: OS: Windows 8. 
