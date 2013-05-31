@@ -55,10 +55,10 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         
         try {
             UIManager.setLookAndFeel(new MetalLookAndFeel());
-        } catch (UnsupportedLookAndFeelException ex) {}
+        } catch (Exception ex) {}
         try {
             UIManager.setLookAndFeel(new WindowsLookAndFeel());
-        } catch (UnsupportedLookAndFeelException ex) {}
+        } catch (Exception ex) {}
         initComponents();
         try {
             Class util = Class.forName("com.apple.eawt.Application");
@@ -285,11 +285,12 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         public void run() {
             boolean error = false;
             try {
-                SerialCommand connect = controller.connect(port,15000);
+                SerialCommand conResult = controller.connect(port,15000);
                 dotsTimer.stop();
-                int[] v = connect.convertArgsToInt();
+                //Disable output
                 if(!controller.send("N;1", 1000).equals("N;1"))//------------------------"N" Disable output
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to disable output.");
+                //Get space information
                 String[] space = controller.send("W", 1000).split(";");
                 try {
                     configuration.setMaxRanges(Integer.parseInt(space[1]));//Range
@@ -300,8 +301,35 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 } catch (NumberFormatException ex) {
                     throw new IOException("Unable to get maximum values.");
                 }
+                //Check version info
+                int[] ssfwVersionInfo = conResult.convertArgsToInt();
+                int mainV = ssfwVersionInfo[1], subV = ssfwVersionInfo[2];
+                boolean under = (LittleSmartTool2.minFirmwareMain < mainV) || (LittleSmartTool2.minFirmwareMain == mainV && LittleSmartTool2.minFirmwareSub < subV);
+                boolean over = (LittleSmartTool2.maxFirmwareMain > mainV) || (LittleSmartTool2.maxFirmwareMain == mainV && LittleSmartTool2.maxFirmwareSub > subV);
+                System.out.println("Under: " + under + " over: " + over);
+                if (under || over)
+                {
+                    String validVersions;
+                    if (LittleSmartTool2.minFirmwareMain == LittleSmartTool2.maxFirmwareMain && LittleSmartTool2.minFirmwareSub == LittleSmartTool2.maxFirmwareSub)
+                    {
+                        validVersions = LittleSmartTool2.minFirmwareMain + "." + LittleSmartTool2.minFirmwareSub;
+                    }
+                    else
+                    {
+                        validVersions = LittleSmartTool2.minFirmwareMain + "." + LittleSmartTool2.minFirmwareSub +
+                            " to " + LittleSmartTool2.maxFirmwareMain + "." + LittleSmartTool2.maxFirmwareSub;
+                    }
+                    String message =  "The connected Stratosnapper has firmware version " 
+                            + ssfwVersionInfo[1] + "." + ssfwVersionInfo[2] + 
+                            "\r\nThe configurator you are using is designed for version " + validVersions + "\r\n"
+                            + "The software may still work, but please check the website for updates (littlesmartthings.com)";
+                    
+                    JOptionPane.showMessageDialog(wizard, message, "Unexpected firmware version", JOptionPane.WARNING_MESSAGE);
+                }
+                
+                //Finish
                 connectedLabel.setForeground(new Color(0x006600));
-                connectedLabel.setText("Connected (v. " + v[1] + "." + v[2] + ")");
+                connectedLabel.setText("Connected (v. " + ssfwVersionInfo[1] + "." + ssfwVersionInfo[2] + ")");
                 servoPullerTimer.start();
             } catch (NoSuchPortException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);

@@ -15,7 +15,7 @@
     <tstamp/>
     
     <target name="-post-jar"> 
-<echo file="${dist.dir}/README.txt">Stratosnapper 2 Configuration Utility (LittleSmartTool2)
+<echo file="${dist.dir}/README.txt">Stratosnapper 2 Configuration Utility (LittleSmartTool 2)
 LittleSmartThings - http://littlesmartthings.com
 Version ${version.number} (built ${TODAY})
 For StratoSnapper 2 firmware version ${ssfw.version}
@@ -42,7 +42,7 @@ Troubleshooting:
 
     If the utility is unable to connect to the Stratosnapper and reports "Connection timed out"
     it is possibly because the Stratosnapper is busy sending commands to the camera.
-    To be able to connect, you must turn of your RC receiver giving input to the Stratosnapper
+    To be able to connect if this happens, you must turn of your RC receiver giving input to the Stratosnapper
     before connecting the utility to the Stratosnapper. After connecting you should turn
     the receiver back on, to calibrate the utility and set up your configuration.
 
@@ -53,6 +53,11 @@ The utility relies on two third party libraries, both under LGPL license:
 
     * The FasterXML Jackson library for JSON serialization (http://wiki.fasterxml.com/JacksonHome)
 
+Further the following two libraries have been used for packaging EXE and APP files:
+    
+    * JarBundler for generating an APP file (http://sourceforge.net/projects/jarbundler/)
+    
+    * launch4j for generating an executable EXE file (http://launch4j.sourceforge.net/)
 
 </echo> 
     </target> 
