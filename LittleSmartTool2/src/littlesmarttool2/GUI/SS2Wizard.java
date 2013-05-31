@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
+import java.lang.reflect.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -57,7 +59,18 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             UIManager.setLookAndFeel(new WindowsLookAndFeel());
         } catch (UnsupportedLookAndFeelException ex) {}
         initComponents();
-        
+        try {
+            Class util = Class.forName("com.apple.eawt.Application");
+            Method getApplication = util.getMethod("getApplication", new Class[0]);
+            Object application = getApplication.invoke(util);
+            Class params[] = new Class[1];
+            params[0] = Image.class;
+            Method setDockIconImage = util.getMethod("setDockIconImage", params);
+            Image image = Toolkit.getDefaultToolkit().getImage("img/rocket_gloss.png");
+            setDockIconImage.invoke(application, image);
+        } catch (Exception e) {
+            // never mind, then
+        }
         
         configuration = new Configuration();
         controller = new SerialController();
