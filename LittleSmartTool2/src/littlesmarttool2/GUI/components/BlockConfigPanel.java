@@ -18,13 +18,15 @@ public class BlockConfigPanel extends javax.swing.JPanel {
 
     DefaultListModel listModel = new DefaultListModel();
     Block block;
+    private final CommandChangedListener changeListener;
     /**
      * Creates new form RangeConfigPanel
      */
-    public BlockConfigPanel(Configuration config, Block block) {
+    public BlockConfigPanel(Configuration config, Block block, CommandChangedListener changeListener) {
         initComponents();
         populate(config);
         this.block = block;
+        this.changeListener = changeListener;
         jList1.setSelectedValue(block.getCommand(), true);
         jSlider1.setValue(block.getInterval()/100); //Stored as ms
     }
@@ -132,6 +134,8 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         if (jList1.getSelectedValue() == null) return;
         block.setCommand((Command)jList1.getSelectedValue());
+        
+        changeListener.CommandChanged();
     }//GEN-LAST:event_jList1ValueChanged
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged

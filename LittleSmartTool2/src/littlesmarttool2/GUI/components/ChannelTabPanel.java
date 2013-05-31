@@ -22,12 +22,14 @@ import littlesmarttool2.model.Threshold;
 public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPressedListener, BlockPressedListener {
     private Channel channel;
     private Configuration config;
+    private final CommandChangedListener changeListener;
     /**
      * Creates new form ChannelTabPanel
      */
-    public ChannelTabPanel(Configuration config) {
+    public ChannelTabPanel(Configuration config, CommandChangedListener changeListener) {
         initComponents();
         this.config = config;
+        this.changeListener = changeListener;
         channelSettingViewer1.addBlockPressedListener(this);
         channelSettingViewer1.addThresholdPressedListener(this);
     }
@@ -59,13 +61,15 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
             }
         }
         
-        //TODO: Ask user which range to use?
         //Actually remove the threshold
         channel.getSetting().removeThreshold(threshold, saveBefore);
         //Empty config panel
         configPanel.removeAll();
         configPanel.add(new JPanel(),BorderLayout.CENTER);
         configPanel.revalidate();
+        
+        changeListener.CommandChanged();
+        
         //Update view
         channelSettingViewer1.repaint();
     }
@@ -143,6 +147,9 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         channel.getSetting().addSection();
+        
+        changeListener.CommandChanged();
+        
         channelSettingViewer1.repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -158,7 +165,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     @Override
     public void thresholdPressed(Threshold threshold) {
         configPanel.removeAll();
-        ThresholdConfigPanel panel = new ThresholdConfigPanel(config, threshold, this);
+        ThresholdConfigPanel panel = new ThresholdConfigPanel(config, threshold, this, changeListener);
         configPanel.add(panel, BorderLayout.CENTER);
         configPanel.revalidate();
     }
@@ -166,7 +173,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     @Override
     public void blockPressed(Block block) {
         configPanel.removeAll();
-        BlockConfigPanel panel = new BlockConfigPanel(config, block);
+        BlockConfigPanel panel = new BlockConfigPanel(config, block, changeListener);
         configPanel.add(panel, BorderLayout.CENTER);
         configPanel.revalidate();
     }
