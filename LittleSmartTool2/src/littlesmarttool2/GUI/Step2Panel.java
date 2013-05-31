@@ -33,10 +33,15 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         if (args.length < 4) return;
         try
         {
-            channelConfigurator1.updateReading(Integer.parseInt(args[0]));
-            channelConfigurator2.updateReading(Integer.parseInt(args[1]));
-            channelConfigurator3.updateReading(Integer.parseInt(args[2]));
-            channelConfigurator4.updateReading(Integer.parseInt(args[3]));
+            //OBS
+            //OBS Channels are in a strange order
+            //OBS 1 - 3 switch
+            //OBS 2 - 4 switch
+            //OBS
+            channelConfigurator1.updateReading(Integer.parseInt(args[2]));
+            channelConfigurator2.updateReading(Integer.parseInt(args[3]));
+            channelConfigurator3.updateReading(Integer.parseInt(args[0]));
+            channelConfigurator4.updateReading(Integer.parseInt(args[1]));
         }
         catch (Exception e)
         {}
