@@ -19,13 +19,15 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
     DefaultListModel listModel = new DefaultListModel();
     Threshold threshold;
     ChannelTabPanel parent;
+    private final CommandChangedListener changeListener;
     /**
      * Creates new form ThresholdConfigPanel
      */
-    public ThresholdConfigPanel(Configuration config, Threshold threshold, ChannelTabPanel parent){
+    public ThresholdConfigPanel(Configuration config, Threshold threshold, ChannelTabPanel parent, CommandChangedListener changeListener){
         initComponents();
         this.parent = parent;
         this.threshold = threshold;
+        this.changeListener = changeListener;
         populate(config);
         upList.setSelectedValue(threshold.getUpCommand(), true);
         downList.setSelectedValue(threshold.getDownCommand(), true);
@@ -130,11 +132,15 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
     private void upListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_upListValueChanged
         if (upList.getSelectedValue() == null) return;
         threshold.setUpCommand((Command)upList.getSelectedValue());
+        
+        changeListener.CommandChanged();
     }//GEN-LAST:event_upListValueChanged
 
     private void downListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_downListValueChanged
         if (downList.getSelectedValue() == null) return;
         threshold.setDownCommand((Command)downList.getSelectedValue());
+        
+        changeListener.CommandChanged();
     }//GEN-LAST:event_downListValueChanged
 
     private void deleteThresholdButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteThresholdButtonActionPerformed
