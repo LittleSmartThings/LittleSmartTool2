@@ -10,15 +10,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import littlesmarttool2.GUI.*;
-import sun.nio.cs.StreamDecoder;
 
 /**
  *
  * @author Rasmus
  */
 public class LittleSmartTool2 {
-
-    public static String Version = "0.0";
+    
+    public static final int minFirmwareMain = 0; //{Main.Sub}
+    public static final int minFirmwareSub = 2;
+    public static final int maxFirmwareMain = 0; //{Main.Sub}
+    public static final int maxFirmwareSub = 2;
+    public static String Version = "0.0"; //Software version (loaded from file)
     /**
      * @param args the command line arguments
      */
