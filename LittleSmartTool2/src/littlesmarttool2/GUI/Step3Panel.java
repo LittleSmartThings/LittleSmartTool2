@@ -5,6 +5,7 @@
 package littlesmarttool2.GUI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
 import littlesmarttool2.comm.ResponseListener;
@@ -17,14 +18,14 @@ import littlesmarttool2.model.Configuration;
  */
 public class Step3Panel extends StepPanel implements ResponseListener {
 
-    ChannelTabPanel[] tabs = new ChannelTabPanel[4];
+    //ChannelTabPanel[] tabs = new ChannelTabPanel[4];
+    HashMap<Integer,ChannelTabPanel> tabs = new HashMap<>();
     /**
      * Creates new form Step1Panel
      */
     public Step3Panel(SS2Wizard wizard) {
         super(wizard);
         initComponents();
-        
         
     }
     
@@ -43,9 +44,9 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         {
             if (!channels.get(i).isCalibrated())
                 continue;
-            tabs[i] = new ChannelTabPanel(wizard.getConfiguration(), listener);
-            tabs[i].setChannel(channels.get(i));
-            jTabbedPane1.addTab("Channel " + (i+1), tabs[i]);
+            tabs.put(i, new ChannelTabPanel(wizard.getConfiguration(), listener));
+            tabs.get(i).setChannel(channels.get(i));
+            jTabbedPane1.addTab("Channel " + (i+1), tabs.get(i));
         }
         
         switch(wizard.getConfiguration().getOutputType()){
@@ -148,8 +149,10 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         if (args.length < 4) return;
         try
         {
-            for (int i = 0; i < tabs.length; i++)
-                tabs[i].updateChannelReading(Integer.parseInt(args[i]));
+            for (Integer i : tabs.keySet())
+            {
+                tabs.get(i).updateChannelReading(Integer.parseInt(args[i]));
+            }
         }
         catch (Exception e)
         {}
