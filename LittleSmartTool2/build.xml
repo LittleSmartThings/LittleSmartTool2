@@ -83,13 +83,16 @@ The utility relies on two third party libraries, both under LGPL license:
                   txtProductVersion="${version.number}.0.0" />
     </target>
     
-    <target name="appwrap" depends="ssbase">
+    <target name="appwrap" depends="ssbase,MacLib">
         <jarbundler dir="dist"
             name="LittleSmartTool2"
-            mainclass="littlesmarttool2.LittleSmartTool2" 
-            jar="LittleSmartTool2.jar" 
+            mainclass="littlesmarttool2.LittleSmartTool2"  
             version="${version.number}.0"
-            icon="img/rocket_gloss.icns"/>
+            icon="img/rocket_gloss.icns"
+            jvmversion="1.6.0+"
+        >
+            <jarfileset dir="dist" />
+        </jarbundler>
     </target>
                         
     <target name="Winx86" depends="ssbase,exewrap">
@@ -104,8 +107,11 @@ The utility relies on two third party libraries, both under LGPL license:
         <zip basedir="dist/" destfile="SS2Config_${version.number}_win_x64.zip" description="StratoSnapper 2 Configuration Utility for Windows x64"/>
     </target>
     
-    <target name="MacOSX" depends="ssbase,appwrap">
+    <target name="MacLib">
         <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
+    </target>
+    
+    <target name="MacOSX" depends="ssbase,appwrap,MacLib">
         <zip basedir="dist/" destfile="SS2Config_${version.number}_OSX.zip" description="StratoSnapper 2 Configuration Utility for OSX"/>
     </target>
     
