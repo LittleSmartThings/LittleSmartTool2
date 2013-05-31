@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+import littlesmarttool2.LittleSmartTool2;
 import littlesmarttool2.comm.ConnectionListener;
 import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.comm.SerialCommand;
@@ -61,6 +62,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         
         configuration = new Configuration();
         controller = new SerialController();
+        setTitle("LittleSmartTool 2 v" + LittleSmartTool2.Version);
         
         //Initialize port chooser
         refreshPortList();
