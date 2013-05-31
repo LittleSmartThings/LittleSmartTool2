@@ -76,7 +76,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
 
         infoPanel.setLayout(new javax.swing.BoxLayout(infoPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/>\nBelow is shown an overview of the 4 channels with the output from each channel shown to the right<br/>\nUse your transmitter to verify that the correct commands are send at the right times.<br>\nPress the \"Upload configuration to StratoSnapper\" button when ready</html>");
+        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/>\nBelow is shown an overview of the 4 channels with the output from each channel shown to the right<br/>\nUse your transmitter to verify that the correct commands are send at the right times.<br/>\n<b>NB! The StratoSnapper does not produce actual output while connected to the program!</b><br/>\nPress the \"Upload configuration to StratoSnapper\" button when ready</html>");
         infoPanel.add(descriptionLabel);
 
         testerPanel.add(infoPanel);
