@@ -4,11 +4,13 @@
  */
 package littlesmarttool2;
 
+import java.io.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import littlesmarttool2.GUI.*;
+import sun.nio.cs.StreamDecoder;
 
 /**
  *
@@ -16,10 +18,13 @@ import littlesmarttool2.GUI.*;
  */
 public class LittleSmartTool2 {
 
+    public static String Version = "0.0";
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        //Setup log
         try {
             Logger logger = Logger.getLogger(SS2Wizard.class.getName());
             FileHandler fh = new FileHandler("logs/SSLog.txt", true);
@@ -32,8 +37,19 @@ public class LittleSmartTool2 {
             //DO nothing
         }
         
+        //Load version
+        try {    
+            BufferedReader br = new BufferedReader(new FileReader("version.properties"));
+            String line = br.readLine();
+            while (!line.startsWith("version.number"))
+                line = br.readLine();
+            Version = line.split("=")[1];
+        } catch (Exception ex) {
+            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-       SS2Wizard wizard = new SS2Wizard();
-       wizard.setVisible(true);
+        //Start
+        SS2Wizard wizard = new SS2Wizard();
+        wizard.setVisible(true);
     }
 }

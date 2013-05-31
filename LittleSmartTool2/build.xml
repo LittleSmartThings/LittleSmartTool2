@@ -11,8 +11,7 @@
     <description>Builds, packs the project LittleSmartTool2.</description>
     <import file="nbproject/build-impl.xml"/>
     
-    <property name="version.number" value="0.1"/>
-    <property name="ssfw.version" value="0.2"/>
+    <loadproperties srcfile="version.properties" />
     <tstamp/>
     
     <target name="-post-jar"> 
@@ -73,6 +72,7 @@ The utility relies on two third party libraries, both under LGPL license:
         <copydir src="src/littlesmarttool2/data" dest="data"/>
         <copydir src="img/" dest="dist/img"/>
         <mkdir dir="dist/logs"/>
+        <copy file="version.properties" tofile="dist/version.properties"/>
     </target>
 
     <target name="exewrap" depends="ssbase">
@@ -116,9 +116,13 @@ The utility relies on two third party libraries, both under LGPL license:
     </target>
     
     <target name="AllOSs">
-        <delete file="SS2Config_${version.number}_OSX.zip"/>
-        <delete file="SS2Config_${version.number}_win_x64.zip"/>
-        <delete file="SS2Config_${version.number}_win_x86.zip"/>
+        <delete>
+          <fileset dir=".">
+            <include name="SS2Config_*_OSX.zip"/>
+            <include name="SS2Config_*_win_x64.zip"/>
+            <include name="SS2Config_*_win_x86.zip"/>
+          </fileset>
+        </delete>
         <antcall target="Winx86"/>
         <antcall target="Winx64"/>
         <antcall target="MacOSX"/>
