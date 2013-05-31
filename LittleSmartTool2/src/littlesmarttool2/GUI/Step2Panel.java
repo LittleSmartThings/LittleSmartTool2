@@ -13,13 +13,14 @@ import littlesmarttool2.model.Channel;
  * @author marcher89
  */
 public class Step2Panel extends StepPanel implements ResponseListener {
+    private ArrayList<Channel> channels;
     /**
      * Creates new form Step2Panel
      */
     public Step2Panel(SS2Wizard wizard) {
         super(wizard);
         initComponents();
-        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+        channels = wizard.getConfiguration().getChannels();
         channelConfigurator1.setChannel(channels.get(0));
         channelConfigurator2.setChannel(channels.get(1));
         channelConfigurator3.setChannel(channels.get(2));
@@ -39,11 +40,23 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         }
         catch (Exception e)
         {}
+        updateNextButton();
+    }
+    
+    private void updateNextButton()
+    {
+        boolean isCalib = false;
+        for (Channel c : channels)
+        {
+            if (c.isCalibrated())
+                isCalib = true;
+        }
+        wizard.setNextEnabled(isCalib);
     }
     
     @Override
     public void onDisplay() {
-        //TODO: Do anything??
+        updateNextButton();
     }
 
     @Override

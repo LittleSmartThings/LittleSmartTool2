@@ -32,6 +32,8 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
         for (int i = 0; i < channels.size(); i++)
         {
+            if (!channels.get(i).isCalibrated())
+                continue;
             tabs[i] = new ChannelTabPanel(wizard.getConfiguration());
             tabs[i].setChannel(channels.get(i));
             jTabbedPane1.addTab("Channel " + (i+1), tabs[i]);

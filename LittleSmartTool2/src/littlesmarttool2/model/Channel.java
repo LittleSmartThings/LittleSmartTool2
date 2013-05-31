@@ -75,5 +75,9 @@ public class Channel {
     {
         return setting;
     }
+
+    public boolean isCalibrated() {
+        return calibLow < calibHigh;
+    }
     
 }
