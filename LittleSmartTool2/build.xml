@@ -116,7 +116,7 @@ Further the following two libraries have been used for packaging EXE and APP fil
         <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
     </target>
     
-    <target name="MacOSX" depends="ssbase,appwrap,MacLib">
+    <target name="MacOSX" depends="ssbase,MacLib"><!--appwrap,-->
         <zip basedir="dist/" destfile="SS2Config_${version.number}_OSX.zip" description="StratoSnapper 2 Configuration Utility for OSX"/>
     </target>
     
