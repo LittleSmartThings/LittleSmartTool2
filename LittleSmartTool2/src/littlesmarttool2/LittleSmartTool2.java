@@ -24,8 +24,9 @@ public class LittleSmartTool2 {
         
         //Setup log
         try {
-            Logger logger = Logger.getLogger(SS2Wizard.class.getName());
+            Logger logger = Logger.getLogger("ss2logger");
             FileHandler fh = new FileHandler("logs/SSLog.txt", true);
+            logger.setUseParentHandlers(false);
             logger.addHandler(fh);
             logger.setLevel(Level.ALL);
             SimpleFormatter formatter = new SimpleFormatter();
@@ -43,7 +44,7 @@ public class LittleSmartTool2 {
                 line = br.readLine();
             Version = line.split("=")[1];
         } catch (Exception ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
         }
         
         //Start

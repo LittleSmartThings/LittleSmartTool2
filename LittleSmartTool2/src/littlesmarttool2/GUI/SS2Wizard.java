@@ -46,6 +46,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
     private boolean connecting = false;
     private boolean updatingFirmware = false;
+    private boolean skipFirmwareCheck = false;
     private boolean waitingForServoResponse = false;
     private int servoRequestTimeoutCount = 0;
     private static final int MAX_SERVO_REQUEST_TIMEOUT_COUNT = 10;
@@ -307,7 +308,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 //Check version info
                 int[] ssfwVersionInfo = conResult.convertArgsToInt();
                 int mainV = ssfwVersionInfo[1], subV = ssfwVersionInfo[2];
-                if (UpdateUtil.FirmwareMain != mainV || UpdateUtil.FirmwareSub != subV)
+                if (!skipFirmwareCheck && (UpdateUtil.FirmwareMain != mainV || UpdateUtil.FirmwareSub != subV))
                 {
                     String message =  "The connected Stratosnapper has firmware version " + mainV + "." + subV
                             + "\r\nPress OK to update to the latest version!";
@@ -321,7 +322,13 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                     //Update firmware
                     updatingFirmware = true;
                     controller.disconnect();
-                    UpdateUtil.UpdateFirmware(port);
+                    boolean success = UpdateUtil.UpdateFirmware(port);
+                    if (!success)
+                    {
+                        int retry = JOptionPane.showConfirmDialog(wizard, "Firmware update failed.\r\nRetry update?", "Update failed", JOptionPane.YES_NO_OPTION);
+                        if (retry == JOptionPane.NO_OPTION)
+                            skipFirmwareCheck = true;
+                    }
                     
                     //Reconnect
                     dotsTimer.stop();
@@ -338,20 +345,20 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 connectedLabel.setText("Connected (v. " + mainV + "." + subV + ")");
                 servoPullerTimer.start();
             } catch (NoSuchPortException ex) {
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "The selected port is invalid.\r\nEnsure that you selected the right port or try to connect the Stratosnapper to another port","Invalid port", JOptionPane.ERROR_MESSAGE);
                 refreshPortList();
                 error = true;
             } catch (PortInUseException ex) {
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
                 error = true;
             } catch (UnsupportedCommOperationException | IOException ex) {
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
                 error = true;
             } catch (TimeoutException ex) {
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "Unable to connect to StratoSnapper.\r\nEnsure that you selected the right port.\r\nIf this error persists, try turning your RC receiver off,\r\nthen try connecting to the Stratosnapper again,\r\nand finally turn your RC receiver back on.","Connection timed out", JOptionPane.ERROR_MESSAGE);
                 error = true;
             }
@@ -473,7 +480,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 connectedLabel.setText("Not connected");
                 connectedLabel.setForeground(new Color(0x660000));
                 portChooser.setSelectedIndex(0);
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, "Servo reading request timed out " + servoRequestTimeoutCount + " times in a row. Disconnecting.", ex);
+                Logger.getLogger("ss2logger").log(Level.SEVERE, "Servo reading request timed out " + servoRequestTimeoutCount + " times in a row. Disconnecting.", ex);
                 JOptionPane.showMessageDialog(this, "The connected Stratosnapper is not responding.\r\nMake sure that it is properly connected, and that the right port is selected.", "No response from Stratosnapper", JOptionPane.ERROR_MESSAGE);
             }
         }

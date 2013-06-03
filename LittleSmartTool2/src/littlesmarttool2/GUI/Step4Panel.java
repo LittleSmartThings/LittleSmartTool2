@@ -118,7 +118,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
             ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
             wizard.startAutoServoPulling();
         } catch (IOException | TimeoutException ex) {
-            Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex); //Keep this!
+            Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex); //Keep this!
             wizard.setHasUploaded(false);
             uploadLabel.setText("An error occurred, please try agian.");
             uploadLabel.setForeground(new Color(0x660000));
@@ -147,7 +147,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
                 });
                 wizard.startAutoServoPulling();
             } catch (IOException | TimeoutException ex) {
-                Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex); //Keep this!
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex); //Keep this!
                 wizard.setHasUploaded(false);
                 uploadLabel.setText("An error occurred, please try agian.");
                 uploadLabel.setForeground(new Color(0x660000));
