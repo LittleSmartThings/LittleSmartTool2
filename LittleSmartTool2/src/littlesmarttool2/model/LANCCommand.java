@@ -18,7 +18,7 @@ import littlesmarttool2.util.JSON;
  */
 public class LANCCommand extends Command {
     
-    private byte commandByte0, commandByte1;
+    private int commandByte0, commandByte1;
     
     private static LANCCommand[] array;
     
@@ -34,14 +34,24 @@ public class LANCCommand extends Command {
         super(name, description, models);
         this.commandByte0 = commandByte0;
         this.commandByte1 = commandByte1;
+        if (commandByte0 < 0)
+        {
+            this.commandByte0 = 256 + commandByte0;
+            System.out.println("Converted " + commandByte0 + " to " + this.commandByte0);
+        }
+        if (commandByte1 < 0)
+        {
+            this.commandByte1 = 256 + commandByte1;
+            System.out.println("Converted " + commandByte1 + " to " + this.commandByte1);
+        }
     }
     
-    public byte getCommandByte0()
+    public int getCommandByte0()
     {
         return commandByte0;
     }
     
-    public byte getCommandByte1()
+    public int getCommandByte1()
     {
         return commandByte1;
     }
