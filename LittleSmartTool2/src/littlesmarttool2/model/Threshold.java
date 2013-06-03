@@ -8,7 +8,7 @@ package littlesmarttool2.model;
  *
  * @author Rasmus
  */
-public class Threshold {
+public class Threshold implements Comparable<Threshold> {
     private int valuePromille;
     private Command upCommand, downCommand;
     
@@ -47,5 +47,12 @@ public class Threshold {
     public void setValuePromille(int valuePromille)
     {
         this.valuePromille = valuePromille;
+    }
+
+    @Override
+    public int compareTo(Threshold o) {
+        if (this.getValuePromille() < o.getValuePromille()) return -1; 
+        if (this.getValuePromille() == o.getValuePromille()) return 0; 
+        return 1;
     }
 }

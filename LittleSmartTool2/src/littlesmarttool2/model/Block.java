@@ -8,7 +8,7 @@ package littlesmarttool2.model;
  * 
  * @author Rasmus
  */
-public class Block {
+public class Block implements Comparable<Block>{
     private Command command;
     private Threshold lowerThreshold, upperThreshold;
     private int interval;
@@ -58,5 +58,14 @@ public class Block {
     public void setInterval(int interval)
     {
         this.interval = interval;
+    }
+    
+    @Override
+    public int compareTo(Block o) {
+        if (this.getLowerThreshold() == null) return -1;
+        if (o.getLowerThreshold() == null) return 1;
+        if (this.getLowerThreshold().getValuePromille() < o.getLowerThreshold().getValuePromille()) return -1; 
+        if (this.getLowerThreshold().getValuePromille() == o.getLowerThreshold().getValuePromille()) return 0; 
+        return 1;
     }
 }

@@ -4,7 +4,7 @@
  */
 package littlesmarttool2.model;
 
-import java.util.ArrayList;
+import java.util.*;
 import static littlesmarttool2.model.ControlType.PushButton;
 import static littlesmarttool2.model.ControlType.Stick;
 import static littlesmarttool2.model.ControlType.Switch2;
@@ -23,14 +23,14 @@ public class Setting {
     private ArrayList<CameraModel> cameraModels = new ArrayList<>();
     //TODO: If this is to be serialized, should it have a no args constructor 
     //that doesn't add a block?
+    private final int closeness = 10;
     
     /**
      * Initialize a new Setting not specialized to any control type
      */
     public Setting()
     {
-        divide(5);
-        //blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
+        blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
     }
     
     public void defaultDivision(ControlType type)
@@ -75,6 +75,45 @@ public class Setting {
         Threshold newThreshold = new Threshold(position, Command.getNothingCommand(), Command.getNothingCommand());
         Block newBlock = new Block(Command.getNothingCommand(), newThreshold, null, 0);
         if (lastBlock != null) lastBlock.setUpperThreshold(newThreshold);
+        
+        thresholds.add(newThreshold);
+        blocks.add(newBlock);
+    }
+    
+    public void addThreshold(int valuePromille) {
+        
+        //Find the block affected
+        Block affectedBlock = blocks.get(0);
+        for (Block block : getBlocks()) {
+            if(block.getLowerThreshold() == null || block.getLowerThreshold().getValuePromille() < valuePromille)
+                affectedBlock = block;
+            else break;
+        }
+        
+        //Move the value if it is too close to others.
+        if(affectedBlock.getLowerThreshold() != null && Math.abs(affectedBlock.getLowerThreshold().getValuePromille() - valuePromille) < closeness)
+            valuePromille += closeness;
+        
+        if(affectedBlock.getUpperThreshold() != null && Math.abs(affectedBlock.getUpperThreshold().getValuePromille() - valuePromille) < closeness)
+            valuePromille -= closeness;
+        
+        if(valuePromille > 1000) valuePromille = 1000;
+        if(valuePromille < 0) valuePromille = 0;
+        
+        //Find (new) block to be split
+        for (Block block : getBlocks()) {
+            if(block.getLowerThreshold() == null || block.getLowerThreshold().getValuePromille() < valuePromille)
+                affectedBlock = block;
+            else break;
+        }
+        
+        
+        Threshold highThreshold = affectedBlock.getUpperThreshold();
+        
+        Threshold newThreshold = new Threshold(valuePromille, Command.getNothingCommand(), Command.getNothingCommand());
+        affectedBlock.setUpperThreshold(newThreshold);
+        
+        Block newBlock = new Block(Command.getNothingCommand(), newThreshold, highThreshold, 0);
         
         thresholds.add(newThreshold);
         blocks.add(newBlock);
@@ -131,11 +170,13 @@ public class Setting {
     
     public ArrayList<Block> getBlocks()
     {
+        Collections.sort(blocks);
         return blocks;
     }
     
     public ArrayList<Threshold> getThresholds()
     {
+        Collections.sort(thresholds);
         return thresholds;
     }
     

@@ -23,6 +23,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     private Channel channel;
     private Configuration config;
     private final CommandChangedListener changeListener;
+    private int lastReading;
     /**
      * Creates new form ChannelTabPanel
      */
@@ -76,6 +77,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     
     public void updateChannelReading(int value)
     {
+        lastReading = value;
         channelSettingViewer1.updateValue(value);
         channelSettingViewer1.updateBounds(channel.getCalibLow(), channel.getCalibHigh());
     }
@@ -146,7 +148,8 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        channel.getSetting().addSection();
+        //channel.getSetting().addSection();
+        channel.getSetting().addThreshold(channel.convertValueToPromille(lastReading));
         
         changeListener.CommandChanged();
         
