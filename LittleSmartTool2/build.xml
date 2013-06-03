@@ -72,9 +72,20 @@ Further the following two libraries have been used for packaging EXE and APP fil
         classname="net.sourceforge.jarbundler.JarBundler" 
         classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
     
+    
+    <target name="jar">
+        <copydir src="src/littlesmarttool2/data" dest="data"/>
+        <copydir src="src/littlesmarttool2/firmware" dest="firmware"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="firmware/"/>
+        <delete dir="data/"/>
+    </target>
+    
     <target name="ssbase" depends="clean,jar">
         <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
-        <copydir src="src/littlesmarttool2/data" dest="data"/>
+        <copydir src="src/littlesmarttool2/firmware" dest="dist/firmware"/>
         <copydir src="img/" dest="dist/img"/>
         <mkdir dir="dist/logs"/>
         <copy file="version.properties" tofile="dist/version.properties"/>
@@ -101,18 +112,21 @@ Further the following two libraries have been used for packaging EXE and APP fil
     </target>
                         
     <target name="Winx86" depends="ssbase,exewrap">
+        <copydir src="avrdude-win/" dest="dist/avrdude-win"/>
         <copyfile src="lib/win_x86/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
         <copyfile src="lib/win_x86/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/> 
         <zip basedir="dist/" destfile="SS2Config_${version.number}_win_x86.zip" description="StratoSnapper 2 Configuration Utility for Windows x86"/>
     </target>
     
     <target name="Winx64" depends="ssbase,exewrap">
+        <copydir src="avrdude-win/" dest="dist/avrdude-win"/>
         <copyfile src="lib/win_x64/rxtxParallel.dll" dest="dist/rxtxParallel.dll"/>
         <copyfile src="lib/win_x64/rxtxSerial.dll" dest="dist/rxtxSerial.dll"/> 
         <zip basedir="dist/" destfile="SS2Config_${version.number}_win_x64.zip" description="StratoSnapper 2 Configuration Utility for Windows x64"/>
     </target>
     
     <target name="MacLib">
+        <copydir src="avrdude-mac/" dest="dist/avrdude-mac"/>
         <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
     </target>
     

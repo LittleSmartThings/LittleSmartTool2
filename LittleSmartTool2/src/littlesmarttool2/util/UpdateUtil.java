@@ -19,14 +19,7 @@ public class UpdateUtil {
     
     public static final int FirmwareMain = 1; //{Main.Sub}
     public static final int FirmwareSub = 0;
-    
-    public static void main(String[] args)
-    {
-        System.out.println("Updating");
-        boolean r = UpdateFirmware("COM8");
-        System.out.println("Works: " + r);
-    }
-    
+        
     public static boolean UpdateFirmware(String port)
     {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -34,7 +27,8 @@ public class UpdateUtil {
         String prog = (isWindows) ? "avrdude-win/avrdude.exe" : "avrdude-mac/avrdude";
         String conf = (isWindows) ? "avrdude-win/avrdude.conf" : "avrdude-mac/avrdude.conf";
         //String filename = "src/littlesmarttool2/firmware/Blink_10.cpp.hex";
-        String filename = "src/littlesmarttool2/firmware/StratoSnapper_v22.cpp.hex";
+        //String filename = "src/littlesmarttool2/firmware/StratoSnapper_v22.cpp.hex";
+        String filename = "firmware/StratoSnapper_v22.cpp.hex";
         StringBuilder sb = new StringBuilder();
         try {
             Process p = Runtime.getRuntime().exec(prog+" -C"+conf+" -v -v -v -v -patmega328p -carduino -P"+port+" -b57600 -D -Uflash:w:"+filename+":i");
