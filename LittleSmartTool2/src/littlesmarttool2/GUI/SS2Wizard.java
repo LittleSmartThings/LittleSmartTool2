@@ -27,6 +27,7 @@ import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.comm.SerialCommand;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.util.UpdateUtil;
 
 /**
  *
@@ -44,6 +45,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     private Timer servoPullerTimer = new Timer(50, null);
     private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
     private boolean connecting = false;
+    private boolean updatingFirmware = false;
     private boolean waitingForServoResponse = false;
     private int servoRequestTimeoutCount = 0;
     private static final int MAX_SERVO_REQUEST_TIMEOUT_COUNT = 10;
@@ -93,7 +95,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         controller.addConnectionListener(new ConnectionListener() {
             @Override
             public void connectionStateChanged(boolean connected) {
-                if (!connected)
+                if (!connected && !connecting)
                 {
                     connectedLabel.setText("Not connected");
                     connectedLabel.setForeground(new Color(0x660000));
@@ -285,6 +287,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         public void run() {
             boolean error = false;
             try {
+                updatingFirmware = false;
                 SerialCommand conResult = controller.connect(port,15000);
                 dotsTimer.stop();
                 //Disable output
@@ -304,32 +307,35 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 //Check version info
                 int[] ssfwVersionInfo = conResult.convertArgsToInt();
                 int mainV = ssfwVersionInfo[1], subV = ssfwVersionInfo[2];
-                boolean under = (LittleSmartTool2.minFirmwareMain < mainV) || (LittleSmartTool2.minFirmwareMain == mainV && LittleSmartTool2.minFirmwareSub < subV);
-                boolean over = (LittleSmartTool2.maxFirmwareMain > mainV) || (LittleSmartTool2.maxFirmwareMain == mainV && LittleSmartTool2.maxFirmwareSub > subV);
-                System.out.println("Under: " + under + " over: " + over);
-                if (under || over)
+                if (UpdateUtil.FirmwareMain != mainV || UpdateUtil.FirmwareSub != subV)
                 {
-                    String validVersions;
-                    if (LittleSmartTool2.minFirmwareMain == LittleSmartTool2.maxFirmwareMain && LittleSmartTool2.minFirmwareSub == LittleSmartTool2.maxFirmwareSub)
-                    {
-                        validVersions = LittleSmartTool2.minFirmwareMain + "." + LittleSmartTool2.minFirmwareSub;
-                    }
-                    else
-                    {
-                        validVersions = LittleSmartTool2.minFirmwareMain + "." + LittleSmartTool2.minFirmwareSub +
-                            " to " + LittleSmartTool2.maxFirmwareMain + "." + LittleSmartTool2.maxFirmwareSub;
-                    }
-                    String message =  "The connected Stratosnapper has firmware version " 
-                            + ssfwVersionInfo[1] + "." + ssfwVersionInfo[2] + 
-                            "\r\nThe configurator you are using is designed for version " + validVersions + "\r\n"
-                            + "The software may still work, but please check the website for updates (littlesmartthings.com)";
+                    String message =  "The connected Stratosnapper has firmware version " + mainV + "." + subV
+                            + "\r\nPress OK to update to the latest version!";
+                    JOptionPane.showMessageDialog(wizard, message, "Firmware update!", JOptionPane.INFORMATION_MESSAGE);
+                
+                    //Update message
+                    dotsTimer.stop();
+                    dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Updating"));
+                    dotsTimer.start();
                     
-                    JOptionPane.showMessageDialog(wizard, message, "Unexpected firmware version", JOptionPane.WARNING_MESSAGE);
+                    //Update firmware
+                    updatingFirmware = true;
+                    controller.disconnect();
+                    UpdateUtil.UpdateFirmware(port);
+                    
+                    //Reconnect
+                    dotsTimer.stop();
+                    dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Validating"));
+                    dotsTimer.start();
+                    SerialConnector sc2 = new SerialConnector(port, wizard, dotsTimer);
+                    Thread t = new Thread(sc2);
+                    t.start();
+                    return;
                 }
                 
                 //Finish
                 connectedLabel.setForeground(new Color(0x006600));
-                connectedLabel.setText("Connected (v. " + ssfwVersionInfo[1] + "." + ssfwVersionInfo[2] + ")");
+                connectedLabel.setText("Connected (v. " + mainV + "." + subV + ")");
                 servoPullerTimer.start();
             } catch (NoSuchPortException ex) {
                 Logger.getLogger(SS2Wizard.class.getName()).log(Level.SEVERE, null, ex);
@@ -351,6 +357,9 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             }
             finally
             {
+                if (updatingFirmware) return; //Do nothing if updating (avrdude running)
+                portChooser.setEnabled(true);
+                refreshPortListButton.setEnabled(true);
                 connecting = false;
                 dotsTimer.stop();
             }
@@ -368,6 +377,25 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         }    
     }
     
+    private class DotsListener implements ActionListener
+    {
+        JLabel label;
+        String text;
+        int dots = 1;
+        public DotsListener(JLabel label, String text)
+        {
+            this.label = label;
+            this.text = text;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String d = (dots == 1) ? "." : ((dots == 2) ? ".." : "...");
+            label.setText(text+d);
+            dots++;
+            if (dots > 3) dots = 1;
+        }
+    }
+    
     private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged
         if (evt.getStateChange() == ItemEvent.DESELECTED)
         {
@@ -378,18 +406,12 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         }
         if (evt.getItem().equals(SELECT_PORT_MESSAGE)) return;
         if (connecting) return; //TODO: Handle this somehow?
+        portChooser.setEnabled(false);
+        refreshPortListButton.setEnabled(false);
+        connecting = true;
         connectedLabel.setText("Connecting");
         connectedLabel.setForeground(Color.orange);
-        Timer dotsTimer = new Timer(500,new ActionListener() {
-            int dots = 1;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String d = (dots == 1) ? "." : ((dots == 2) ? ".." : "...");
-                connectedLabel.setText("Connecting"+d);
-                dots++;
-                if (dots > 3) dots = 1;
-            }
-        });
+        Timer dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Connecting"));
         dotsTimer.start();
         new Thread(new SerialConnector(portChooser.getSelectedItem().toString(), this, dotsTimer)).start();
     }//GEN-LAST:event_portChooserItemStateChanged

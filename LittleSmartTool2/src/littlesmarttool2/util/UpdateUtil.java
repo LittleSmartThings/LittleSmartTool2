@@ -17,6 +17,8 @@ import littlesmarttool2.GUI.SS2Wizard;
  */
 public class UpdateUtil {
     
+    public static final int FirmwareMain = 1; //{Main.Sub}
+    public static final int FirmwareSub = 0;
     
     public static void main(String[] args)
     {
