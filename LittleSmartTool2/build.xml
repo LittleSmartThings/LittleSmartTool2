@@ -73,7 +73,7 @@ Further the following two libraries have been used for packaging EXE and APP fil
         classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
     
     
-    <target name="jar">
+    <target name="-after-jar">
         <copydir src="src/littlesmarttool2/data" dest="data"/>
         <copydir src="src/littlesmarttool2/firmware" dest="firmware"/>
     </target>
