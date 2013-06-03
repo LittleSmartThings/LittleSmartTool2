@@ -46,9 +46,9 @@ public class Setting {
             case Switch3:
                 divide(3);
                 break;
-            case Stick:
-                divide(5);
-                break;
+            //case Stick:
+                //divide(5);
+                //break;
             default:
                 blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
         }
