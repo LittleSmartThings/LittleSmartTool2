@@ -71,21 +71,10 @@ Further the following two libraries have been used for packaging EXE and APP fil
     <taskdef name="jarbundler" 
         classname="net.sourceforge.jarbundler.JarBundler" 
         classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
-    
-    
-    <target name="-after-jar">
-        <copydir src="src/littlesmarttool2/data" dest="data"/>
-        <copydir src="src/littlesmarttool2/firmware" dest="firmware"/>
-    </target>
-    
-    <target name="clean">
-        <delete dir="firmware/"/>
-        <delete dir="data/"/>
-    </target>
-    
+        
     <target name="ssbase" depends="clean,jar">
-        <copydir src="src/littlesmarttool2/data" dest="dist/data"/>
-        <copydir src="src/littlesmarttool2/firmware" dest="dist/firmware"/>
+        <copydir src="src/littlesmarttool2/data/" dest="dist/data"/>
+        <copydir src="src/littlesmarttool2/firmware/" dest="dist/firmware"/>
         <copydir src="img/" dest="dist/img"/>
         <mkdir dir="dist/logs"/>
         <copy file="version.properties" tofile="dist/version.properties"/>
