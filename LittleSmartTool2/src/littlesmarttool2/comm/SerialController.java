@@ -11,13 +11,8 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 import java.util.ArrayList;
 import java.io.*;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.IIOException;
 
 /**
  * Intended use order:
@@ -141,7 +136,7 @@ public class SerialController {
     public synchronized String send(String message, int timeOut) throws IOException, TimeoutException
     {
         long endTime = System.currentTimeMillis() + timeOut;
-        message = tryFixServoID(message);
+        //message = tryFixServoID(message);
         //System.err.println("Sending >>>" + message + "<<<");
         
         try {
@@ -170,8 +165,8 @@ public class SerialController {
                 }
             }
         }
-        if (read.startsWith("S;"))
-            read = fixServoReadingOrder(read);
+        //if (read.startsWith("S;"))
+          //  read = fixServoReadingOrder(read);
         //System.err.println("Received >>>" + read + "<<<");
         return read;
     }
