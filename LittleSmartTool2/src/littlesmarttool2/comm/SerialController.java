@@ -136,7 +136,6 @@ public class SerialController {
     public synchronized String send(String message, int timeOut) throws IOException, TimeoutException
     {
         long endTime = System.currentTimeMillis() + timeOut;
-        //message = tryFixServoID(message);
         //System.err.println("Sending >>>" + message + "<<<");
         
         try {
@@ -165,52 +164,8 @@ public class SerialController {
                 }
             }
         }
-        //if (read.startsWith("S;"))
-          //  read = fixServoReadingOrder(read);
         //System.err.println("Received >>>" + read + "<<<");
         return read;
-    }
-    
-    private String tryFixServoID(String message)
-    {
-        if (!message.startsWith("R;") &&!message.startsWith("T;"))
-            return message;
-        
-        String[] parts = message.split(";");
-        String[] result = message.split(";");
-        
-        result[2] = convertServoIDtoSSorder(Integer.parseInt(parts[2])) + "";
-        
-        StringBuilder sb = new StringBuilder(result[0]);
-        for (int i = 1; i < result.length; i++)
-            sb.append(";").append(result[i]);
-        return sb.toString();
-    }
-    
-    private int convertServoIDtoSSorder(int id)
-    {
-        switch (id)
-        {
-            case 1: return 3;
-            case 2: return 4;
-            case 3: return 1;
-            case 4: return 2;
-        }
-        throw new IllegalArgumentException("Only IDs between 1-4. Received: " + id);
-    }
-    
-    private String fixServoReadingOrder(String message)
-    {
-        String[] parts = message.split(";");
-        String[] result = message.split(";");
-        result[1] = parts[3];
-        result[3] = parts[1];
-        result[2] = parts[4];
-        result[4] = parts[2];
-        StringBuilder sb = new StringBuilder(result[0]);
-        for (int i = 1; i < result.length; i++)
-            sb.append(";").append(result[i]);
-        return sb.toString();
     }
     
     public void disconnect()

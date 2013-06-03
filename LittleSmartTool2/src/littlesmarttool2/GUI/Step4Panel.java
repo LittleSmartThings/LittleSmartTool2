@@ -111,21 +111,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         repaint();
         
         Thread t = new Thread(new SSProgrammerRunnable(this));
-        t.start();
-        
-        /*try {
-            wizard.stopAutoServoPulling();
-            ModelUtil.SendConfigurationToSnapper(wizard.getConfiguration(), wizard.getSerialController());
-            wizard.startAutoServoPulling();
-        } catch (IOException | TimeoutException ex) {
-            Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex); //Keep this!
-            wizard.setHasUploaded(false);
-            uploadLabel.setText("An error occurred, please try agian.");
-            uploadLabel.setForeground(new Color(0x660000));
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred!", JOptionPane.ERROR_MESSAGE);
-            return;
-        }*/
-        
+        t.start();        
     }//GEN-LAST:event_uploadButtonActionPerformed
 
     private class SSProgrammerRunnable implements Runnable
