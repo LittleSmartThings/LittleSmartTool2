@@ -8,6 +8,7 @@ import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.event.MouseInputListener;
 import littlesmarttool2.model.Threshold;
 import littlesmarttool2.model.Block;
+import littlesmarttool2.model.Command;
 /**
  *
  * @author Rasmus
@@ -252,6 +254,14 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
                 g2.setColor(selectedColor);
             }
             g2.fillRect((int)prevWidth, 0, (int)width, getHeight());
+            
+            FontMetrics fm = getFontMetrics( getFont() );
+            g2.setColor(Color.GRAY);
+            String actName = "";
+            if (block.getCommand() != Command.getNothingCommand())
+                actName= block.getCommand().getName();
+            g2.drawString(actName, (int) ((prevWidth + width/2) - fm.stringWidth(actName)/2), getHeight()/2);
+            
             prevWidth += width;
         }
     }
@@ -259,6 +269,10 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     private void drawThresholds(Graphics2D g2)
     {
         Stroke defaultStroke = g2.getStroke();
+        int prevUpperEnd = 0;
+        int prevUpperCount = 0;
+        int prevX = 0;
+        int prevLowerCount = 0;
         for (int i = 0; i < thresholds.size(); i++)
         {
             Threshold threshold = thresholds.get(i);
@@ -274,6 +288,37 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
                 g2.setColor(Color.black);
             }
             g2.drawLine(x, 0, x, getHeight());
+            
+            FontMetrics fm = getFontMetrics( getFont() );
+            g2.setColor(Color.GRAY);
+            String upName = "";
+            if (thresholds.get(i).getUpCommand() != Command.getNothingCommand())
+                upName= thresholds.get(i).getUpCommand().getName();
+            
+            int y = 15;
+            if (prevUpperEnd >= x)
+                y += 10 * prevUpperCount;
+            else
+                prevUpperCount = 0;
+            prevUpperEnd = x+fm.stringWidth(upName);
+            prevUpperCount++;
+            g2.drawString(upName, x+5, y);
+            
+            String downName = "";
+            if (thresholds.get(i).getDownCommand()!= Command.getNothingCommand())
+                downName= thresholds.get(i).getDownCommand().getName();
+            
+            y = getHeight()-5;
+            if (prevX >= x - fm.stringWidth(downName))
+                y -= 10 * prevLowerCount;
+            else
+                prevLowerCount = 0;
+            prevX = x;
+            prevLowerCount++;
+            
+            int width = fm.stringWidth(downName);
+            g2.drawString(downName, (x-5)-width, y);
+            
         }
         g2.setStroke(defaultStroke);
     }
