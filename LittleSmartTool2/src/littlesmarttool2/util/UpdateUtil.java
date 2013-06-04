@@ -23,11 +23,13 @@ public class UpdateUtil {
     {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         int result;
-        String prog = (isWindows) ? "avrdude-win/avrdude.exe" : "sudo avrdude-mac/avrdude";
+        String prog = (isWindows) ? "avrdude-win/avrdude.exe" : "./avrdude-mac/avrdude";
         String conf = (isWindows) ? "avrdude-win/avrdude.conf" : "avrdude-mac/avrdude.conf";
         String filename = "firmware/StratoSnapper_v22.cpp.hex";
         StringBuilder sb = new StringBuilder();
         try {
+            if(!isWindows)
+                Runtime.getRuntime().exec("chmod 777 "+prog);
             Process p = Runtime.getRuntime().exec(prog+" -C"+conf+" -v -v -v -v -patmega328p -carduino -P"+port+" -b57600 -D -Uflash:w:"+filename+":i");
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;
