@@ -5,10 +5,12 @@
 package littlesmarttool2.GUI.components;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import littlesmarttool2.model.Block;
 import littlesmarttool2.model.Command;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.model.ConnectionType;
 
 /**
  *
@@ -19,11 +21,13 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     DefaultListModel listModel = new DefaultListModel();
     Block block;
     private final CommandChangedListener changeListener;
+    private Configuration configuration;
     /**
      * Creates new form RangeConfigPanel
      */
     public BlockConfigPanel(Configuration config, Block block, CommandChangedListener changeListener) {
         initComponents();
+        this.configuration = config;
         populate(config);
         this.block = block;
         this.changeListener = changeListener;
@@ -134,8 +138,26 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         if (jList1.getSelectedValue() == null) return;
         block.setCommand((Command)jList1.getSelectedValue());
-        
-        changeListener.CommandChanged();
+
+        if (configuration.getRemainingRanges() < 0 ||
+                (configuration.getOutputType() == ConnectionType.IR && configuration.getRemainingIR() < 0) ||
+                (configuration.getOutputType() == ConnectionType.LANC && configuration.getRemainingLANC() < 0))
+        {
+            
+            if (configuration.getRemainingRanges() < 0)
+            {
+                JOptionPane.showMessageDialog(this, "You have used all possible blocks.\r\nLook at the memory information in the bottom left.", "Not enough room", JOptionPane.WARNING_MESSAGE);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "There is no more room for "+(configuration.getOutputType() == ConnectionType.IR ? "IR":"LANC")+" commands.\r\nLook at the memory information in the bottom left.", "Not enough room", JOptionPane.WARNING_MESSAGE);
+            }
+            jList1.setSelectedIndex(0);
+        }
+        else
+        {
+            changeListener.CommandChanged();
+        }
     }//GEN-LAST:event_jList1ValueChanged
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged

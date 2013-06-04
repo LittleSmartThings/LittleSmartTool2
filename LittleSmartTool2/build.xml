@@ -42,8 +42,8 @@ Troubleshooting:
     The serial driver for Macs has an issue on some computers
     The program will report that the serial port is in use, even if it isn't.
     To alleviate this run the following two commands:
-        mkdir /var/lock
-        chmod 777 /var/lock
+        sudo mkdir /var/lock
+        sudo chmod 777 /var/lock
 
 
     If the utility is unable to connect to the Stratosnapper and reports "Connection timed out"
@@ -59,9 +59,7 @@ The utility relies on two third party libraries, both under LGPL license:
 
     * The FasterXML Jackson library for JSON serialization (http://wiki.fasterxml.com/JacksonHome)
 
-Further the following two libraries have been used for packaging EXE and APP files:
-    
-    * JarBundler for generating an APP file (http://sourceforge.net/projects/jarbundler/)
+Further the following library have been used for packaging binaries:
     
     * launch4j for generating an executable EXE file (http://launch4j.sourceforge.net/)
 

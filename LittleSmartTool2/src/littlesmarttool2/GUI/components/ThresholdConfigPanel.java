@@ -5,9 +5,12 @@
 package littlesmarttool2.GUI.components;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import littlesmarttool2.model.Command;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.model.ConnectionType;
 import littlesmarttool2.model.Threshold;
 
 /**
@@ -20,6 +23,7 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
     Threshold threshold;
     ChannelTabPanel parent;
     private final CommandChangedListener changeListener;
+    private Configuration configuration;
     /**
      * Creates new form ThresholdConfigPanel
      */
@@ -28,6 +32,7 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
         this.parent = parent;
         this.threshold = threshold;
         this.changeListener = changeListener;
+        this.configuration = config;
         populate(config);
         upList.setSelectedValue(threshold.getUpCommand(), true);
         downList.setSelectedValue(threshold.getDownCommand(), true);
@@ -129,18 +134,52 @@ public class ThresholdConfigPanel extends javax.swing.JPanel {
         add(southPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
+    private boolean checkForRoom()
+    {
+        if (configuration.getRemainingTriggers() < 0 ||
+                (configuration.getOutputType() == ConnectionType.IR && configuration.getRemainingIR() < 0) ||
+                (configuration.getOutputType() == ConnectionType.LANC && configuration.getRemainingLANC() < 0))
+        {
+            
+            if (configuration.getRemainingTriggers()< 0)
+            {
+                JOptionPane.showMessageDialog(this, "You have used all possible thresholds.\r\nLook at the memory information in the bottom left.", "Not enough room", JOptionPane.WARNING_MESSAGE);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "There is no more room for "+(configuration.getOutputType() == ConnectionType.IR ? "IR":"LANC")+" commands.\r\nLook at the memory information in the bottom left.", "Not enough room", JOptionPane.WARNING_MESSAGE);
+            }
+            return false;
+        }
+        return true;
+    }
+    
     private void upListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_upListValueChanged
         if (upList.getSelectedValue() == null) return;
         threshold.setUpCommand((Command)upList.getSelectedValue());
         
-        changeListener.CommandChanged();
+        if (checkForRoom())
+        {
+            changeListener.CommandChanged();
+        }
+        else
+        {
+            upList.setSelectedIndex(0);
+        }
     }//GEN-LAST:event_upListValueChanged
 
     private void downListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_downListValueChanged
         if (downList.getSelectedValue() == null) return;
         threshold.setDownCommand((Command)downList.getSelectedValue());
         
-        changeListener.CommandChanged();
+        if (checkForRoom())
+        {
+            changeListener.CommandChanged();
+        }
+        else
+        {
+            downList.setSelectedIndex(0);
+        }
     }//GEN-LAST:event_downListValueChanged
 
     private void deleteThresholdButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteThresholdButtonActionPerformed
