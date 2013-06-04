@@ -29,7 +29,10 @@ public class UpdateUtil {
         StringBuilder sb = new StringBuilder();
         try {
             if(!isWindows)
-                Runtime.getRuntime().exec("chmod 777 "+prog);
+            {
+                Process pmac = Runtime.getRuntime().exec("chmod 777 "+prog);
+                pmac.waitFor();
+            }
             Process p = Runtime.getRuntime().exec(prog+" -C"+conf+" -v -v -v -v -patmega328p -carduino -P"+port+" -b57600 -D -Uflash:w:"+filename+":i");
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;
