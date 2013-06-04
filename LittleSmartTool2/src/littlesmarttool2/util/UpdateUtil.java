@@ -16,8 +16,8 @@ import java.io.PrintWriter;
  */
 public class UpdateUtil {
     
-    public static final int FirmwareMain = 0;
-    public static final int FirmwareSub = 2;
+    public static final int FirmwareMain = 1;
+    public static final int FirmwareSub = 1;
         
     public static boolean UpdateFirmware(String port)
     {
