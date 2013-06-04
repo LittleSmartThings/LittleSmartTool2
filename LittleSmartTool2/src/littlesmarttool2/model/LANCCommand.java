@@ -34,16 +34,6 @@ public class LANCCommand extends Command {
         super(name, description, models);
         this.commandByte0 = commandByte0;
         this.commandByte1 = commandByte1;
-        if (commandByte0 < 0)
-        {
-            this.commandByte0 = 256 + commandByte0;
-            System.out.println("Converted " + commandByte0 + " to " + this.commandByte0);
-        }
-        if (commandByte1 < 0)
-        {
-            this.commandByte1 = 256 + commandByte1;
-            System.out.println("Converted " + commandByte1 + " to " + this.commandByte1);
-        }
     }
     
     public int getCommandByte0()
