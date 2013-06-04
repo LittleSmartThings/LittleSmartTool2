@@ -22,13 +22,19 @@ For StratoSnapper 2 firmware version ${ssfw.version}
 
 This is the configuration utility for Stratosnapper 2.
 
-
-Installation:
+Installation (Mac):
+    
+    1. Unzip the archive 
+    
+    2. Install FTDI USB drivers by running FTDIUSBSerialDriver_v2_2_18.dmg
+    
+    3. Run LittleSmartTool2.jar
+    
+Installation (Windows):
 
     1. Unzip the the archive
 
-    2. Run LittleSmartTool2.jar by "java -jar LittleSmartTool2.jar"
-       On Windows, you can run LittleSmartTool2.exe instead.
+    2. Run LittleSmartTool2.exe
 
 
 Troubleshooting:
@@ -116,6 +122,7 @@ Further the following two libraries have been used for packaging EXE and APP fil
     
     <target name="MacLib">
         <copydir src="avrdude-mac/" dest="dist/avrdude-mac"/>
+        <copyfile src="FTDIUSBSerialDriver_v2_2_18.dmg" dest="dist/FTDIUSBSerialDriver_v2_2_18.dmg"/>
         <copyfile src="lib/librxtxSerial.jnilib" dest="dist/librxtxSerial.jnilib"/>
     </target>
     

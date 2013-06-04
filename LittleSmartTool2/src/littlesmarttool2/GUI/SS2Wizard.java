@@ -246,8 +246,8 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         connectedLabel.setText("Not connected");
         connectedLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
         connectedLabel.setMaximumSize(new java.awt.Dimension(150, 14));
-        connectedLabel.setMinimumSize(new java.awt.Dimension(130, 14));
-        connectedLabel.setPreferredSize(new java.awt.Dimension(130, 14));
+        connectedLabel.setMinimumSize(new java.awt.Dimension(140, 14));
+        connectedLabel.setPreferredSize(new java.awt.Dimension(140, 14));
         connectedLabel.setRequestFocusEnabled(false);
         portPanel.add(connectedLabel);
 
