@@ -134,7 +134,7 @@ public class ModelUtil {
                         channel.convertPromilleToValue(threshold.getValuePromille())+"",//trig point
                         "1",//going high
                         "0",//going low
-                        "10",//hysteresis
+                        "50",//hysteresis
                         sendId+""//command
                     }, 1000, howManyTimesShouldITry);
                     System.out.println("done");

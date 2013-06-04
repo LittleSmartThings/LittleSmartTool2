@@ -76,9 +76,9 @@ public class Channel {
         return setting;
     }
     
-    public Setting setSetting()
+    public void setSetting(Setting setting)
     {
-        return setting;
+        this.setting = setting;
     }
 
     public boolean isCalibrated() {

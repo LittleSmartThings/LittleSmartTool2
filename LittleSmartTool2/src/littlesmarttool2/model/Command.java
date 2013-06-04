@@ -47,6 +47,13 @@ public abstract class Command {
         return nothingCommand;
     }
     
+    /**
+     * Almost an equal method. Compares action
+     * @param other The other command to compare with
+     * @return True if the two commands perform the same action
+     */
+    public abstract boolean sameAs(Command other);
+    
     @Override
     public String toString() {
         return getName();

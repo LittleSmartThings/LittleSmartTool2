@@ -6,6 +6,7 @@ package littlesmarttool2.model;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import littlesmarttool2.util.JSON;
 
 /**
@@ -50,5 +51,17 @@ public class IRCommand extends Command {
     
     public int getFrequency() {
         return frequency;
+    }
+
+    @Override
+    public boolean sameAs(Command other) {
+        if (other == null) return false;
+        if (other.getClass() != getClass()) return false;
+        IRCommand otherIR = (IRCommand) other;
+        if (getFrequency() != otherIR.getFrequency()) return false;
+        if (getDelayBetweenRepeats() != otherIR.getDelayBetweenRepeats()) return false;
+        if (getRepeats() != otherIR.getRepeats()) return false;
+        if (!Arrays.equals(getPulsedata(), otherIR.getPulsedata())) return false;
+        return true;
     }
 }

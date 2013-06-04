@@ -38,4 +38,14 @@ public class WireCommand extends Command {
     public int getPinConfig() {
         return pinConfig;
     }
+
+    @Override
+    public boolean sameAs(Command other) {
+        if (other == null) return false;
+        if (other.getClass() != getClass()) return false;
+        WireCommand otherWire = (WireCommand) other;
+        if (getPulseLength()!= otherWire.getPulseLength()) return false;
+        if (getPinConfig()!= otherWire.getPinConfig()) return false;
+        return true;
+    }
 }

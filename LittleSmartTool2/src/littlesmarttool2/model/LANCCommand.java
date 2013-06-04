@@ -29,7 +29,7 @@ public class LANCCommand extends Command {
     }
     
     @JsonCreator
-    public LANCCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("commandByte0") byte commandByte0, @JsonProperty("commandByte1") byte commandByte1)
+    public LANCCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("commandByte0") int commandByte0, @JsonProperty("commandByte1") int commandByte1)
     {
         super(name, description, models);
         this.commandByte0 = commandByte0;
@@ -55,6 +55,8 @@ public class LANCCommand extends Command {
     {
         return commandByte1;
     }
+    
+   
     
     public static void main(String[] args) throws Throwable /*Cough*/ {
         ArrayList<LANCCommand> cmds = new ArrayList<LANCCommand>();
@@ -90,5 +92,15 @@ public class LANCCommand extends Command {
         }
         JSON.writeObjectToFile(commands, "LANCCommandList-output.json");
         System.out.println("Found "+i+" non-epmty lines.");
+    }
+
+    @Override
+    public boolean sameAs(Command other) {
+        if (other == null) return false;
+        if (other.getClass() != getClass()) return false;
+        LANCCommand otherLANC = (LANCCommand) other;
+        if (getCommandByte0() != otherLANC.getCommandByte0()) return false;
+        if (getCommandByte1() != otherLANC.getCommandByte1()) return false;
+        return true;
     }
 }

@@ -4,13 +4,18 @@
  */
 package littlesmarttool2.GUI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
 import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.util.ConfigurationDumpReader;
 
 /**
  *
@@ -92,6 +97,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         thresholdsRemainingLabel = new javax.swing.JLabel();
         commandsLabel = new javax.swing.JLabel();
         commandsRemainingLabel = new javax.swing.JLabel();
+        loadButton = new javax.swing.JButton();
 
         setName("Configure triggers and actions"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -128,8 +134,30 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
         jPanel2.add(jPanel1, java.awt.BorderLayout.CENTER);
 
+        loadButton.setText("Load configuration from Stratosnapper");
+        loadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadButtonActionPerformed(evt);
+            }
+        });
+        jPanel2.add(loadButton, java.awt.BorderLayout.EAST);
+
         add(jPanel2, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
+        wizard.stopAutoServoPulling();
+        try {
+            ConfigurationDumpReader.LoadDumpInto(wizard.getConfiguration(), wizard.getSerialController().getDump(20000));
+        } catch (IOException ex) {
+            Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException ex) {
+            Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        onDisplay();
+        wizard.startAutoServoPulling();
+    }//GEN-LAST:event_loadButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel blocksRemainingLabel;
     private javax.swing.JLabel commandsLabel;
@@ -140,6 +168,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton loadButton;
     private javax.swing.JLabel thresholdsRemainingLabel;
     // End of variables declaration//GEN-END:variables
 

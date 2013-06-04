@@ -80,7 +80,7 @@ public class SerialController {
         String answer = send("V",timeOut);
         SerialCommand cmd = SerialCommand.fromMessage(answer);
         
-        if (cmd.getCommand() != 'V')
+        if (cmd == null || cmd.getCommand() != 'V')
             throw new IOException("Connected device gave unknown answer");
 
         connected = true;
@@ -166,6 +166,45 @@ public class SerialController {
         }
         //System.err.println("Received >>>" + read + "<<<");
         return read;
+    }
+    
+    public SerialCommand[] getDump(int timeOut) throws IOException, TimeoutException
+    {
+        ArrayList<SerialCommand> dump = new ArrayList<>();
+        long endTime = System.currentTimeMillis() + timeOut;
+        
+        try {
+            port.enableReceiveTimeout(timeOut);
+        } catch (UnsupportedCommOperationException ex) {
+        }
+        
+        String read = INIT_STRING;
+        while (INIT_STRING.equals(read))
+        {           
+            //Actually send message
+            outStream.write(("D" + ">").getBytes());
+            outStream.flush();
+            
+            while(true)
+            {
+                if (System.currentTimeMillis() > endTime)
+                    throw new TimeoutException("Connection timeout exceeded");
+                try {
+                    read = inReader.readLine();
+                    SerialCommand cmd = SerialCommand.fromMessage(read);
+                    if (cmd.getCommand() == 'D')
+                        break; //D;1 is the last command in a dump
+                    else
+                        dump.add(cmd);
+                }
+                catch (IOException ex)
+                {
+                    continue; //Nothing to read at this time
+                }
+            }
+        }
+        //System.err.println("Received >>>" + read + "<<<");
+        return dump.toArray(new SerialCommand[dump.size()]);
     }
     
     public void disconnect()

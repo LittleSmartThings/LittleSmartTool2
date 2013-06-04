@@ -33,6 +33,12 @@ public class Setting {
         blocks.add(new Block(Command.getNothingCommand(), null, null, 0));
     }
     
+    public Setting(ArrayList<Block> blocks, ArrayList<Threshold> thresholds)
+    {
+        this.blocks = blocks;
+        this.thresholds = thresholds;
+    }
+    
     public void defaultDivision(ControlType type)
     {
         blocks.clear();
