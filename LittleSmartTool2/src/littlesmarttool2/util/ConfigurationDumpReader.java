@@ -83,7 +83,8 @@ public class ConfigurationDumpReader {
         {
             ch.setSetting(instance.Convert(ch.getId(), ch.getCalibLow(), ch.getCalibHigh()));
         }
-        
+        configuration.setOutputType(instance.connectionType);
+
         return instance.GetPossibleCameraModels(CameraBrand.getArray());
     }
     

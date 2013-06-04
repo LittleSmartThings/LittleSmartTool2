@@ -10,11 +10,14 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
 import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.model.Setting;
 import littlesmarttool2.util.ConfigurationDumpReader;
 
 /**
@@ -36,6 +39,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
+        loadButton.setVisible(false);
         jTabbedPane1.removeAll();
         ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
         CommandChangedListener listener = new CommandChangedListener() {
@@ -148,7 +152,32 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         wizard.stopAutoServoPulling();
         try {
-            ConfigurationDumpReader.LoadDumpInto(wizard.getConfiguration(), wizard.getSerialController().getDump(20000));
+            ArrayList<CameraModel> possibleModels = ConfigurationDumpReader.LoadDumpInto(wizard.getConfiguration(), wizard.getSerialController().getDump(20000));
+            CameraModel chosenModel = null;
+            if (possibleModels.isEmpty())
+            {
+                JOptionPane.showMessageDialog(wizard, "The setting stored on the StratoSnapper seems to be invalid and cannot be loaded.","Load error", JOptionPane.ERROR_MESSAGE);
+                //Reset config:
+                ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+                for (Channel ch : channels)
+                {
+                    ch.setSetting(new Setting());
+                }
+            }
+            else if (possibleModels.size() == 1)
+            {
+                chosenModel = possibleModels.get(0);
+            }
+            else
+            {
+                chosenModel = (CameraModel) JOptionPane.showInputDialog(wizard, "The loaded configuration fits multiple cameras.\r\nChoose which camera your are using from the list below.", "Choose camera", JOptionPane.INFORMATION_MESSAGE, null, possibleModels.toArray(), possibleModels.get(0));
+            }
+            if (chosenModel != null)
+            {
+                wizard.getConfiguration().setCameraModel(chosenModel);
+                //TODO: Set camera brand!
+            }
+            
         } catch (IOException ex) {
             Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException ex) {

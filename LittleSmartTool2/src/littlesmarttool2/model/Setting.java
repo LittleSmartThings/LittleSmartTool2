@@ -5,10 +5,7 @@
 package littlesmarttool2.model;
 
 import java.util.*;
-import static littlesmarttool2.model.ControlType.PushButton;
-import static littlesmarttool2.model.ControlType.Stick;
-import static littlesmarttool2.model.ControlType.Switch2;
-import static littlesmarttool2.model.ControlType.Switch3;
+import static littlesmarttool2.model.ControlType.*;
 
 /**
  * A setting is a set of thresholds and blocks defining the complete behavior

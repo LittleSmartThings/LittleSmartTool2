@@ -71,7 +71,7 @@ public class CameraModel {
     
     @Override
     public String toString() {
-        return getModelName();
+        return identifier;
     }
 
     private void updateConnectionTypes() {
