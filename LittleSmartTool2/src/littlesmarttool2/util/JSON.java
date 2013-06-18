@@ -50,8 +50,10 @@ public class JSON {
         List<T> list = new ArrayList<>();
         File dir = new File(DATAFOLDER+dirname);
         for (File file : dir.listFiles()) {
-            if(file.isFile())
-                list.add(readObjectFromFile(dirname+"/"+file.getName(), clazz));
+            if(file.isFile()){
+                if(file.getName().endsWith(".json"))
+                    list.add(readObjectFromFile(dirname+"/"+file.getName(), clazz));
+            }
             else
                 list.addAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
         }
