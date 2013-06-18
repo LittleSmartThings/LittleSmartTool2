@@ -359,7 +359,7 @@ public class ConfigurationDumpReader {
             int[] parts = sc.convertArgsToInt();
             int[] pulseData = GetIRPulseData(raw,parts[0]);
             if (pulseData.length == 0) continue;
-            cmds.put(parts[0], new IRCommand("","",null,pulseData,parts[2],parts[1],freq));
+            cmds.put(parts[0], new IRCommand("","",null,pulseData,parts[2],parts[1],freq, false));
         }
         
         return cmds;

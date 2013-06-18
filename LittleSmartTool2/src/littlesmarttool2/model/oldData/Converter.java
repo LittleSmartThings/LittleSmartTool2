@@ -75,7 +75,7 @@ public class Converter {
                 i++;
             }
             
-            commands[nIR++] = new IRCommand(ir.action, ir.action, models, pulsedata, 0, ir.signalrepeat, 38);
+            commands[nIR++] = new IRCommand(ir.action, ir.action, models, pulsedata, 0, ir.signalrepeat, 38, false);
         }
         
         

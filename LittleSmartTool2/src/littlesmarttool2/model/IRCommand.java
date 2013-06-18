@@ -7,6 +7,7 @@ package littlesmarttool2.model;
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import littlesmarttool2.util.JSON;
 
 /**
@@ -17,23 +18,37 @@ public class IRCommand extends Command {
     
     private int[] pulsedata;
     private int delayBetweenRepeats, repeats, frequency;
-    
-    private static IRCommand[] array;
+    private final boolean custom;
     
     public static IRCommand[] getArray() {
-        if(null==ModelUtil.irCommands) 
+        if(null==ModelUtil.standardIRCommands) 
             ModelUtil.LoadData();
-        return ModelUtil.irCommands;
+        IRCommand[] array = new IRCommand[ModelUtil.standardIRCommands.length + ModelUtil.customIRCommands.size()];
+        int i = 0;
+        for (IRCommand command : ModelUtil.standardIRCommands) {
+            array[i++] = command; 
+        }
+        for (IRCommand command : ModelUtil.customIRCommands) {
+            array[i++] = command;
+        }
+        return array;
+    }
+    
+    public static List<IRCommand> getCustomCommandsList() {
+        if(null==ModelUtil.customIRCommands) 
+            ModelUtil.LoadData();
+        return ModelUtil.customIRCommands;
     }
     
     @JsonCreator
-    public IRCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("pulsedata") int[] pulsedata, @JsonProperty("delayBetweenRepeats") int delayBetweenRepeats, @JsonProperty("reapeats") int repeats, @JsonProperty("frequency") int frequency)
+    public IRCommand(@JsonProperty("name") String name, @JsonProperty("description") String description, @JsonProperty("models") CameraModel[] models, @JsonProperty("pulsedata") int[] pulsedata, @JsonProperty("delayBetweenRepeats") int delayBetweenRepeats, @JsonProperty("reapeats") int repeats, @JsonProperty("frequency") int frequency, @JsonProperty("custom") boolean custom)
     {
         super(name, description, models);
         this.pulsedata = pulsedata;
         this.delayBetweenRepeats = delayBetweenRepeats;
         this.repeats = repeats;
         this.frequency = frequency;
+        this.custom = custom;
     }
     
     public int[] getPulsedata()
@@ -51,6 +66,10 @@ public class IRCommand extends Command {
     
     public int getFrequency() {
         return frequency;
+    }
+    
+    public boolean getCustom(){
+        return custom;
     }
 
     @Override
