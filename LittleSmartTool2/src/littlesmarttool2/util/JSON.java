@@ -86,7 +86,7 @@ public class JSON {
                 String description = read.readLine().trim();
                 switch(commIndex){
                     case 1:
-                        IRCommandList.add(new IRCommand(name, description, models, new int[]{1,2,3,4,5,6,7,8,9,10}, 42, 2, 38000));
+                        IRCommandList.add(new IRCommand(name, description, models, new int[]{1,2,3,4,5,6,7,8,9,10}, 42, 2, 38000,true));
                         break;
                     case 2:
                         wireCommandList.add(new WireCommand(name, description, models, 74, 2));
