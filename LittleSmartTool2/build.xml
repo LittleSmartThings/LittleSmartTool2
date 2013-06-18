@@ -77,8 +77,8 @@ Further the following library have been used for packaging binaries:
         classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
         
     <target name="ssbase" depends="clean,jar">
-        <copydir src="src/littlesmarttool2/data/" dest="dist/data"/>
-        <copydir src="src/littlesmarttool2/firmware/" dest="dist/firmware"/>
+        <copydir src="data/" dest="dist/data"/>
+        <copydir src="firmware/" dest="dist/firmware"/>
         <copydir src="img/" dest="dist/img"/>
         <mkdir dir="dist/logs"/>
         <copy file="version.properties" tofile="dist/version.properties"/>

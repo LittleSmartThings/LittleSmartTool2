@@ -7,6 +7,7 @@ package littlesmarttool2.model;
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import littlesmarttool2.util.JSON;
 
 /**
@@ -19,12 +20,24 @@ public class IRCommand extends Command {
     private int delayBetweenRepeats, repeats, frequency;
     private final boolean custom;
     
-    private static IRCommand[] array;
-    
     public static IRCommand[] getArray() {
-        if(null==ModelUtil.irCommands) 
+        if(null==ModelUtil.standardIRCommands) 
             ModelUtil.LoadData();
-        return ModelUtil.irCommands;
+        IRCommand[] array = new IRCommand[ModelUtil.standardIRCommands.length + ModelUtil.customIRCommands.size()];
+        int i = 0;
+        for (IRCommand command : ModelUtil.standardIRCommands) {
+            array[i++] = command; 
+        }
+        for (IRCommand command : ModelUtil.customIRCommands) {
+            array[i++] = command;
+        }
+        return array;
+    }
+    
+    public static List<IRCommand> getCustomCommandsList() {
+        if(null==ModelUtil.customIRCommands) 
+            ModelUtil.LoadData();
+        return ModelUtil.customIRCommands;
     }
     
     @JsonCreator

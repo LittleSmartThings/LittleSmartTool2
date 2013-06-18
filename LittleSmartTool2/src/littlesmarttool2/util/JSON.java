@@ -17,12 +17,14 @@ import littlesmarttool2.model.*;
  */
 public class JSON {
     
+    private static final String DATAFOLDER = "./data/";
+    
     public static <T> T readObjectFromFile(String filename, Class<T> clazz) {
         try {
             ObjectMapper mapper = new ObjectMapper();
 
             // read from file, convert it to user class
-            T value = mapper.readValue(new File("./data/"+filename), clazz);
+            T value = mapper.readValue(new File(DATAFOLDER+filename), clazz);
             return value;
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,6 +45,18 @@ public class JSON {
             return false;
 	}
     } 
+    
+    public static <T> List<T> readObjectsFromDir(String dirname, Class<T> clazz){
+        List<T> list = new ArrayList<>();
+        File dir = new File(DATAFOLDER+dirname);
+        for (File file : dir.listFiles()) {
+            if(file.isFile())
+                list.add(readObjectFromFile(dirname+"/"+file.getName(), clazz));
+            else
+                list.addAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
+        }
+        return list;
+    }
     
     public static void main(String[] args) {
         final String inputFile = null;//"LANC.txt";

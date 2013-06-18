@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import littlesmarttool2.comm.ProgrammingUpdateListener;
 import littlesmarttool2.comm.SerialController;
@@ -22,9 +23,10 @@ import littlesmarttool2.util.JSON;
 public class ModelUtil {
     
     static CameraBrand[] cameraBrands;
-    static IRCommand[] irCommands;
     static WireCommand[] wireCommands;
     static LANCCommand[] lancCommands;
+    static IRCommand[] standardIRCommands;
+    static List<IRCommand> customIRCommands;
     
     static HashMap<Command,Integer> commandMap;
     static int currentCommand;
@@ -45,11 +47,23 @@ public class ModelUtil {
         CameraModel[] models;
         int i;
         
-        irCommands = JSON.readObjectFromFile("IRCommandList.json", IRCommand[].class);
         wireCommands = JSON.readObjectFromFile("WireCommandList.json", WireCommand[].class);
         lancCommands = JSON.readObjectFromFile("LANCCommandList.json", LANCCommand[].class);
+        standardIRCommands = JSON.readObjectFromFile("IRCommandList.json", IRCommand[].class);
         
-        for (IRCommand command : irCommands) {
+        customIRCommands = JSON.readObjectsFromDir("CustomIRCommands", IRCommand.class);
+        
+        for (IRCommand command : customIRCommands) {
+            models = new CameraModel[command.getCameraModels().length];
+            i=0;
+            for (CameraModel cModel : command.getCameraModels()) {
+                models[i++] = map.get(cModel.getIdentifier());
+                map.get(cModel.getIdentifier()).addIRCommand(command);
+            }
+            command.setCameraModels(models);
+        }
+        
+        for (IRCommand command : standardIRCommands) {
             models = new CameraModel[command.getCameraModels().length];
             i=0;
             for (CameraModel cModel : command.getCameraModels()) {
@@ -79,7 +93,7 @@ public class ModelUtil {
             command.setCameraModels(models);
         }
         System.out.println("Loaded " + cameraBrands.length + " camera brands.");
-        System.out.println("Loaded " + irCommands.length + " IR commands.");
+        System.out.println("Loaded " + (standardIRCommands.length+customIRCommands.size()) + " IR commands of which "+ customIRCommands.size() +" are custom.");
         System.out.println("Loaded " + lancCommands.length + " LANC commands.");
         System.out.println("Loaded " + wireCommands.length + " wire commands.");
     }
