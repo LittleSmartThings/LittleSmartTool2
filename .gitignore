@@ -1,6 +1,5 @@
 *.class
 */SSLog.txt*
-/LittleSmartTool2/data
 /LittleSmartTool2/*.zip
 # Package Files #
 *.war
