@@ -16,31 +16,43 @@ import littlesmarttool2.comm.SerialController;
 public class PulseDataRecorder {
     private SerialController controller;
     private SerialCommand[] oldPulseData = new SerialCommand[0];
-    private int position;
-    public PulseDataRecorder(SerialController controller, int position)
+    private final int POSITION = 1;
+    public PulseDataRecorder(SerialController controller)
     {
         this.controller = controller;
-        this.position = position;
     }
     
-    public void backupPulseData()
+    /**
+     * Backup the pulsedata at the given position to memory
+     */
+    /*public void backupPulseData()
     {
         try {
-            oldPulseData = controller.getIRTimings(position, 10000);
+            oldPulseData = controller.getIRTimings(POSITION, 10000);
         } catch (IOException | TimeoutException ex) {
             System.out.println("Backup failed: " + ex.getMessage());
         }
-    }
+    }*/
     
-    public void setPulseData(int[] timings) throws TimeoutException, IOException
+    /**
+     * Set the pulsedata on the given position to some specific data
+     * @param timings The pulsedata to store
+     * @throws TimeoutException On timeout
+     * @throws IOException On other errors
+     */
+    /*public void setPulseData(int[] timings) throws TimeoutException, IOException
     {
         for (int i = 0; i < timings.length; i+=2)
         {
-            controller.send("I;" + position + ";" + i +  ";" + timings[i] + ";" + timings[i+1], 5000);
+            controller.send("I;" + POSITION + ";" + i +  ";" + timings[i] + ";" + timings[i+1], 5000);
         }
-    }
+        controller.send("M", 5000);
+    }*/
     
-    public void restorePulseData()
+    /**
+     * Restore the pulsedata backed up from backupPulseData()
+     */
+    /*public void restorePulseData()
     {
         for (SerialCommand cmd : oldPulseData)
         {
@@ -50,14 +62,25 @@ public class PulseDataRecorder {
                 System.out.println("Restore failed: " + ex.getMessage());
             }
         }
-    }
+        try {
+            controller.send("M", 5000);
+        } catch (IOException | TimeoutException ex) {
+            
+        }
+    }*/
     
+    /**
+     * Record some pulsedata from the IR receiver
+     * @return The recorded pulsedata
+     * @throws IOException
+     * @throws TimeoutException 
+     */
     public int[] recordPulseData() throws IOException, TimeoutException
     {
-        String response = controller.send("J;" + position, 10000);
-        if (!response.equals("J;1")) throw new TimeoutException("The StratoSnapper timed out while waiting for IR input");
-
-        SerialCommand[] pulseData = controller.getIRTimings(position, 10000);
+        String response = controller.send("J;" + POSITION, 10000);
+        if (!response.equals("J;1")) throw new TimeoutException("The StratoSnapper timed out while waiting for IR input or the sequenze was too long");
+        
+        SerialCommand[] pulseData = controller.getIRTimings(POSITION, 10000);
         int[] timings = new int[pulseData.length*2];
         for (int i = 0; i < pulseData.length; i++)
         {
@@ -67,4 +90,10 @@ public class PulseDataRecorder {
         }
         return timings;
     }
+    
+    public void playbackRecording() throws TimeoutException, IOException
+    {
+        controller.send("H;"+POSITION, 5000);
+    }
+    
 }

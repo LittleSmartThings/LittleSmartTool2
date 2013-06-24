@@ -6,8 +6,6 @@ package littlesmarttool2.GUI.components;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Timer;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.CameraModel;
@@ -15,7 +13,8 @@ import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.util.PulseDataRecorder;
 
 /**
- *
+ * Call getIRCommand() to get the recorded IRCommand
+ * 
  * @author Rasmus
  */
 public class IRRecordForm extends javax.swing.JPanel {
@@ -23,44 +22,46 @@ public class IRRecordForm extends javax.swing.JPanel {
     private final CameraModel model;
     private final PulseDataRecorder recorder;
     private final SerialController controller;
-    private final int tempPosition;
     private int[] pulseData;
     private Timer statusTimer = new Timer(1000,null);
     /**
      * Creates new form IRRecordForm
      */
-    public IRRecordForm(CameraModel model, SerialController controller, int tempPosition) {
+    public IRRecordForm(CameraModel model, SerialController controller) {
         initComponents();
         this.model = model;
-        recorder = new PulseDataRecorder(controller, tempPosition);
-        this.tempPosition = tempPosition;
+        recorder = new PulseDataRecorder(controller);
         this.controller = controller;
         modelLabel.setText(model.getIdentifier());
     }
-
-    //TODO:
-    /*
-     * Backup pulsedata
-     * Record pulses
-     * Playback pulses
-     * Restore old pulsedata
+    
+    /**
+     * Get whether the user has recorded anything
+     * @return True if pulsedata is present
+     */
+    public boolean hasRecorded()
+    {
+        return (pulseData != null && pulseData.length > 0);
+    }
+    
+    /**
+     * Get the IR command that the user has recorded and named
+     * Must be called after restore()
+     * @return A new IR command containing the newly recorded information
      */
     public IRCommand getIRCommand()
     {
-        //TODO: Throw exception if pulseData empty?
-        return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{model}, pulseData, 10000, 1, 38);
+        return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{model}, pulseData, 10000, 1, 38, true);
     }
     
     private void doRecord()
     {
         boolean error = false;
-        recorder.backupPulseData();
         try {
             pulseData = recorder.recordPulseData();
         } catch (IOException | TimeoutException ex) {
             error = true;
         }
-        recorder.restorePulseData();
         
         recordButton.setEnabled(true);
         statusTimer.stop();
@@ -85,15 +86,11 @@ public class IRRecordForm extends javax.swing.JPanel {
     private void doPlayBack()
     {
         boolean error = false;
-        recorder.backupPulseData();
         try {
-            recorder.setPulseData(pulseData);
-            controller.send("H;"+tempPosition, 5000);
+            recorder.playbackRecording();
         } catch (TimeoutException | IOException ex) {
             error = true;
         }
-        
-        recorder.restorePulseData();
         
         recordButton.setEnabled(true);
         playButton.setEnabled(true);
@@ -101,7 +98,7 @@ public class IRRecordForm extends javax.swing.JPanel {
         if (error)
             statusLabel.setText("Playback error. Try again");
         else
-            statusLabel.setText("Done playing");
+            statusLabel.setText("Recorded OK");
     }
     
     /**

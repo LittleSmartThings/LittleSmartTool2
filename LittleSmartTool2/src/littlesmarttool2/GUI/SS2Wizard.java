@@ -301,7 +301,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                     configuration.setMaxRanges(Integer.parseInt(space[1]));//Range
                     configuration.setMaxTriggers(Integer.parseInt(space[2]));//Trigger
                     configuration.setMaxLANC(Integer.parseInt(space[3]));//LANC
-                    configuration.setMaxIR(Integer.parseInt(space[4]));//IR
+                    configuration.setMaxIR(Integer.parseInt(space[4]) - 1);//IR (room for one less since one space is reserved)
                     configuration.setMaxIRPulse(Integer.parseInt(space[5]));//IR Puls
                 } catch (NumberFormatException ex) {
                     throw new IOException("Unable to get maximum values.");

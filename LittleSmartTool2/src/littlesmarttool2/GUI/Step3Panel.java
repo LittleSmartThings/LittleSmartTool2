@@ -203,9 +203,11 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     }//GEN-LAST:event_loadButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        wizard.stopAutoServoPulling();
         JFrame f = new JFrame("Record IR command");
         f.setLayout(new BorderLayout());
-        f.add(new IRRecordForm(wizard.getConfiguration().getCameraModel(), wizard.getSerialController(), 8), BorderLayout.CENTER);
+        IRRecordForm form = new IRRecordForm(wizard.getConfiguration().getCameraModel(), wizard.getSerialController());
+        f.add(form, BorderLayout.CENTER);
         f.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
