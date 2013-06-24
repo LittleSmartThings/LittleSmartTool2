@@ -42,7 +42,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
-        loadButton.setVisible(false);
+        //loadButton.setVisible(false);
         jTabbedPane1.removeAll();
         ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
         CommandChangedListener listener = new CommandChangedListener() {
