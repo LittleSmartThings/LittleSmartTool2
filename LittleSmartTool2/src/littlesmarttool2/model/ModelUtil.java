@@ -101,7 +101,6 @@ public class ModelUtil {
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
         commandMap = new HashMap<>();
         currentCommand = 1;
-        int rangeNumber = 1, triggerNumber = 1;
 
         System.out.print("Clearing EEPROM...");
         listener.update("Clearing old configuration");
@@ -130,6 +129,36 @@ public class ModelUtil {
         if(!comm.send("N;1",10000, howManyTimesShouldITry).equals("N;1"))//-----------------"N" Turn output off
                 throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to turn output off.");
         
+        
+        if(conf.isTimelapse())
+            uploadTimelapse(conf, comm, listener);
+        else
+            uploadChannels(conf, comm, listener);
+        
+        
+        listener.update("Saving configuration to the StratoSnapper");
+        if(!comm.send("M",10000, howManyTimesShouldITry).equals("M;1"))//-----------------"M" Store to EEPROM
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM.");
+    }
+    
+    private static void uploadTimelapse(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
+        listener.update("Setting timelapse configuration");
+        System.out.println("Sending timelapse command...");
+        int sendId = sendCommandToSnapper(comm, conf.getTimelapseCommand());
+        
+        if(!comm.send('U', new String[]{
+            sendId+"",
+            conf.getTimelapseDelay()+""
+        },10000, howManyTimesShouldITry).equals("U;1"))//-----------------"N" Turn output off
+                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to set timelapse configuration.");
+        
+                    
+    }
+    
+    private static void uploadChannels(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
+        int rangeNumber = 1, triggerNumber = 1;
+        String response;
+
         for (Channel channel : conf.getChannels()) {
             int servo = channel.getId();
             Setting setting = channel.getSetting();
@@ -205,11 +234,11 @@ public class ModelUtil {
                 rangeNumber++;
             } //End for (block : blocks)
         } //End for (channel : channels)
-        listener.update("Saving configuration to the StratoSnapper");
-        if(!comm.send("M",10000, howManyTimesShouldITry).equals("M;1"))//-----------------"M" Store to EEPROM
-                throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to store configuration to EEPROM.");
     }
-    
+
+    /**
+     * Uploads and command to the StratoSnapper and returns the given id of the command.
+     */
     private static int sendCommandToSnapper(SerialController comm, Command command) throws IOException, TimeoutException{
         
         if(command.getClass() == WireCommand.class){

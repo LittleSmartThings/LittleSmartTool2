@@ -22,8 +22,9 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     Block block;
     private final CommandChangedListener changeListener;
     private Configuration configuration;
+    
     /**
-     * Creates new form RangeConfigPanel
+     * Use this when configuring a clock/range
      */
     public BlockConfigPanel(Configuration config, Block block, CommandChangedListener changeListener) {
         initComponents();
@@ -33,6 +34,20 @@ public class BlockConfigPanel extends javax.swing.JPanel {
         this.changeListener = changeListener;
         jList1.setSelectedValue(block.getCommand(), true);
         jSlider1.setValue(block.getInterval()/100); //Stored as ms
+    }
+    
+    /**
+     * Use this when configuring timelapse 
+     */
+    public BlockConfigPanel(Configuration config, CommandChangedListener changeListener) {
+        initComponents();
+        jLabel1.setText("Select an action to be performed using timelapse");
+        jLabel3.setText("Select how often to repeat the action");
+        this.configuration = config;
+        populate(config);
+        this.changeListener = changeListener;
+        jList1.setSelectedValue(configuration.getTimelapseCommand(), true);
+        jSlider1.setValue(configuration.getTimelapseDelay()/100); //Stored as ms
     }
     
     private void populate(Configuration config)
@@ -137,7 +152,11 @@ public class BlockConfigPanel extends javax.swing.JPanel {
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         if (jList1.getSelectedValue() == null) return;
-        block.setCommand((Command)jList1.getSelectedValue());
+        
+        if(block != null) //Configuring block
+            block.setCommand((Command)jList1.getSelectedValue());
+        else //Configuring timelapse
+            configuration.setTimelapseCommand((Command)jList1.getSelectedValue());
 
         if (configuration.getRemainingRanges() < 0 ||
                 (configuration.getOutputType() == ConnectionType.IR && configuration.getRemainingIR() < 0) ||
@@ -161,7 +180,14 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jList1ValueChanged
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        block.setInterval(jSlider1.getValue()*100); //Store as ms
+        int storeVal = jSlider1.getValue()*100; //Store as ms
+        
+        if(block != null) //Configuring block
+            block.setInterval(storeVal); 
+        else //Configuring timelapse
+            configuration.setTimelapseDelay(storeVal);
+        
+        
         if (jSlider1.getValue() == 0)
             repetitionsLabel.setText("just once");
         else if (jSlider1.getValue() < 10)

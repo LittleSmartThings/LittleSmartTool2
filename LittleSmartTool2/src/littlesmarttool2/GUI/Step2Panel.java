@@ -58,7 +58,8 @@ public class Step2Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
-        isActive = true;
+        isActive = true;                                            
+        wizard.getConfiguration().setTimelapse(false);
         updateNextButton();
     }
 
@@ -79,6 +80,8 @@ public class Step2Panel extends StepPanel implements ResponseListener {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        timelapseButton = new javax.swing.JButton();
         channelConfigurator1 = new littlesmarttool2.GUI.components.ChannelConfigurator();
         channelConfigurator2 = new littlesmarttool2.GUI.components.ChannelConfigurator();
         channelConfigurator3 = new littlesmarttool2.GUI.components.ChannelConfigurator();
@@ -88,10 +91,25 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         setLayout(new java.awt.GridLayout(5, 1, 0, 10));
 
         jPanel1.setMinimumSize(new java.awt.Dimension(200, 76));
-        jPanel1.setLayout(new java.awt.GridLayout(0, 1));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("<html>\nSet up the channels you will be using by following these steps:\n<ol> \n\t<li>Connect to the StratoSnapper (top right corner)</li> \n\t<li>Choose the type of controller connected to each channel (skip the channels you don't use)</li> \n\t<li>Calibrate the software by moving your controller as far as it goes in both directions</li> \n</ol>\n</html>");
-        jPanel1.add(jLabel1);
+        jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        jPanel2.setMaximumSize(new java.awt.Dimension(200, 100));
+        jPanel2.setPreferredSize(new java.awt.Dimension(200, 100));
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        timelapseButton.setText("Use timelapse");
+        timelapseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                timelapseButtonActionPerformed(evt);
+            }
+        });
+        jPanel2.add(timelapseButton, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(jPanel2, java.awt.BorderLayout.EAST);
 
         add(jPanel1);
         add(channelConfigurator1);
@@ -99,6 +117,12 @@ public class Step2Panel extends StepPanel implements ResponseListener {
         add(channelConfigurator3);
         add(channelConfigurator4);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void timelapseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timelapseButtonActionPerformed
+        wizard.getConfiguration().setTimelapse(true);
+        wizard.goToNextStep();
+    }//GEN-LAST:event_timelapseButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator1;
     private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator2;
@@ -106,6 +130,8 @@ public class Step2Panel extends StepPanel implements ResponseListener {
     private littlesmarttool2.GUI.components.ChannelConfigurator channelConfigurator4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton timelapseButton;
     // End of variables declaration//GEN-END:variables
 
 }

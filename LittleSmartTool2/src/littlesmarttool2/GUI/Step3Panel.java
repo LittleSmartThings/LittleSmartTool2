@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import littlesmarttool2.GUI.components.BlockConfigPanel;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
 import littlesmarttool2.comm.ResponseListener;
@@ -28,6 +29,12 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
     //ChannelTabPanel[] tabs = new ChannelTabPanel[4];
     HashMap<Integer,ChannelTabPanel> tabs = new HashMap<>();
+    private final CommandChangedListener cmdChangedListener = new CommandChangedListener() {
+        @Override
+        public void CommandChanged() {
+            updateSpaceRemainingLabels();
+        }
+    };
     /**
      * Creates new form Step1Panel
      */
@@ -41,22 +48,48 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     public void onDisplay() {
         loadButton.setVisible(false);
         jTabbedPane1.removeAll();
-        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
-        CommandChangedListener listener = new CommandChangedListener() {
+        
+        if(wizard.getConfiguration().isTimelapse())
+            showTimelapseTab();
+        else
+            showChannelTabs();
+    }
 
-            @Override
-            public void CommandChanged() {
-                updateSpaceLabels();
-            }
-        };
+    @Override
+    public void onHide() {
+        //TODO: Do anything??
+    }
+    
+    private void showTimelapseTab() {
+        jTabbedPane1.addTab("Timelapse", new BlockConfigPanel(wizard.getConfiguration(), cmdChangedListener));
+        
+        remainingSpaceLabel.setVisible(false);
+        thresholdsLabel.setVisible(false);
+        thresholdsRemainingLabel.setVisible(false);
+        blocksLabel.setVisible(false);
+        blocksRemainingLabel.setVisible(false);
+        commandsLabel.setVisible(false);
+        commandsRemainingLabel.setVisible(false);
+    }
+
+    private void showChannelTabs() {
+        
+        ArrayList<Channel> channels = wizard.getConfiguration().getChannels();
+        
         for (int i = 0; i < channels.size(); i++)
         {
             if (!channels.get(i).isCalibrated())
                 continue;
-            tabs.put(i, new ChannelTabPanel(wizard.getConfiguration(), listener));
+            tabs.put(i, new ChannelTabPanel(wizard.getConfiguration(), cmdChangedListener));
             tabs.get(i).setChannel(channels.get(i));
             jTabbedPane1.addTab("Channel " + (i+1), tabs.get(i));
         }
+        
+        remainingSpaceLabel.setVisible(true);
+        thresholdsLabel.setVisible(true);
+        thresholdsRemainingLabel.setVisible(true);
+        blocksLabel.setVisible(true);
+        blocksRemainingLabel.setVisible(true);
         
         switch(wizard.getConfiguration().getOutputType()){
             case Wire:
@@ -73,14 +106,8 @@ public class Step3Panel extends StepPanel implements ResponseListener {
                 break;
         }
         
-        updateSpaceLabels();
+        updateSpaceRemainingLabels();
     }
-
-    @Override
-    public void onHide() {
-        //TODO: Do anything??
-    }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,11 +120,11 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        remainingSpaceLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        blocksLabel = new javax.swing.JLabel();
         blocksRemainingLabel = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        thresholdsLabel = new javax.swing.JLabel();
         thresholdsRemainingLabel = new javax.swing.JLabel();
         commandsLabel = new javax.swing.JLabel();
         commandsRemainingLabel = new javax.swing.JLabel();
@@ -109,22 +136,22 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel2.setText("Remaining space on the StratoSnapper");
-        jPanel2.add(jLabel2, java.awt.BorderLayout.NORTH);
+        remainingSpaceLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        remainingSpaceLabel.setText("Remaining space on the StratoSnapper");
+        jPanel2.add(remainingSpaceLabel, java.awt.BorderLayout.NORTH);
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
 
-        jLabel1.setText("Blocks:");
-        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 5));
-        jPanel1.add(jLabel1);
+        blocksLabel.setText("Blocks:");
+        blocksLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 5));
+        jPanel1.add(blocksLabel);
 
         blocksRemainingLabel.setText("0");
         jPanel1.add(blocksRemainingLabel);
 
-        jLabel3.setText("Thresholds:");
-        jLabel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 5));
-        jPanel1.add(jLabel3);
+        thresholdsLabel.setText("Thresholds:");
+        thresholdsLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 5));
+        jPanel1.add(thresholdsLabel);
 
         thresholdsRemainingLabel.setText("0");
         jPanel1.add(thresholdsRemainingLabel);
@@ -188,16 +215,16 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     }//GEN-LAST:event_loadButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel blocksLabel;
     private javax.swing.JLabel blocksRemainingLabel;
     private javax.swing.JLabel commandsLabel;
     private javax.swing.JLabel commandsRemainingLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loadButton;
+    private javax.swing.JLabel remainingSpaceLabel;
+    private javax.swing.JLabel thresholdsLabel;
     private javax.swing.JLabel thresholdsRemainingLabel;
     // End of variables declaration//GEN-END:variables
 
@@ -216,7 +243,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         {}
     }
 
-    private void updateSpaceLabels() {
+    private void updateSpaceRemainingLabels() {
         Configuration conf = wizard.getConfiguration();
         if(!wizard.getSerialController().connected()){
             blocksRemainingLabel.setText("-");
@@ -238,5 +265,4 @@ public class Step3Panel extends StepPanel implements ResponseListener {
                 break;
         }
     }
-
 }

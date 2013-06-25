@@ -139,6 +139,16 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     
     public void setNextEnabled(boolean val) { nextButton.setEnabled(val);}
     
+    public void goToNextStep() {
+        if(currentStep < stepPanels.length-1)
+            goToStep(currentStep+1);
+    }
+    
+    public void goToPreviousStep() {
+        if(currentStep > 0)
+            goToStep(currentStep-1);
+    }
+    
     private void goToStep(int index) {
         backButton.setEnabled((index <= 0) ? false : true);
         nextButton.setEnabled(true);
@@ -179,7 +189,6 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         setIconImage(new ImageIcon("./img/rocket_gloss.png").getImage());
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 570));
-        setPreferredSize(new java.awt.Dimension(800, 570));
 
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());
@@ -261,12 +270,12 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        goToStep(currentStep-1);
+        goToPreviousStep();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         if(currentStep < stepPanels.length-1)
-            goToStep(currentStep+1);
+            goToNextStep();
         else{
             if(hasUploaded || JOptionPane.showConfirmDialog(this, "Your configuration has not been uploaded to the StratoSnapper2.\nAre you sure, you want to quit?", "Really quit?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION)
             System.exit(0);

@@ -19,6 +19,10 @@ public class Configuration {
     private int irFreq;
     private int maxIRPulse, maxIR, maxLANC, maxTriggers, maxRanges;
     
+    private boolean timelapse;
+    private Command timelapseCommand;
+    private int timelapseDelay = 1000;
+    
     public Configuration()
     {
         channels.add(new Channel(1));
@@ -51,6 +55,30 @@ public class Configuration {
     public void setOutputType(ConnectionType type)
     {
         this.outputType = type;
+    }
+    
+    public boolean isTimelapse() {
+        return timelapse;
+    }
+
+    public void setTimelapse(boolean timelapse) {
+        this.timelapse = timelapse;
+    }
+
+    public Command getTimelapseCommand() {
+        return timelapseCommand;
+    }
+
+    public void setTimelapseCommand(Command timelapseCommand) {
+        this.timelapseCommand = timelapseCommand;
+    }
+
+    public int getTimelapseDelay() {
+        return timelapseDelay;
+    }
+
+    public void setTimelapseDelay(int timelapseDelayMs) {
+        this.timelapseDelay = timelapseDelayMs;
     }
     
     public ArrayList<Channel> getChannels()
@@ -192,5 +220,4 @@ public class Configuration {
     public void setMaxIRPulse(int maxIRPulse) {
         this.maxIRPulse = maxIRPulse;
     }
-    
 }
