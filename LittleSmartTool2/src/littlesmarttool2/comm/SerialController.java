@@ -111,6 +111,11 @@ public class SerialController {
         throw new TimeoutException("Timed out");
     }
     
+    public SerialCommand send(SerialCommand command, int timeOut) throws IOException, TimeoutException
+    {
+        return SerialCommand.fromMessage(send(command.getCommand(),command.getArgs(), timeOut));
+    }
+    
     public String send(char command, String[] args, int timeOut, int maxRepetitions) throws IOException, TimeoutException
     {
         String msg = command + "";
@@ -168,8 +173,43 @@ public class SerialController {
         return read;
     }
     
-    public SerialCommand[] getDump(int timeOut) throws IOException, TimeoutException
+    public synchronized SerialCommand[] sendMultiResponse(String message, String term, int timeOut) throws IOException, TimeoutException
     {
+        ArrayList<SerialCommand> response = new ArrayList<>();
+        long endTime = System.currentTimeMillis() + timeOut;
+        try {
+            port.enableReceiveTimeout(timeOut);
+        } catch (UnsupportedCommOperationException ex) {
+        }
+        String read = INIT_STRING;
+        while (INIT_STRING.equals(read))
+        {
+            //Actually send message
+            outStream.write((message+">").getBytes());
+            outStream.flush();
+            while(true)
+            {
+                if (System.currentTimeMillis() > endTime)
+                    throw new TimeoutException("Timeout exceeded");
+                try {
+                    read = inReader.readLine();
+                    if (term.equals(read))
+                        break; //All done
+                    else
+                        response.add(SerialCommand.fromMessage(read));
+                }
+                catch (IOException ex)
+                {
+                    continue; //Nothing to read at this time
+                }
+            }
+        }
+        return response.toArray(new SerialCommand[response.size()]);
+    }
+    
+    public synchronized SerialCommand[] getDump(int timeOut) throws IOException, TimeoutException
+    {
+        if (true) return sendMultiResponse("D","D;1",timeOut);
         ArrayList<SerialCommand> dump = new ArrayList<>();
         long endTime = System.currentTimeMillis() + timeOut;
         
@@ -194,6 +234,46 @@ public class SerialController {
                     SerialCommand cmd = SerialCommand.fromMessage(read);
                     if (cmd.getCommand() == 'D')
                         break; //D;1 is the last command in a dump
+                    else
+                        dump.add(cmd);
+                }
+                catch (IOException ex)
+                {
+                    continue; //Nothing to read at this time
+                }
+            }
+        }
+        //System.err.println("Received >>>" + read + "<<<");
+        return dump.toArray(new SerialCommand[dump.size()]);
+    }
+    
+    public synchronized SerialCommand[] getIRTimings(int position, int timeOut) throws IOException, TimeoutException
+    {
+        if (true) return sendMultiResponse("I;"+position,"I;1",timeOut);
+        ArrayList<SerialCommand> dump = new ArrayList<>();
+        long endTime = System.currentTimeMillis() + timeOut;
+        
+        try {
+            port.enableReceiveTimeout(timeOut);
+        } catch (UnsupportedCommOperationException ex) {
+        }
+        
+        String read = INIT_STRING;
+        while (INIT_STRING.equals(read))
+        {           
+            //Actually send message
+            outStream.write(("I;" + position + ">").getBytes());
+            outStream.flush();
+            
+            while(true)
+            {
+                if (System.currentTimeMillis() > endTime)
+                    throw new TimeoutException("Connection timeout exceeded");
+                try {
+                    read = inReader.readLine();
+                    SerialCommand cmd = SerialCommand.fromMessage(read);
+                    if (cmd.getCommand() == 'I' && cmd.getArgs().length == 1 && cmd.getArgs()[0].equals("1"))
+                        break; //I;1 is the last command in a dump
                     else
                         dump.add(cmd);
                 }

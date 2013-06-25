@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
+import littlesmarttool2.GUI.components.DotsListener;
 import littlesmarttool2.LittleSmartTool2;
 import littlesmarttool2.comm.ConnectionListener;
 import littlesmarttool2.comm.ResponseListener;
@@ -309,7 +310,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                     configuration.setMaxRanges(Integer.parseInt(space[1]));//Range
                     configuration.setMaxTriggers(Integer.parseInt(space[2]));//Trigger
                     configuration.setMaxLANC(Integer.parseInt(space[3]));//LANC
-                    configuration.setMaxIR(Integer.parseInt(space[4]));//IR
+                    configuration.setMaxIR(Integer.parseInt(space[4]) - 1);//IR (room for one less since one space is reserved)
                     configuration.setMaxIRPulse(Integer.parseInt(space[5]));//IR Puls
                 } catch (NumberFormatException ex) {
                     throw new IOException("Unable to get maximum values.");
@@ -391,25 +392,6 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             System.out.println("Max IR: "+configuration.getMaxIR());
             System.out.println("Max IR pulse: "+configuration.getMaxIRPulse());
         }    
-    }
-    
-    private class DotsListener implements ActionListener
-    {
-        JLabel label;
-        String text;
-        int dots = 1;
-        public DotsListener(JLabel label, String text)
-        {
-            this.label = label;
-            this.text = text;
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String d = (dots == 1) ? "." : ((dots == 2) ? ".." : "...");
-            label.setText(text+d);
-            dots++;
-            if (dots > 3) dots = 1;
-        }
     }
     
     private void portChooserItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_portChooserItemStateChanged

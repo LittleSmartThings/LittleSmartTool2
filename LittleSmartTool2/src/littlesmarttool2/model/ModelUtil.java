@@ -4,8 +4,6 @@
  */
 package littlesmarttool2.model;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -256,6 +254,7 @@ public class ModelUtil {
         
         if(command.getClass() == IRCommand.class){
             int commandId = currentCommand++;
+            commandId++; //Using space 2-8 for IR commands
             commandMap.put(command, commandId);
             
             IRCommand ir = (IRCommand) command;

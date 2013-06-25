@@ -24,7 +24,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
     private Configuration configuration;
     
     /**
-     * Use this when configuring a clock/range
+     * Use this when configuring a block/range
      */
     public BlockConfigPanel(Configuration config, Block block, CommandChangedListener changeListener) {
         initComponents();

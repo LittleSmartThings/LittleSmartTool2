@@ -4,16 +4,19 @@
  */
 package littlesmarttool2.GUI;
 
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import littlesmarttool2.GUI.components.BlockConfigPanel;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
+import littlesmarttool2.GUI.components.IRRecordForm;
 import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.Channel;
@@ -46,7 +49,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
-        loadButton.setVisible(false);
+        //loadButton.setVisible(false);
         jTabbedPane1.removeAll();
         
         if(wizard.getConfiguration().isTimelapse())
@@ -129,6 +132,8 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         commandsLabel = new javax.swing.JLabel();
         commandsRemainingLabel = new javax.swing.JLabel();
         loadButton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
         setName("Configure triggers and actions"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -174,6 +179,16 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         jPanel2.add(loadButton, java.awt.BorderLayout.EAST);
 
         add(jPanel2, java.awt.BorderLayout.SOUTH);
+
+        jButton1.setText("Record IR command");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton1);
+
+        add(jPanel3, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
@@ -214,13 +229,27 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         wizard.startAutoServoPulling();
     }//GEN-LAST:event_loadButtonActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        wizard.stopAutoServoPulling();
+        JFrame f = new JFrame("Record IR command");
+        f.setLayout(new BorderLayout());
+        IRRecordForm form = new IRRecordForm(wizard.getConfiguration().getCameraModel(), wizard.getSerialController());
+        f.add(form, BorderLayout.CENTER);
+        f.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel blocksLabel;
     private javax.swing.JLabel blocksRemainingLabel;
     private javax.swing.JLabel commandsLabel;
     private javax.swing.JLabel commandsRemainingLabel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loadButton;
     private javax.swing.JLabel remainingSpaceLabel;
