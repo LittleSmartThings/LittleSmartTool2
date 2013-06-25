@@ -62,7 +62,7 @@ public class JSON {
     } 
     
     public static boolean fileExists(String filename) {
-        return new File(filename).exists();
+        return new File(DATAFOLDER+filename).exists();
     }
     
     public static void main(String[] args) {

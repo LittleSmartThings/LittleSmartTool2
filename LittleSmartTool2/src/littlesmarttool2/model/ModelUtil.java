@@ -104,16 +104,16 @@ public class ModelUtil {
      */
     public static boolean saveCustomIRCommand(IRCommand command)
     {
-        String filename = makeURLString(command.getName());
+        String filename = CUSTOM_IR_DIR+"/"+makeURLString(command.getName())+".json";
         if(JSON.fileExists(filename)){
             int i = 1;
-            filename += i;
+            filename = filename.substring(0, filename.length()-5) + i + ".json";;
             while(JSON.fileExists(filename)){
                 i++;
-                filename = filename.substring(0, filename.length()-2) + i;
+                filename = filename.substring(0, filename.length()-6) + i + ".json";
             }
         }
-        if (!JSON.writeObjectToFile(command, CUSTOM_IR_DIR+filename))
+        if (!JSON.writeObjectToFile(command, filename))
             return false;
         
         customIRCommands.add(command);
