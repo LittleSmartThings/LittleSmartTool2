@@ -29,6 +29,7 @@ public class ModelUtil {
     static HashMap<Command,Integer> commandMap;
     static int currentCommand;
     static int howManyTimesShouldITry = 2;
+    private static String CUSTOM_IR_DIR = "CustomIRCommands";
     
     public static void LoadData() {
         cameraBrands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
@@ -49,7 +50,7 @@ public class ModelUtil {
         lancCommands = JSON.readObjectFromFile("LANCCommandList.json", LANCCommand[].class);
         standardIRCommands = JSON.readObjectFromFile("IRCommandList.json", IRCommand[].class);
         
-        customIRCommands = JSON.readObjectsFromDir("CustomIRCommands", IRCommand.class);
+        customIRCommands = JSON.readObjectsFromDir(CUSTOM_IR_DIR, IRCommand.class);
         
         for (IRCommand command : customIRCommands) {
             models = new CameraModel[command.getCameraModels().length];
@@ -94,6 +95,16 @@ public class ModelUtil {
         System.out.println("Loaded " + (standardIRCommands.length+customIRCommands.size()) + " IR commands of which "+ customIRCommands.size() +" are custom.");
         System.out.println("Loaded " + lancCommands.length + " LANC commands.");
         System.out.println("Loaded " + wireCommands.length + " wire commands.");
+    }
+    
+    /**
+     * Saves the IR command to disc and in the internal data model.
+     * @param command
+     * @return True if it was successful otherwise false.
+     */
+    public static boolean saveCustomIRCommand(IRCommand command)
+    {
+        return false;
     }
     
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {

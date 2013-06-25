@@ -61,11 +61,6 @@ public class JSON {
         return list;
     }
     
-    public static boolean saveCustomIRCommand(IRCommand command)
-    {
-        throw new NotImplementedException();
-    }
-    
     public static void main(String[] args) {
         final String inputFile = null;//"LANC.txt";
         
