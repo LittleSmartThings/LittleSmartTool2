@@ -5,6 +5,7 @@
 
 package littlesmarttool2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
@@ -42,14 +43,17 @@ public class CameraModel {
         return connectionTypes;
     }
     
+    @JsonBackReference
     public List<WireCommand> getWireCommands(){
         return wireCommands;
     }
     
+    @JsonBackReference
     public List<IRCommand> getIRCommands(){
         return irCommands;
     }
     
+    @JsonBackReference
     public List<LANCCommand> getLANCCommands(){
         return lancCommands;
     }
