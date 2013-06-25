@@ -33,19 +33,6 @@ public class JSON {
         }
 
     }
-
-    public static boolean writeObjectToFile(Object object, String filename) {
-	try {
-                ObjectMapper mapper = new ObjectMapper();
- 
-		// convert user object to json string, and save to a file
-		mapper.writeValue(new File(filename), object);
- 
-                return true;
-	} catch (IOException e) {
-            return false;
-	}
-    } 
     
     public static <T> List<T> readObjectsFromDir(String dirname, Class<T> clazz){
         List<T> list = new ArrayList<>();
@@ -59,6 +46,23 @@ public class JSON {
                 list.addAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
         }
         return list;
+    }
+
+    public static boolean writeObjectToFile(Object object, String filename) {
+	try {
+                ObjectMapper mapper = new ObjectMapper();
+ 
+		// convert user object to json string, and save to a file
+		mapper.writeValue(new File(DATAFOLDER+filename), object);
+ 
+                return true;
+	} catch (IOException e) {
+            return false;
+	}
+    } 
+    
+    public static boolean fileExists(String filename) {
+        return new File(filename).exists();
     }
     
     public static void main(String[] args) {

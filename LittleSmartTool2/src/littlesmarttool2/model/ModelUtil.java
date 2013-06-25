@@ -104,7 +104,20 @@ public class ModelUtil {
      */
     public static boolean saveCustomIRCommand(IRCommand command)
     {
-        return false;
+        String filename = makeURLString(command.getName());
+        if(JSON.fileExists(filename)){
+            int i = 1;
+            filename += i;
+            while(JSON.fileExists(filename)){
+                i++;
+                filename = filename.substring(0, filename.length()-2) + i;
+            }
+        }
+        if (!JSON.writeObjectToFile(command, CUSTOM_IR_DIR+filename))
+            return false;
+        
+        customIRCommands.add(command);
+        return true;
     }
     
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
@@ -315,5 +328,9 @@ public class ModelUtil {
             return commandId;
         }
         return -1;
+    }
+
+    private static String makeURLString(String string) {
+        return string.replaceAll("[^(\\d|\\w|_| )]", "").replace(' ', '_');
     }
 }
