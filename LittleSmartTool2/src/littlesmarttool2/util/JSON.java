@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import littlesmarttool2.model.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -58,6 +59,11 @@ public class JSON {
                 list.addAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
         }
         return list;
+    }
+    
+    public static boolean saveCustomIRCommand(IRCommand command)
+    {
+        throw new NotImplementedException();
     }
     
     public static void main(String[] args) {
