@@ -236,6 +236,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         portLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
         portPanel.add(portLabel);
 
+        portChooser.setFocusable(false);
         portChooser.setMaximumSize(new java.awt.Dimension(32767, 21));
         portChooser.setPreferredSize(new java.awt.Dimension(150, 20));
         portChooser.addItemListener(new java.awt.event.ItemListener() {
