@@ -14,7 +14,6 @@ import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.ModelUtil;
 import littlesmarttool2.util.PulseDataRecorder;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -29,6 +28,7 @@ public class IRRecordDialog extends javax.swing.JDialog {
     private Timer statusTimer = new Timer(1000,null);
     private boolean editing = false;
     private IRCommand editingCommand;
+    private IRCommand result = null;
         
     /**
      * Creates new form IRRecordDialog
@@ -66,7 +66,12 @@ public class IRRecordDialog extends javax.swing.JDialog {
         //TODO: Enable play button
     }
     
-    public IRCommand getIRCommand()
+    public IRCommand getResult()
+    {
+        return result;
+    }
+    
+    private IRCommand generateIRCommand()
     {
         return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{model}, pulseData, 10000, 1, 38, true);
     }
@@ -325,12 +330,14 @@ public class IRRecordDialog extends javax.swing.JDialog {
         if (editing)
         {
             ModelUtil.editCustomIRCommand(editingCommand, nameField.getText(), descriptionArea.getText());
+            result = editingCommand;
         }
         else
         {
-            IRCommand command = getIRCommand();
+            IRCommand command = generateIRCommand();
             if (command != null)
                 ModelUtil.saveCustomIRCommand(command);
+            result = command;
         }
         setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
@@ -351,7 +358,7 @@ public class IRRecordDialog extends javax.swing.JDialog {
             if (answer == JOptionPane.NO_OPTION)
                 return;
         }
-        
+        result = null;
         setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 

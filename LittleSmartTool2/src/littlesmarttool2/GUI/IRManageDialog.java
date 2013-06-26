@@ -131,7 +131,8 @@ public class IRManageDialog extends javax.swing.JDialog {
     private void recordNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordNewButtonActionPerformed
         IRRecordDialog diag = new IRRecordDialog(wizard, wizard.getConfiguration().getCameraModel(), wizard.getSerialController());
         diag.setVisible(true);
-        commandListModel.addElement(diag.getIRCommand());
+        if (diag.getResult() != null)
+            commandListModel.addElement(diag.getResult());
     }//GEN-LAST:event_recordNewButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
