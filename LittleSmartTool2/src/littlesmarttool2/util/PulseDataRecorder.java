@@ -80,6 +80,8 @@ public class PulseDataRecorder {
         String response = controller.send("J;" + POSITION, 10000);
         if (!response.equals("J;1")) throw new TimeoutException("The StratoSnapper timed out while waiting for IR input or the sequenze was too long");
         
+        controller.send("M",10000);
+        
         SerialCommand[] pulseData = controller.getIRTimings(POSITION, 10000);
         int[] timings = new int[pulseData.length*2];
         for (int i = 0; i < pulseData.length; i++)

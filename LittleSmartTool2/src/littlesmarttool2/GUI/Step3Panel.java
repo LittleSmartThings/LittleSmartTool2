@@ -5,12 +5,14 @@
 package littlesmarttool2.GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import littlesmarttool2.GUI.components.BlockConfigPanel;
@@ -18,11 +20,14 @@ import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
 import littlesmarttool2.GUI.components.IRRecordForm;
 import littlesmarttool2.comm.ResponseListener;
+import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.Configuration;
+import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.Setting;
 import littlesmarttool2.util.ConfigurationDumpReader;
+import littlesmarttool2.util.JSON;
 
 /**
  *
@@ -231,11 +236,25 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         wizard.stopAutoServoPulling();
-        JFrame f = new JFrame("Record IR command");
-        f.setLayout(new BorderLayout());
-        IRRecordForm form = new IRRecordForm(wizard.getConfiguration().getCameraModel(), wizard.getSerialController());
-        f.add(form, BorderLayout.CENTER);
-        f.setVisible(true);
+        SerialController controller = wizard.getSerialController();
+        IRRecordDialog diag = new IRRecordDialog(wizard, wizard.getConfiguration().getCameraModel(), controller);
+        
+        try {
+            controller.send("O;1", 10000);
+            controller.send("N;0", 10000);
+        } catch (Exception ex) {
+            //TODO: Do something
+        }
+        
+        diag.setPreferredSize(new Dimension(300, 300));
+        diag.setVisible(true);
+        
+        try {
+            controller.send("N;1", 10000);
+        } catch (Exception ex) {
+            //TODO: Do something
+        }
+        wizard.startAutoServoPulling();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
