@@ -5,6 +5,7 @@
 package littlesmarttool2.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -32,69 +33,57 @@ public class ModelUtil {
     private static String CUSTOM_IR_DIR = "CustomIRCommands";
     
     public static void LoadData() {
-        cameraBrands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
-        
-        HashMap<String, CameraModel> map = new HashMap<>();
-        
-        //Mapping identifiers to camera models
-        for (CameraBrand cameraBrand : cameraBrands) {
-            for (CameraModel cameraModel : cameraBrand.getModels()) {
-                map.put(cameraModel.getIdentifier(), cameraModel);
-            }
-        }
-        
-        CameraModel[] models;
-        int i;
-        
         wireCommands = JSON.readObjectFromFile("WireCommandList.json", WireCommand[].class);
         lancCommands = JSON.readObjectFromFile("LANCCommandList.json", LANCCommand[].class);
         standardIRCommands = JSON.readObjectFromFile("IRCommandList.json", IRCommand[].class);
         
         customIRCommands = JSON.readObjectsFromDir(CUSTOM_IR_DIR, IRCommand.class);
         
-        for (IRCommand command : customIRCommands) {
-            models = new CameraModel[command.getCameraModels().length];
-            i=0;
-            for (CameraModel cModel : command.getCameraModels()) {
-                models[i++] = map.get(cModel.getIdentifier());
-                map.get(cModel.getIdentifier()).addIRCommand(command);
-            }
-            command.setCameraModels(models);
-        }
+        cameraBrands = JSON.readObjectFromFile("cameraList.json", CameraBrand[].class);
         
-        for (IRCommand command : standardIRCommands) {
-            models = new CameraModel[command.getCameraModels().length];
-            i=0;
-            for (CameraModel cModel : command.getCameraModels()) {
-                models[i++] = map.get(cModel.getIdentifier());
-                map.get(cModel.getIdentifier()).addIRCommand(command);
-            }
-            command.setCameraModels(models);
-        }
-        
-        for (WireCommand command : wireCommands) {
-            models = new CameraModel[command.getCameraModels().length];
-            i=0;
-            for (CameraModel cModel : command.getCameraModels()) {
-                models[i++] = map.get(cModel.getIdentifier());
-                map.get(cModel.getIdentifier()).addWireCommand(command);
-            }
-            command.setCameraModels(models);
-        }
-        
-        for (LANCCommand command : lancCommands) {
-            models = new CameraModel[command.getCameraModels().length];
-            i=0;
-            for (CameraModel cModel : command.getCameraModels()) {
-                models[i++] = map.get(cModel.getIdentifier());
-                map.get(cModel.getIdentifier()).addLANCCommand(command);
-            }
-            command.setCameraModels(models);
-        }
         System.out.println("Loaded " + cameraBrands.length + " camera brands.");
         System.out.println("Loaded " + (standardIRCommands.length+customIRCommands.size()) + " IR commands of which "+ customIRCommands.size() +" are custom.");
         System.out.println("Loaded " + lancCommands.length + " LANC commands.");
         System.out.println("Loaded " + wireCommands.length + " wire commands.");
+    }
+    
+    public static List<WireCommand> getWireCommandsForCamera(CameraModel camera) {
+        List<WireCommand> commands = new ArrayList<>();
+        for (WireCommand command : WireCommand.getArray()) {
+            for (CameraModel cameraModel : command.getCameraModels()) {
+                if(cameraModel.equals(camera)){
+                    commands.add(command);
+                    break;
+                }
+            }
+        }
+        return commands;
+    }
+    
+    public static List<LANCCommand> getLANCCommandsForCamera(CameraModel camera) {
+        List<LANCCommand> commands = new ArrayList<>();
+        for (LANCCommand command : LANCCommand.getArray()) {
+            for (CameraModel cameraModel : command.getCameraModels()) {
+                if(cameraModel.equals(camera)){
+                    commands.add(command);
+                    break;
+                }
+            }
+        }
+        return commands;
+    }
+    
+    public static List<IRCommand> getIRCommandsForCamera(CameraModel camera) {
+        List<IRCommand> commands = new ArrayList<>();
+        for (IRCommand command : IRCommand.getArray()) {
+            for (CameraModel cameraModel : command.getCameraModels()) {
+                if(cameraModel.equals(camera)){
+                    commands.add(command);
+                    break;
+                }
+            }
+        }
+        return commands;
     }
     
     /**

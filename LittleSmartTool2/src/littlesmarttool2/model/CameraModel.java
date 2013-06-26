@@ -19,16 +19,12 @@ public class CameraModel {
     private String identifier;
     private String modelName;
     public ConnectionType[] connectionTypes;
-    private List<WireCommand> wireCommands = new ArrayList<>();
-    private List<IRCommand> irCommands = new ArrayList<>();
-    private List<LANCCommand> lancCommands = new ArrayList<>();
     
     @JsonCreator
     public CameraModel(@JsonProperty("identifier") String identifier, @JsonProperty("models") String modelName, @JsonProperty("connectionTypes") ConnectionType[] connectionTypes) {
         this.identifier = identifier;
         this.modelName = modelName;
         this.connectionTypes = connectionTypes;
-        updateConnectionTypes();
     }
 
     public String getIdentifier() {
@@ -40,54 +36,53 @@ public class CameraModel {
     }
     
     public ConnectionType[] getConnectionTypes() {
+        int i = 0;
+        if(getWireCommands().size() > 0) i++;
+        if(getIRCommands().size() > 0) i++;
+        if(getLANCCommands().size() > 0) i++;
+        connectionTypes = new ConnectionType[i];
+        i = 0;
+        if(getWireCommands().size() > 0) connectionTypes[i++] = ConnectionType.Wire;
+        if(getIRCommands().size() > 0) connectionTypes[i++] = ConnectionType.IR;
+        if(getLANCCommands() .size() > 0) connectionTypes[i++] = ConnectionType.LANC;
         return connectionTypes;
     }
     
     @JsonBackReference
     public List<WireCommand> getWireCommands(){
-        return wireCommands;
+        return ModelUtil.getWireCommandsForCamera(this);
     }
     
     @JsonBackReference
     public List<IRCommand> getIRCommands(){
-        return irCommands;
+        return ModelUtil.getIRCommandsForCamera(this);
+    }
+    
+    @JsonBackReference
+    public List<IRCommand> getCustomIRCommands(){
+        List<IRCommand> commands = new ArrayList<>();
+        for (IRCommand command : getIRCommands()) {
+            if(command.getCustom())
+                commands.add(command);
+        }
+        return commands;
     }
     
     @JsonBackReference
     public List<LANCCommand> getLANCCommands(){
-        return lancCommands;
-    }
-    
-    void addWireCommand(WireCommand command){
-        wireCommands.add(command);
-        updateConnectionTypes();
-    }
-    
-    void addIRCommand(IRCommand command){
-        irCommands.add(command);
-        updateConnectionTypes();
-    }
-    
-    void addLANCCommand(LANCCommand command){
-        lancCommands.add(command);
-        updateConnectionTypes();
+        return ModelUtil.getLANCCommandsForCamera(this);
     }
     
     @Override
     public String toString() {
         return identifier;
     }
-
-    private void updateConnectionTypes() {
-        int i = 0;
-        if(wireCommands.size() > 0) i++;
-        if(irCommands.size() > 0) i++;
-        if(lancCommands.size() > 0) i++;
-        connectionTypes = new ConnectionType[i];
-        i = 0;
-        if(wireCommands.size() > 0) connectionTypes[i++] = ConnectionType.Wire;
-        if(irCommands.size() > 0) connectionTypes[i++] = ConnectionType.IR;
-        if(lancCommands.size() > 0) connectionTypes[i++] = ConnectionType.LANC;
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof CameraModel))
+            return false;
+        CameraModel other = (CameraModel) obj;
+        return other.getIdentifier().equals(this.getIdentifier());
     }
 
 }
