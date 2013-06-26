@@ -34,18 +34,25 @@ public class JSON {
 
     }
     
-    public static <T> List<T> readObjectsFromDir(String dirname, Class<T> clazz){
-        List<T> list = new ArrayList<>();
+    /**
+     * Reads all .json files from a directory.
+     * @param <T> The type of object stored in each .json file in the directory
+     * @param dirname The directory to read from.
+     * @param clazz The class of the object stored in each .json file in the directory
+     * @return A hashmap of all read objects as keys and the filename of the corresponding object (with the dirname: dirname"+"/"+filename).
+     */
+    public static <T> HashMap<T, String> readObjectsFromDir(String dirname, Class<T> clazz){
+        HashMap<T, String> map = new HashMap<>();
         File dir = new File(DATAFOLDER+dirname);
         for (File file : dir.listFiles()) {
             if(file.isFile()){
                 if(file.getName().endsWith(".json"))
-                    list.add(readObjectFromFile(dirname+"/"+file.getName(), clazz));
+                    map.put(readObjectFromFile(dirname+"/"+file.getName(), clazz), dirname+"/"+file.getName());
             }
             else
-                list.addAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
+                map.putAll(readObjectsFromDir(dirname+"/"+file.getName(), clazz));
         }
-        return list;
+        return map;
     }
 
     public static boolean writeObjectToFile(Object object, String filename) {
@@ -63,6 +70,11 @@ public class JSON {
     
     public static boolean fileExists(String filename) {
         return new File(DATAFOLDER+filename).exists();
+    }
+
+    public static boolean deleteFile(String filename) {
+        if(!fileExists(filename)) return false;
+        return new File(DATAFOLDER+filename).delete();
     }
     
     public static void main(String[] args) {

@@ -25,7 +25,7 @@ public class ModelUtil {
     static WireCommand[] wireCommands;
     static LANCCommand[] lancCommands;
     static IRCommand[] standardIRCommands;
-    static List<IRCommand> customIRCommands;
+    static HashMap<IRCommand, String> customIRCommands;
     
     static HashMap<Command,Integer> commandMap;
     static int currentCommand;
@@ -105,13 +105,16 @@ public class ModelUtil {
         if (!JSON.writeObjectToFile(command, filename))
             return false;
         
-        customIRCommands.add(command);
+        customIRCommands.put(command, filename);
         return true;
     }
     
     public static boolean editCustomIRCommand(IRCommand command, String newName, String newDescription)
     {
      if(!command.getCustom()) return false;
+     command.setName(newName);
+     command.setDescription(newDescription);
+     JSON.writeObjectToFile(command, customIRCommands.get(command));
      return true;
     }
     
@@ -119,6 +122,9 @@ public class ModelUtil {
     {
      if(!command.getCustom()) return false;
      
+     if(!JSON.deleteFile(customIRCommands.get(command))) return false;
+     
+     customIRCommands.remove(command);
      return true;
     }
     

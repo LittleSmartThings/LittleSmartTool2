@@ -28,7 +28,7 @@ public class IRCommand extends Command {
         for (IRCommand command : ModelUtil.standardIRCommands) {
             array[i++] = command; 
         }
-        for (IRCommand command : ModelUtil.customIRCommands) {
+        for (IRCommand command : ModelUtil.customIRCommands.keySet()) {
             array[i++] = command;
         }
         return array;
@@ -37,7 +37,7 @@ public class IRCommand extends Command {
     public static List<IRCommand> getCustomCommandsList() {
         if(null==ModelUtil.customIRCommands) 
             ModelUtil.LoadData();
-        return ModelUtil.customIRCommands;
+        return new ArrayList(ModelUtil.customIRCommands.keySet());
     }
     
     @JsonCreator
