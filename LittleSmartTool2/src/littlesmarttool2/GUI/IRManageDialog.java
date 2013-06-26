@@ -4,6 +4,7 @@
  */
 package littlesmarttool2.GUI;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.ModelUtil;
 
@@ -12,7 +13,6 @@ import littlesmarttool2.model.ModelUtil;
  * @author Rasmus
  */
 public class IRManageDialog extends javax.swing.JDialog {
-
     SS2Wizard wizard;
     DefaultListModel commandListModel = new DefaultListModel();
     /**
@@ -129,19 +129,22 @@ public class IRManageDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     
     private void recordNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordNewButtonActionPerformed
-        IRRecordDialog diag = new IRRecordDialog(wizard, wizard.getConfiguration().getCameraModel(), wizard.getSerialController());
+        IRRecordDialog diag = new IRRecordDialog(wizard);
         diag.setVisible(true);
         if (diag.getResult() != null)
             commandListModel.addElement(diag.getResult());
     }//GEN-LAST:event_recordNewButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-        IRRecordDialog diag = new IRRecordDialog(wizard, wizard.getConfiguration().getCameraModel(), wizard.getSerialController(),(IRCommand)commandList.getSelectedValue());
+        IRRecordDialog diag = new IRRecordDialog(wizard, (IRCommand)commandList.getSelectedValue());
         diag.setVisible(true);
         commandList.repaint();
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the selected command \"" + ((IRCommand)commandList.getSelectedValue()).getName() + "\"?\r\nThis cannot be undone!", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (answer != JOptionPane.YES_OPTION)
+            return;
         ModelUtil.deleteCustomIRCommand((IRCommand)commandList.getSelectedValue());
         commandListModel.removeElement(commandList.getSelectedValue());
     }//GEN-LAST:event_deleteButtonActionPerformed

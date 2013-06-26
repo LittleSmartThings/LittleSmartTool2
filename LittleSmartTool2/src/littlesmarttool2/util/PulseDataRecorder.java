@@ -5,7 +5,6 @@
 package littlesmarttool2.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 import littlesmarttool2.comm.SerialCommand;
 import littlesmarttool2.comm.SerialController;
@@ -16,10 +15,11 @@ import littlesmarttool2.comm.SerialController;
  */
 public class PulseDataRecorder {
     private SerialController controller;
-    private SerialCommand[] oldPulseData = new SerialCommand[0];
-    private final int POSITION = 1;
-    public PulseDataRecorder(SerialController controller)
+    //private SerialCommand[] oldPulseData = new SerialCommand[0];
+    private final int position;
+    public PulseDataRecorder(SerialController controller, int position)
     {
+        this.position = position;
         this.controller = controller;
     }
     
@@ -78,19 +78,20 @@ public class PulseDataRecorder {
      */
     public int[] recordPulseData() throws IOException, TimeoutException
     {
-        String response = controller.send("J;" + POSITION, 10000);
+        //Record to position 1
+        String response = controller.send("J;" + position, 10000);
         if (!response.equals("J;1")) throw new TimeoutException("The StratoSnapper timed out while waiting for IR input or the sequenze was too long");
         
-        controller.send("M",10000);
+        //Read last recorded
+        SerialCommand[] pulseData = controller.sendMultiResponse("I;0","I;1",10000);
         
-        SerialCommand[] pulseData = controller.getIRTimings(POSITION, 10000);
-        
+        //Convert timings
         int[] timings = new int[pulseData.length*2];
         for (int i = 0; i < pulseData.length; i++)
         {
             int[] args = pulseData[i].convertArgsToInt();
-            timings[args[1]-1] = args[2];
-            timings[args[1]] = args[3];
+            timings[(args[1]-1)*2] = args[2];
+            timings[(args[1]-1)*2+1] = args[3];
         }
         //Count zeros in pairs
         int zeros = 0;
@@ -105,7 +106,7 @@ public class PulseDataRecorder {
     
     public void playbackRecording() throws TimeoutException, IOException
     {
-        controller.send("H;"+POSITION, 5000);
+        controller.send("H;"+position, 5000);
     }
     
 }

@@ -4,7 +4,6 @@
  */
 package littlesmarttool2.GUI;
 
-import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     
     @Override
     public void onDisplay() {
-        //loadButton.setVisible(false);
+        loadButton.setVisible(false);
         jTabbedPane1.removeAll();
         
         if(wizard.getConfiguration().isTimelapse())
@@ -179,7 +178,9 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
         add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        jButton1.setText("Record IR command");
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton1.setText("Custom IR commands");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -193,7 +194,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         wizard.stopAutoServoPulling();
         try {
-            ArrayList<CameraModel> possibleModels = ConfigurationDumpReader.LoadDumpInto(wizard.getConfiguration(), wizard.getSerialController().getDump(20000));
+            ArrayList<CameraModel> possibleModels = ConfigurationDumpReader.LoadDumpInto(wizard.getConfiguration(), wizard.getSerialController().sendMultiResponse("D","D;1",20000));
             CameraModel chosenModel = null;
             if (possibleModels.isEmpty())
             {
@@ -248,6 +249,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
             //TODO: Do something
         }
         wizard.startAutoServoPulling();
+        onDisplay();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -256,9 +258,6 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private javax.swing.JLabel commandsLabel;
     private javax.swing.JLabel commandsRemainingLabel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

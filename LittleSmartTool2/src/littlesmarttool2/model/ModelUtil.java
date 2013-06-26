@@ -286,7 +286,6 @@ public class ModelUtil {
         
         if(command.getClass() == IRCommand.class){
             int commandId = currentCommand++;
-            commandId++; //Using space 2-8 for IR commands
             commandMap.put(command, commandId);
             
             IRCommand ir = (IRCommand) command;

@@ -33,22 +33,22 @@ public class IRRecordDialog extends javax.swing.JDialog {
     /**
      * Creates new form IRRecordDialog
      */
-    public IRRecordDialog(java.awt.Frame parent, CameraModel model, SerialController controller) {
-        super(parent, true);
+    public IRRecordDialog(SS2Wizard wizard){
+        super(wizard, true);
         initComponents();
-        this.model = model;
-        this.controller = controller;
-        this.recorder = new PulseDataRecorder(controller);
+        this.model = wizard.getConfiguration().getCameraModel();
+        this.controller = wizard.getSerialController();
+        this.recorder = new PulseDataRecorder(controller, wizard.getConfiguration().getMaxIR()+1);
         modelLabel.setText(model.getIdentifier());
     }
     
-    public IRRecordDialog(java.awt.Frame parent, CameraModel model, SerialController controller, IRCommand editCommand)
+    public IRRecordDialog(SS2Wizard wizard, IRCommand editCommand)
     {
-        super(parent, true);
+        super(wizard, true);
         initComponents();
-        this.model = model;
-        this.controller = controller;
-        this.recorder = new PulseDataRecorder(controller);
+        this.model = wizard.getConfiguration().getCameraModel();
+        this.controller = wizard.getSerialController();
+        this.recorder = new PulseDataRecorder(controller, wizard.getConfiguration().getMaxIR()+1);
         modelLabel.setText(model.getIdentifier());
         
         editing = true;

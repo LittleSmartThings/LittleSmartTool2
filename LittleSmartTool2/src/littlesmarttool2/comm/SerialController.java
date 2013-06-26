@@ -28,6 +28,7 @@ public class SerialController {
     private OutputStream outStream;
     private BufferedReader inReader;
     private static final String INIT_STRING = "StratoSnapper 2 Init.";
+    private final boolean DEBUG = true;
 
     /**
      * Add a connection listener which will get invoked when a 
@@ -141,7 +142,7 @@ public class SerialController {
     public synchronized String send(String message, int timeOut) throws IOException, TimeoutException
     {
         long endTime = System.currentTimeMillis() + timeOut;
-        //System.err.println("Sending >>>" + message + "<<<");
+        if (DEBUG) System.err.println("Sending >>>" + message + "<<<");
         
         try {
             port.enableReceiveTimeout(timeOut);
@@ -169,7 +170,7 @@ public class SerialController {
                 }
             }
         }
-        //System.err.println("Received >>>" + read + "<<<");
+        if (DEBUG) System.err.println("Received >>>" + read + "<<<");
         return read;
     }
     
@@ -177,6 +178,7 @@ public class SerialController {
     {
         ArrayList<SerialCommand> response = new ArrayList<>();
         long endTime = System.currentTimeMillis() + timeOut;
+        if (DEBUG) System.err.println("Sending (multi) >>>" + message + "<<<");
         try {
             port.enableReceiveTimeout(timeOut);
         } catch (UnsupportedCommOperationException ex) {
@@ -196,7 +198,10 @@ public class SerialController {
                     if (term.equals(read))
                         break; //All done
                     else
+                    {
                         response.add(SerialCommand.fromMessage(read));
+                        if (DEBUG) System.err.println("Received (multi) >>>" + read + "<<<");
+                    }
                 }
                 catch (IOException ex)
                 {
@@ -204,87 +209,8 @@ public class SerialController {
                 }
             }
         }
+        if (DEBUG) System.err.println("Multireceive complete. " + response.size() +  " parts");
         return response.toArray(new SerialCommand[response.size()]);
-    }
-    
-    public synchronized SerialCommand[] getDump(int timeOut) throws IOException, TimeoutException
-    {
-        if (true) return sendMultiResponse("D","D;1",timeOut);
-        ArrayList<SerialCommand> dump = new ArrayList<>();
-        long endTime = System.currentTimeMillis() + timeOut;
-        
-        try {
-            port.enableReceiveTimeout(timeOut);
-        } catch (UnsupportedCommOperationException ex) {
-        }
-        
-        String read = INIT_STRING;
-        while (INIT_STRING.equals(read))
-        {           
-            //Actually send message
-            outStream.write(("D" + ">").getBytes());
-            outStream.flush();
-            
-            while(true)
-            {
-                if (System.currentTimeMillis() > endTime)
-                    throw new TimeoutException("Connection timeout exceeded");
-                try {
-                    read = inReader.readLine();
-                    SerialCommand cmd = SerialCommand.fromMessage(read);
-                    if (cmd.getCommand() == 'D')
-                        break; //D;1 is the last command in a dump
-                    else
-                        dump.add(cmd);
-                }
-                catch (IOException ex)
-                {
-                    continue; //Nothing to read at this time
-                }
-            }
-        }
-        //System.err.println("Received >>>" + read + "<<<");
-        return dump.toArray(new SerialCommand[dump.size()]);
-    }
-    
-    public synchronized SerialCommand[] getIRTimings(int position, int timeOut) throws IOException, TimeoutException
-    {
-        if (true) return sendMultiResponse("I;"+position,"I;1",timeOut);
-        ArrayList<SerialCommand> dump = new ArrayList<>();
-        long endTime = System.currentTimeMillis() + timeOut;
-        
-        try {
-            port.enableReceiveTimeout(timeOut);
-        } catch (UnsupportedCommOperationException ex) {
-        }
-        
-        String read = INIT_STRING;
-        while (INIT_STRING.equals(read))
-        {           
-            //Actually send message
-            outStream.write(("I;" + position + ">").getBytes());
-            outStream.flush();
-            
-            while(true)
-            {
-                if (System.currentTimeMillis() > endTime)
-                    throw new TimeoutException("Connection timeout exceeded");
-                try {
-                    read = inReader.readLine();
-                    SerialCommand cmd = SerialCommand.fromMessage(read);
-                    if (cmd.getCommand() == 'I' && cmd.getArgs().length == 1 && cmd.getArgs()[0].equals("1"))
-                        break; //I;1 is the last command in a dump
-                    else
-                        dump.add(cmd);
-                }
-                catch (IOException ex)
-                {
-                    continue; //Nothing to read at this time
-                }
-            }
-        }
-        //System.err.println("Received >>>" + read + "<<<");
-        return dump.toArray(new SerialCommand[dump.size()]);
     }
     
     public void disconnect()
