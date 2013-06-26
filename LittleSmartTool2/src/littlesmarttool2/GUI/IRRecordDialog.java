@@ -27,6 +27,8 @@ public class IRRecordDialog extends javax.swing.JDialog {
     private final SerialController controller;
     private int[] pulseData;
     private Timer statusTimer = new Timer(1000,null);
+    private boolean editing = false;
+    private IRCommand editingCommand;
         
     /**
      * Creates new form IRRecordDialog
@@ -49,11 +51,19 @@ public class IRRecordDialog extends javax.swing.JDialog {
         this.recorder = new PulseDataRecorder(controller);
         modelLabel.setText(model.getIdentifier());
         
-        //TODO: Load sequenze to pos 1
-        //Disable record button
-        //Enable play button
-        //Store a bool saying that we edit as well as a ref to the IR command being edited
-        throw new NotImplementedException();
+        editing = true;
+        nameField.setText(editCommand.getName());
+        descriptionArea.setText(editCommand.getDescription());
+        titleLabel.setText("Edit IR command");
+        recordButton.setEnabled(false);
+        recordButton.setVisible(false);
+        playButton.setVisible(false);
+        statusLabel.setText("Cannot change recording");
+        irSequenceLabel.setVisible(false);
+        editingCommand = editCommand;
+        okButton.setEnabled(true);
+        
+        //TODO: Enable play button
     }
     
     public IRCommand getIRCommand()
@@ -125,11 +135,11 @@ public class IRRecordDialog extends javax.swing.JDialog {
         modelLabel = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         descriptionArea = new javax.swing.JTextArea();
-        jLabel8 = new javax.swing.JLabel();
+        irSequenceLabel = new javax.swing.JLabel();
         recordButton = new javax.swing.JButton();
         playButton = new javax.swing.JButton();
         statusLabel = new javax.swing.JLabel();
@@ -180,15 +190,15 @@ public class IRRecordDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         jPanel1.add(nameField, gridBagConstraints);
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel6.setText("Record IR command");
+        titleLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        titleLabel.setText("Record IR command");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        jPanel1.add(jLabel6, gridBagConstraints);
+        jPanel1.add(titleLabel, gridBagConstraints);
 
         jLabel7.setText("Command Description");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -209,13 +219,13 @@ public class IRRecordDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         jPanel1.add(jScrollPane1, gridBagConstraints);
 
-        jLabel8.setText("IR Sequence");
+        irSequenceLabel.setText("IR Sequence");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
-        jPanel1.add(jLabel8, gridBagConstraints);
+        jPanel1.add(irSequenceLabel, gridBagConstraints);
 
         recordButton.setText("<html>&#9679; Record</html>");
         recordButton.addActionListener(new java.awt.event.ActionListener() {
@@ -312,14 +322,30 @@ public class IRRecordDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        IRCommand command = getIRCommand();
-        if (command != null)
-            ModelUtil.saveCustomIRCommand(command);
+        if (editing)
+        {
+            ModelUtil.editCustomIRCommand(editingCommand, nameField.getText(), descriptionArea.getText());
+        }
+        else
+        {
+            IRCommand command = getIRCommand();
+            if (command != null)
+                ModelUtil.saveCustomIRCommand(command);
+        }
         setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (pulseData != null)
+        if (editing)
+        {
+            if (!editingCommand.getName().equals(nameField.getText()) || !editingCommand.getDescription().equals(descriptionArea.getText()))
+            {
+                int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel?\r\nThe changes will not be saved!", "Changes not saved", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (answer == JOptionPane.NO_OPTION)
+                    return;
+            }
+        }
+        else if (pulseData != null)
         {
             int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel?\r\nThe recorded command will not be saved!", "Command not saved", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (answer == JOptionPane.NO_OPTION)
@@ -330,17 +356,19 @@ public class IRRecordDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void nameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyReleased
-        okButton.setEnabled(nameField.getText().length() > 0 && pulseData != null);
+        if (editing)
+            okButton.setEnabled(nameField.getText().length() > 0);
+        else
+            okButton.setEnabled(nameField.getText().length() > 0 && pulseData != null);
     }//GEN-LAST:event_nameFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextArea descriptionArea;
+    private javax.swing.JLabel irSequenceLabel;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel modelLabel;
@@ -349,5 +377,6 @@ public class IRRecordDialog extends javax.swing.JDialog {
     private javax.swing.JButton playButton;
     private javax.swing.JButton recordButton;
     private javax.swing.JLabel statusLabel;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 }

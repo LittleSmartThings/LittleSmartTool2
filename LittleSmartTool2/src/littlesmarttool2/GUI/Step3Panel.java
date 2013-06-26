@@ -231,7 +231,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         wizard.stopAutoServoPulling();
         SerialController controller = wizard.getSerialController();
-        IRRecordDialog diag = new IRRecordDialog(wizard, wizard.getConfiguration().getCameraModel(), controller);
+        IRManageDialog diag = new IRManageDialog(wizard, wizard);
         
         try {
             controller.send("O;1", 10000);
@@ -240,7 +240,6 @@ public class Step3Panel extends StepPanel implements ResponseListener {
             //TODO: Do something
         }
         
-        diag.setPreferredSize(new Dimension(300, 300));
         diag.setVisible(true);
         
         try {
