@@ -109,6 +109,19 @@ public class ModelUtil {
         return true;
     }
     
+    public static boolean editCustomIRCommand(IRCommand command, String newName, String newDescription)
+    {
+     if(!command.getCustom()) return false;
+     return true;
+    }
+    
+    public static boolean deleteCustomIRCommand(IRCommand command)
+    {
+     if(!command.getCustom()) return false;
+     
+     return true;
+    }
+    
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
         commandMap = new HashMap<>();
         currentCommand = 1;
