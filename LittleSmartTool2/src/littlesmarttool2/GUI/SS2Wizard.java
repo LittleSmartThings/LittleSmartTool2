@@ -190,6 +190,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         setIconImage(new ImageIcon("./img/rocket_gloss.png").getImage());
         setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(800, 570));
+        setPreferredSize(new java.awt.Dimension(100, 570));
 
         contentPanel.setPreferredSize(new java.awt.Dimension(100, 700));
         contentPanel.setLayout(new java.awt.BorderLayout());

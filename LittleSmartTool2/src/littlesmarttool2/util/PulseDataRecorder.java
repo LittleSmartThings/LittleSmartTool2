@@ -5,6 +5,7 @@
 package littlesmarttool2.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 import littlesmarttool2.comm.SerialCommand;
 import littlesmarttool2.comm.SerialController;
@@ -83,14 +84,23 @@ public class PulseDataRecorder {
         controller.send("M",10000);
         
         SerialCommand[] pulseData = controller.getIRTimings(POSITION, 10000);
+        
         int[] timings = new int[pulseData.length*2];
         for (int i = 0; i < pulseData.length; i++)
         {
             int[] args = pulseData[i].convertArgsToInt();
-            timings[args[1]] = args[2];
-            timings[args[1]+1] = args[3];
+            timings[args[1]-1] = args[2];
+            timings[args[1]] = args[3];
         }
-        return timings;
+        //Count zeros in pairs
+        int zeros = 0;
+        for (int i = timings.length-1; i > 0; i-=2)
+            if (timings[i] == 0 && timings[i-1] == 0) zeros+=2;
+        
+        int[] reducedTimings = new int[timings.length-zeros];
+        System.arraycopy(timings, 0, reducedTimings, 0, reducedTimings.length);
+        
+        return reducedTimings;
     }
     
     public void playbackRecording() throws TimeoutException, IOException
