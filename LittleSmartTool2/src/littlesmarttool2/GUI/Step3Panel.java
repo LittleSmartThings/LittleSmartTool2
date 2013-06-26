@@ -4,7 +4,6 @@
  */
 package littlesmarttool2.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,22 +11,17 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import littlesmarttool2.GUI.components.BlockConfigPanel;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
-import littlesmarttool2.GUI.components.IRRecordForm;
 import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.Channel;
 import littlesmarttool2.model.Configuration;
-import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.Setting;
 import littlesmarttool2.util.ConfigurationDumpReader;
-import littlesmarttool2.util.JSON;
 
 /**
  *

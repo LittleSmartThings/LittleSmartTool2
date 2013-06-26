@@ -116,7 +116,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Repetition: ");
 
-        repetitionsLabel.setText("just once");
+        repetitionsLabel.setText("continously");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -189,7 +189,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
         
         
         if (jSlider1.getValue() == 0)
-            repetitionsLabel.setText("just once");
+            repetitionsLabel.setText("continously");
         else if (jSlider1.getValue() < 10)
             repetitionsLabel.setText("every " + jSlider1.getValue() + "00 ms");
         else

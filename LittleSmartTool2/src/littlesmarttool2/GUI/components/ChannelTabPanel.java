@@ -46,6 +46,7 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
         }
         if (before != null && after != null) 
         {
+            //If both commands are set
             if (before.getCommand() != Command.getNothingCommand() && after.getCommand() != Command.getNothingCommand())
             {
                 if (before.getCommand() != after.getCommand())
@@ -60,8 +61,12 @@ public class ChannelTabPanel extends javax.swing.JPanel implements ThresholdPres
                         saveBefore = false;
                 }
             }
+            //If after is set
+            else if (after.getCommand() != Command.getNothingCommand())
+            {
+                saveBefore = false;
+            }
         }
-        
         //Actually remove the threshold
         channel.getSetting().removeThreshold(threshold, saveBefore);
         //Empty config panel
