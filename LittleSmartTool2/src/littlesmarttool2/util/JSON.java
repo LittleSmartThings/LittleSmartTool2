@@ -44,6 +44,10 @@ public class JSON {
     public static <T> HashMap<T, String> readObjectsFromDir(String dirname, Class<T> clazz){
         HashMap<T, String> map = new HashMap<>();
         File dir = new File(DATAFOLDER+dirname);
+        if (!dir.exists())
+        {
+            dir.mkdir();
+        }
         for (File file : dir.listFiles()) {
             if(file.isFile()){
                 if(file.getName().endsWith(".json"))
