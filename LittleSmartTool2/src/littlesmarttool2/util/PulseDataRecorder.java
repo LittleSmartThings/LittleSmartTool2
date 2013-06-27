@@ -106,7 +106,7 @@ public class PulseDataRecorder {
     
     public void playbackRecording() throws TimeoutException, IOException
     {
-        controller.send("H;"+position, 5000);
+        controller.send("H;0", 5000);
     }
     
 }
