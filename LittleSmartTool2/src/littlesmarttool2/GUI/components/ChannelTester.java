@@ -94,8 +94,9 @@ public class ChannelTester extends javax.swing.JPanel implements ActionListener 
         }
         else
         {
-            if (newBlock.getCommand() != Command.getNothingCommand())
-                flashText(newBlock.getCommand().getName());
+            intervalTimer.setDelay(1);
+            intervalTimer.setInitialDelay(1);
+            intervalTimer.start();
         }
         if (currentBlock == null) //If not leaving a block, no threshold can be triggered
         {

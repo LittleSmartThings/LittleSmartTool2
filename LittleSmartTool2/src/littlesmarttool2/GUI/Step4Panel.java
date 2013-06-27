@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import littlesmarttool2.GUI.components.TimelapseTester;
 import littlesmarttool2.comm.*;
 import littlesmarttool2.model.Configuration;
 import littlesmarttool2.model.ModelUtil;
@@ -19,7 +20,7 @@ import littlesmarttool2.model.ModelUtil;
  * @author marcher89
  */
 public class Step4Panel extends StepPanel implements ResponseListener, ConnectionListener {
-
+    private TimelapseTester timelapseTester;
     /**
      * Creates new form Step1Panel
      */
@@ -52,6 +53,12 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         channelTester2.setChannel(wizard.getConfiguration().getChannels().get(1));
         channelTester3.setChannel(wizard.getConfiguration().getChannels().get(2));
         channelTester4.setChannel(wizard.getConfiguration().getChannels().get(3));
+        
+        channelTester1.setVisible(true);
+        channelTester2.setVisible(true);
+        channelTester3.setVisible(true);
+        channelTester4.setVisible(true);
+        
     }
 
     private void onDisplayTimelapse() {
@@ -73,11 +80,16 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         channelTester2.setVisible(false);
         channelTester3.setVisible(false);
         channelTester4.setVisible(false);
+        timelapseTester = new TimelapseTester(conf.getTimelapseCommand(), conf.getTimelapseDelay()); 
+        testerPanel.add(timelapseTester,1);
     }
     
     @Override
     public void onHide() {
         wizard.getSerialController().removeConnectionListener(this);
+        if (timelapseTester != null)
+            testerPanel.remove(timelapseTester);
+        timelapseTester = null;
     }
     
 
