@@ -134,12 +134,17 @@
         <Property name="alignment" type="int" value="2"/>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JLabel" name="connectLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Please connect to the StratoSnapper"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="customIRButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Custom IR commands"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="customIRButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
