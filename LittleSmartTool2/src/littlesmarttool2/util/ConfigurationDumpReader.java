@@ -5,7 +5,6 @@
 package littlesmarttool2.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,7 +18,6 @@ import littlesmarttool2.model.Configuration;
 import littlesmarttool2.model.ConnectionType;
 import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.LANCCommand;
-import littlesmarttool2.model.ModelUtil;
 import littlesmarttool2.model.Setting;
 import littlesmarttool2.model.Threshold;
 import littlesmarttool2.model.WireCommand;
@@ -39,6 +37,8 @@ public class ConfigurationDumpReader {
     private HashMap<Integer,WireCommand> rawWireCommands;
     private ArrayList<RangeProto> rangeProtos;
     private ArrayList<ThresholdProto> thresholdProtos;
+    private boolean isTimelapse;
+    private Command timelapseCommand;
     
     public static void main(String[] args)
     {
@@ -79,11 +79,12 @@ public class ConfigurationDumpReader {
     {
         ConfigurationDumpReader instance = Read(dump);
         instance.SupplyCorrectCommands(LANCCommand.getArray(),IRCommand.getArray(),WireCommand.getArray());
+        //TODO: If timelapse...
         for (Channel ch : configuration.getChannels())
         {
             ch.setSetting(instance.Convert(ch.getId(), ch.getCalibLow(), ch.getCalibHigh()));
-            System.out.println("Thresholds on ch " + ch.getId() + " : " + ch.getSetting().getThresholds().size());
-            System.out.println("Blocks on ch " + ch.getId() + " : " + ch.getSetting().getBlocks().size());
+            //System.out.println("Thresholds on ch " + ch.getId() + " : " + ch.getSetting().getThresholds().size());
+            //System.out.println("Blocks on ch " + ch.getId() + " : " + ch.getSetting().getBlocks().size());
         }
         configuration.setOutputType(instance.connectionType);
 
@@ -277,7 +278,14 @@ public class ConfigurationDumpReader {
         instance.rawWireCommands = GenerateWireCommands(ReadWirePulseWidth(raw));
         instance.rangeProtos = ReadRangeTriggers(raw);
         instance.thresholdProtos = ReadThresholdTriggers(raw);
+        instance.isTimelapse = IsTimelapse(raw);
         return instance;
+    }
+    
+    private static boolean IsTimelapse(HashMap<Character,ArrayList<SerialCommand>> raw)
+    {
+        //TODO: Implement this
+        throw new IllegalArgumentException("Not implemented");
     }
     
     //2
