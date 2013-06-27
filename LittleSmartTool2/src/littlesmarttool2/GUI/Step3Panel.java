@@ -5,6 +5,7 @@
 package littlesmarttool2.GUI;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import littlesmarttool2.GUI.components.BlockConfigPanel;
 import littlesmarttool2.GUI.components.ChannelTabPanel;
 import littlesmarttool2.GUI.components.CommandChangedListener;
+import littlesmarttool2.comm.ConnectionListener;
 import littlesmarttool2.comm.ResponseListener;
 import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.CameraModel;
@@ -26,7 +28,7 @@ import littlesmarttool2.util.ConfigurationDumpReader;
  *
  * @author marcher89
  */
-public class Step3Panel extends StepPanel implements ResponseListener {
+public class Step3Panel extends StepPanel implements ResponseListener, ConnectionListener {
 
     //ChannelTabPanel[] tabs = new ChannelTabPanel[4];
     HashMap<Integer,ChannelTabPanel> tabs = new HashMap<>();
@@ -54,11 +56,14 @@ public class Step3Panel extends StepPanel implements ResponseListener {
             showTimelapseTab();
         else
             showChannelTabs();
+        
+        wizard.getSerialController().addConnectionListener(this);
+        updateCustomIRButton();
     }
 
     @Override
     public void onHide() {
-        //TODO: Do anything??
+        wizard.getSerialController().removeConnectionListener(this);
     }
     
     private void showTimelapseTab() {
@@ -131,7 +136,8 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         commandsRemainingLabel = new javax.swing.JLabel();
         loadButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        connectLabel = new javax.swing.JLabel();
+        customIRButton = new javax.swing.JButton();
 
         setName("Configure triggers and actions"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -180,13 +186,16 @@ public class Step3Panel extends StepPanel implements ResponseListener {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton1.setText("Custom IR commands");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        connectLabel.setText("Please connect to the StratoSnapper");
+        jPanel3.add(connectLabel);
+
+        customIRButton.setText("Custom IR commands");
+        customIRButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                customIRButtonActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton1);
+        jPanel3.add(customIRButton);
 
         add(jPanel3, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
@@ -229,7 +238,7 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         wizard.startAutoServoPulling();
     }//GEN-LAST:event_loadButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void customIRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customIRButtonActionPerformed
         wizard.stopAutoServoPulling();
         SerialController controller = wizard.getSerialController();
         IRManageDialog diag = new IRManageDialog(wizard, wizard);
@@ -250,14 +259,15 @@ public class Step3Panel extends StepPanel implements ResponseListener {
         }
         wizard.startAutoServoPulling();
         onDisplay();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_customIRButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel blocksLabel;
     private javax.swing.JLabel blocksRemainingLabel;
     private javax.swing.JLabel commandsLabel;
     private javax.swing.JLabel commandsRemainingLabel;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel connectLabel;
+    private javax.swing.JButton customIRButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -268,6 +278,17 @@ public class Step3Panel extends StepPanel implements ResponseListener {
     private javax.swing.JLabel thresholdsRemainingLabel;
     // End of variables declaration//GEN-END:variables
 
+
+    @Override
+    public void connectionStateChanged(boolean connected) {
+        updateCustomIRButton();
+    }
+
+    private void updateCustomIRButton() {
+        connectLabel.setVisible(!wizard.getSerialController().connected());
+        customIRButton.setEnabled(wizard.getSerialController().connected());
+    }
+    
     @Override
     public void receiveResponse(char command, String[] args) {
         if (command != 'S') return;
