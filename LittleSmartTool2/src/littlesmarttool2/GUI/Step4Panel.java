@@ -68,7 +68,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         
         
         descriptionLabel.setText("<html>The configuration is set for timelapse:<br/><br/>"
-                + "Send the command\""+conf.getTimelapseCommand()+"\" "+delayString+"</html>");
+                + "Send the command \""+conf.getTimelapseCommand()+"\" "+delayString+"<br/></html>");
         channelTester1.setVisible(false);
         channelTester2.setVisible(false);
         channelTester3.setVisible(false);
