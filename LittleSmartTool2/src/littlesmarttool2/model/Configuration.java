@@ -103,6 +103,40 @@ public class Configuration {
     }
     
     /**
+     * Returns true if any commands are assigned
+     */
+    public boolean hasCommandsAssigned()
+    {
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(Command.getNothingCommand() != block.getCommand()) return true;
+            }
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(Command.getNothingCommand() != threshold.getUpCommand()) return true;
+                if(Command.getNothingCommand() != threshold.getDownCommand()) return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Removes all assigned commands making them "Nothing" commands instead
+     */
+    public void removeAllCommands()
+    {
+        if (isTimelapse()) setTimelapseCommand(Command.getNothingCommand());
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                block.setCommand(Command.getNothingCommand());
+            }
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                threshold.setUpCommand(Command.getNothingCommand());
+                threshold.setDownCommand(Command.getNothingCommand());
+            }
+        }
+    }
+    
+    /**
      * Delete all occurrences of the given command in the configuration.
      */
     public void deleteCommand(Command command) {

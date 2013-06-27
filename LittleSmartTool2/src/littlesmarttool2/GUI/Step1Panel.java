@@ -35,6 +35,22 @@ public class Step1Panel extends StepPanel {
         brandList.getList().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                if (brandList.getSelectedElement() == null) return;
+                if (e.getValueIsAdjusting()) return;
+                if (brandList.getSelectedElement() == wizard.getConfiguration().getCameraBrand()) return;
+                if (wizard.getConfiguration().hasCommandsAssigned())
+                {
+                    int answer = JOptionPane.showConfirmDialog(wizard, "If you change camera after making a configuration, the selected commands will be removed.\r\nDo you still want to change camera?", "Clear configuration?", JOptionPane.YES_NO_OPTION);
+                    if (answer == JOptionPane.YES_OPTION)
+                    {
+                        wizard.getConfiguration().removeAllCommands();
+                    }
+                    else
+                    {
+                        brandList.getList().setSelectedValue(wizard.getConfiguration().getCameraBrand(), true);
+                        return;
+                    }
+                }
                 wizard.getConfiguration().setCameraBrand((CameraBrand)brandList.getSelectedElement());
                 connGroup.clearSelection();
                 for (ConnectionTypeBox connBox : connBoxes) {
@@ -50,6 +66,22 @@ public class Step1Panel extends StepPanel {
         modelList.getList().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
+                if (modelList.getSelectedElement() == null) return;
+                if (e.getValueIsAdjusting()) return;
+                if (modelList.getSelectedElement() == wizard.getConfiguration().getCameraModel()) return;
+                if (wizard.getConfiguration().hasCommandsAssigned())
+                {
+                    int answer = JOptionPane.showConfirmDialog(wizard, "If you change camera after making a configuration, the selected commands will be removed.\r\nDo you still want to change camera?", "Clear configuration?", JOptionPane.YES_NO_OPTION);
+                    if (answer == JOptionPane.YES_OPTION)
+                    {
+                        wizard.getConfiguration().removeAllCommands();
+                    }
+                    else
+                    {
+                        modelList.getList().setSelectedValue(wizard.getConfiguration().getCameraModel(), true);
+                        return;
+                    }
+                }
                 CameraModel selected = (CameraModel)modelList.getSelectedElement();
                 wizard.getConfiguration().setCameraModel(selected);
                 if(selected==null) return;
@@ -76,6 +108,27 @@ public class Step1Panel extends StepPanel {
 
                 @Override
                 public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.DESELECTED) return;
+                    for (ConnectionTypeBox connectionTypeBox : connBoxes) {
+                        if(connectionTypeBox.isSelected() && connectionTypeBox.getConnectionType() == wizard.getConfiguration().getOutputType()) return;
+                    }
+                    
+                    if (wizard.getConfiguration().hasCommandsAssigned())
+                    {
+                        int answer = JOptionPane.showConfirmDialog(wizard, "If you change output connection type after making a configuration, the selected commands will be removed.\r\nDo you still want to change output connection type?", "Clear configuration?", JOptionPane.YES_NO_OPTION);
+                        if (answer == JOptionPane.YES_OPTION)
+                        {
+                            wizard.getConfiguration().removeAllCommands();
+                        }
+                        else
+                        {
+                            for (ConnectionTypeBox b : connBoxes)
+                            {
+                                b.setSelected(b.getConnectionType() == wizard.getConfiguration().getOutputType());
+                            }
+                            return;
+                        }
+                    }
                     wizard.setNextEnabled(connGroup.getSelection() != null);
                     wizard.getConfiguration().setOutputType(null);
                     for (ConnectionTypeBox connectionTypeBox : connBoxes) {
@@ -87,7 +140,7 @@ public class Step1Panel extends StepPanel {
             outputconnectionsPanel.add(connBoxes[i++]);
         }
     }
-    
+        
     @Override
     public void onDisplay() {
         wizard.setNextEnabled(connGroup.getSelection() != null);
