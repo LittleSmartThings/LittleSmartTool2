@@ -142,9 +142,18 @@ public class IRManageDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the selected command \"" + ((IRCommand)commandList.getSelectedValue()).getName() + "\"?\r\nThis cannot be undone!", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        IRCommand command = (IRCommand)commandList.getSelectedValue();
+        int answer = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the selected command \"" + command.getName() + "\"?\r\nThis cannot be undone!", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (answer != JOptionPane.YES_OPTION)
             return;
+        if(wizard.getConfiguration().isCommandUsed(command)){
+            answer = JOptionPane.showConfirmDialog(this, "The command is used in the current configuration. If you delete it, it will also be deleted in the configuration.\r\n"
+                                                        +"This cannot be undone!\r\n"
+                                                        + "Are you still sure, you want to delete it?", "Command is used in the configuration", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (answer != JOptionPane.YES_OPTION)
+                return;
+            wizard.getConfiguration().deleteCommand(command);
+        }
         ModelUtil.deleteCustomIRCommand((IRCommand)commandList.getSelectedValue());
         commandListModel.removeElement(commandList.getSelectedValue());
     }//GEN-LAST:event_deleteButtonActionPerformed

@@ -20,7 +20,7 @@ public class Configuration {
     private int maxIRPulse, maxIR, maxLANC, maxTriggers, maxRanges;
     
     private boolean timelapse;
-    private Command timelapseCommand;
+    private Command timelapseCommand = IRCommand.getNothingCommand();
     private int timelapseDelay = 1000;
     
     public Configuration()
@@ -79,6 +79,47 @@ public class Configuration {
 
     public void setTimelapseDelay(int timelapseDelayMs) {
         this.timelapseDelay = timelapseDelayMs;
+    }
+    
+    /**
+     * Returns true, if the command is used anywhere in the configuration.
+     */
+    public boolean isCommandUsed(Command command) {
+        if(command==null) return false;
+        if(isTimelapse())
+            return command.sameAs(getTimelapseCommand());
+        
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(command.sameAs(block.getCommand())) return true;
+            }
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(command.sameAs(threshold.getUpCommand())) return true;
+                if(command.sameAs(threshold.getDownCommand())) return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Delete all occurrences of the given command in the configuration.
+     */
+    public void deleteCommand(Command command) {
+        if(command==null) return;
+        if(command.sameAs(getTimelapseCommand())) setTimelapseCommand(IRCommand.getNothingCommand());
+        for (Channel channel : getChannels()) {
+            for (Block block : channel.getSetting().getBlocks()) {
+                if(command.sameAs(block.getCommand())) 
+                    block.setCommand(IRCommand.getNothingCommand());
+            }
+            for (Threshold threshold : channel.getSetting().getThresholds()) {
+                if(command.sameAs(threshold.getUpCommand()))   
+                    threshold.setUpCommand(IRCommand.getNothingCommand());
+                if(command.sameAs(threshold.getDownCommand())) 
+                    threshold.setDownCommand(IRCommand.getNothingCommand());
+            }
+        }
     }
     
     public ArrayList<Channel> getChannels()
