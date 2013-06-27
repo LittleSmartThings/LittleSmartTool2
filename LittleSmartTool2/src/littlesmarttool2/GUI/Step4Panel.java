@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import littlesmarttool2.comm.*;
+import littlesmarttool2.model.Configuration;
 import littlesmarttool2.model.ModelUtil;
 
 /**
@@ -30,11 +31,10 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     @Override
     public void onDisplay() {
         //wizard.setNextEnabled(false);
-        
-        channelTester1.setChannel(wizard.getConfiguration().getChannels().get(0));
-        channelTester2.setChannel(wizard.getConfiguration().getChannels().get(1));
-        channelTester3.setChannel(wizard.getConfiguration().getChannels().get(2));
-        channelTester4.setChannel(wizard.getConfiguration().getChannels().get(3));
+        if(wizard.getConfiguration().isTimelapse())
+            onDisplayTimelapse();
+        else
+            onDisplayChannels();
         
         wizard.getSerialController().addConnectionListener(this);
         
@@ -43,6 +43,38 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         wizard.setHasUploaded(false);
     }
 
+    private void onDisplayChannels() {
+        
+        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/> Below is shown an overview of the 4 channels with the output from each channel shown to the right<br/> Use your transmitter to verify that the correct commands are send at the right times.</html>");
+        
+        
+        channelTester1.setChannel(wizard.getConfiguration().getChannels().get(0));
+        channelTester2.setChannel(wizard.getConfiguration().getChannels().get(1));
+        channelTester3.setChannel(wizard.getConfiguration().getChannels().get(2));
+        channelTester4.setChannel(wizard.getConfiguration().getChannels().get(3));
+    }
+
+    private void onDisplayTimelapse() {
+        Configuration conf = wizard.getConfiguration();
+        
+        int delay = conf.getTimelapseDelay();
+        String delayString;
+        if (delay == 0)
+            delayString = "continously";
+        else if (delay < 1000)
+            delayString = "every " + delay + " ms";
+        else
+            delayString = String.format("every %.1f seconds", (delay/1000.0));
+        
+        
+        descriptionLabel.setText("<html>The configuration is set for timelapse:<br/><br/>"
+                + "Send the command\""+conf.getTimelapseCommand()+"\" "+delayString+"</html>");
+        channelTester1.setVisible(false);
+        channelTester2.setVisible(false);
+        channelTester3.setVisible(false);
+        channelTester4.setVisible(false);
+    }
+    
     @Override
     public void onHide() {
         wizard.getSerialController().removeConnectionListener(this);
@@ -61,6 +93,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         testerPanel = new javax.swing.JPanel();
         infoPanel = new javax.swing.JPanel();
         descriptionLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         channelTester1 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester2 = new littlesmarttool2.GUI.components.ChannelTester();
         channelTester3 = new littlesmarttool2.GUI.components.ChannelTester();
@@ -74,10 +107,13 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
 
         testerPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 10));
 
-        infoPanel.setLayout(new javax.swing.BoxLayout(infoPanel, javax.swing.BoxLayout.LINE_AXIS));
+        infoPanel.setLayout(new javax.swing.BoxLayout(infoPanel, javax.swing.BoxLayout.Y_AXIS));
 
-        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/>\nBelow is shown an overview of the 4 channels with the output from each channel shown to the right<br/>\nUse your transmitter to verify that the correct commands are send at the right times.<br/>\n<b>NB! The StratoSnapper does not produce actual output while connected to the program!</b><br/>\nPress the \"Upload configuration to StratoSnapper\" button when ready</html>");
+        descriptionLabel.setText("<html>Test your configuration by using the controls on your transmitter.<br/> Below is shown an overview of the 4 channels with the output from each channel shown to the right<br/> Use your transmitter to verify that the correct commands are send at the right times.</html>");
         infoPanel.add(descriptionLabel);
+
+        jLabel1.setText("<html><b>NB! The StratoSnapper does not produce actual output while connected to the program!</b><br/> Press the \"Upload configuration to StratoSnapper\" button when ready</html>");
+        infoPanel.add(jLabel1);
 
         testerPanel.add(infoPanel);
         testerPanel.add(channelTester1);
@@ -155,6 +191,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
     private littlesmarttool2.GUI.components.ChannelTester channelTester4;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JPanel infoPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel testerPanel;
     private javax.swing.JButton uploadButton;
