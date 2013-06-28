@@ -312,7 +312,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 SerialCommand conResult = controller.connect(port,15000);
                 dotsTimer.stop();
                 //Disable output
-                if(!controller.send("N;1", 1000).equals("N;1"))//------------------------"N" Disable output
+                if(!controller.send("N;1", 5000).equals("N;1"))//------------------------"N" Disable output
                     throw new IOException("The StratoSnapper2 returned an unexpected value, while trying to disable output.");
                 //Get space information
                 String[] space = controller.send("W", 1000).split(";");
