@@ -28,7 +28,7 @@ public class SerialController {
     private OutputStream outStream;
     private BufferedReader inReader;
     private static final String INIT_STRING = "StratoSnapper 2 Init.";
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Add a connection listener which will get invoked when a 
