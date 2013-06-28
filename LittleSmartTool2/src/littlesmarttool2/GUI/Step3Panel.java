@@ -242,6 +242,12 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
         try {
             wizard.stopAutoServoPulling();
             String answer;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                
+            }
+            //answer = controller.send("O;1", 5000);
             answer = controller.send("O;1", 5000);
             if (!"O;1".equals(answer)) throw new IOException("Unexpected answer from StratoSnapper while setting output type. Answer: " + answer);
             answer = controller.send("N;0", 5000);

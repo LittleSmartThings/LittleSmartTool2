@@ -28,7 +28,7 @@ public class SerialController {
     private OutputStream outStream;
     private BufferedReader inReader;
     private static final String INIT_STRING = "StratoSnapper 2 Init.";
-    private final boolean DEBUG = false;
+    private final boolean DEBUG = true;
 
     /**
      * Add a connection listener which will get invoked when a 
@@ -215,7 +215,6 @@ public class SerialController {
     
     public void disconnect()
     {
-        System.out.println("Disconnect");
         if (port == null || !connected) return;
         connected = false;
         invokeConnectionChangedListeners(false);
