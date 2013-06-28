@@ -281,7 +281,15 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
             goToNextStep();
         else{
             if(hasUploaded || JOptionPane.showConfirmDialog(this, "Your configuration has not been uploaded to the StratoSnapper2.\nAre you sure, you want to quit?", "Really quit?", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION)
-            System.exit(0);
+            {
+                try {
+                    //Try to enable output
+                    controller.send("N;0", 2000);
+                } catch (IOException | TimeoutException ex) {
+                    //Do nothing
+                }
+                System.exit(0);
+            }
         }
     }//GEN-LAST:event_nextButtonActionPerformed
 

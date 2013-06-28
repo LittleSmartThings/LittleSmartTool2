@@ -52,6 +52,7 @@ public class BlockConfigPanel extends javax.swing.JPanel {
         this.changeListener = changeListener;
         jList1.setSelectedValue(configuration.getTimelapseCommand(), true);
         jSlider1.setMaximum(timelapseDelayValues.length-1);
+        jSlider1.setMinorTickSpacing(1);
         jSlider1.setValue(delayToSlider(timelapseDelay));
     }
 

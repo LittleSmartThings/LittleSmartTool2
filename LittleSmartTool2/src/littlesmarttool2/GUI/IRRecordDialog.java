@@ -27,6 +27,7 @@ public class IRRecordDialog extends javax.swing.JDialog {
     private boolean editing = false;
     private IRCommand editingCommand;
     private IRCommand result = null;
+    private boolean hasCommError = false;
         
     /**
      * Creates new form IRRecordDialog
@@ -72,13 +73,21 @@ public class IRRecordDialog extends javax.swing.JDialog {
         return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{wizard.getConfiguration().getCameraModel()}, pulseData, 10000, 1, 38, true);
     }
     
-     private void doRecord()
+    public boolean hasCommError()
+    {
+        return hasCommError;
+    }
+    
+    private void doRecord()
     {
         boolean error = false;
         try {
             pulseData = recorder.recordPulseData();
         } catch (IOException | TimeoutException ex) {
-            wizard.connectionLost(ex.getMessage());
+            hasCommError = true;
+            setVisible(false);
+            wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");
+            return;
         } catch (PulseDataRecorder.IRRecordException ex) {
             error = true;
         }
@@ -110,7 +119,10 @@ public class IRRecordDialog extends javax.swing.JDialog {
         try {
             recorder.playbackRecording();
         } catch (TimeoutException | IOException ex) {
-            wizard.connectionLost(ex.getMessage());
+            hasCommError = true;
+            setVisible(false);
+            wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");
+            return;
         } catch (PulseDataRecorder.IRPlaybackException ex) {
             error = true;
         }

@@ -15,6 +15,7 @@ import littlesmarttool2.model.ModelUtil;
 public class IRManageDialog extends javax.swing.JDialog {
     SS2Wizard wizard;
     DefaultListModel commandListModel = new DefaultListModel();
+    private boolean hasCommError;
     /**
      * Creates new form IRManageDialog
      */
@@ -128,9 +129,20 @@ public class IRManageDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    public boolean hasCommError()
+    {
+        return hasCommError;
+    }
+    
     private void recordNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordNewButtonActionPerformed
         IRRecordDialog diag = new IRRecordDialog(wizard);
         diag.setVisible(true);
+        if (diag.hasCommError())
+        {
+            hasCommError = true;
+            setVisible(false);
+            return;
+        }
         if (diag.getResult() != null)
             commandListModel.addElement(diag.getResult());
     }//GEN-LAST:event_recordNewButtonActionPerformed

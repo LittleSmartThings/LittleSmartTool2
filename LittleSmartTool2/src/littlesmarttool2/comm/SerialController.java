@@ -215,6 +215,7 @@ public class SerialController {
     
     public void disconnect()
     {
+        System.out.println("Disconnect");
         if (port == null || !connected) return;
         connected = false;
         invokeConnectionChangedListeners(false);

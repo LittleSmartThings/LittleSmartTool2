@@ -5,7 +5,6 @@
 package littlesmarttool2.GUI;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
@@ -229,9 +228,7 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
                 //TODO: Set camera brand!
             }
             
-        } catch (IOException ex) {
-            Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
+        } catch (IOException | TimeoutException ex) {
             Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
         }
         onDisplay();
@@ -239,15 +236,26 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
     }//GEN-LAST:event_loadButtonActionPerformed
 
     private void customIRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customIRButtonActionPerformed
-        wizard.stopAutoServoPulling();
         SerialController controller = wizard.getSerialController();
         IRManageDialog diag = new IRManageDialog(wizard, wizard);
         
         try {
-            String send = controller.send("O;1", 5000);
-            String send1 = controller.send("N;0", 5000);
+            wizard.stopAutoServoPulling();
+            String answer;
+            answer = controller.send("O;1", 5000);
+            if (!"O;1".equals(answer)) throw new IOException("Unexpected answer from StratoSnapper while setting output type. Answer: " + answer);
+            answer = controller.send("N;0", 5000);
+            if (!"N;1".equals(answer)) throw new IOException("Unexpected answer from StratoSnapper while enabling output. Answer: " + answer);
+                    
             diag.setVisible(true);
-            controller.send("N;1", 5000);
+            if (diag.hasCommError())
+            {
+                return; //Diag shows error message
+            }
+            
+            answer = controller.send("N;1", 5000);
+            if (!"N;1".equals(answer)) throw new IOException("Unexpected answer from StratoSnapper while disabling output. Answer: " + answer);
+            
             wizard.startAutoServoPulling();
         } catch (IOException | TimeoutException ex) {
             diag.setVisible(false);
