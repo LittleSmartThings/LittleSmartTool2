@@ -21,7 +21,7 @@ public class Configuration {
     
     private boolean timelapse;
     private Command timelapseCommand = IRCommand.getNothingCommand();
-    private int timelapseDelay = 1000;
+    private int timelapseDelay = 10; // 1/10th seconds, 10 = 1 second
     
     public Configuration()
     {

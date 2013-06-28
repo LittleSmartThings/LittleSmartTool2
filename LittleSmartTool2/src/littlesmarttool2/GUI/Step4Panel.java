@@ -14,6 +14,7 @@ import littlesmarttool2.GUI.components.TimelapseTester;
 import littlesmarttool2.comm.*;
 import littlesmarttool2.model.Configuration;
 import littlesmarttool2.model.ModelUtil;
+import littlesmarttool2.util.StringUtil;
 
 /**
  *
@@ -65,14 +66,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
         Configuration conf = wizard.getConfiguration();
         
         int delay = conf.getTimelapseDelay();
-        String delayString;
-        if (delay == 0)
-            delayString = "continously";
-        else if (delay < 1000)
-            delayString = "every " + delay + " ms";
-        else
-            delayString = String.format("every %.1f seconds", (delay/1000.0));
-        
+        String delayString = StringUtil.TimelapseDelayToString(delay);
         
         descriptionLabel.setText("<html>The configuration is set for timelapse:<br/><br/>"
                 + "Send the command \""+conf.getTimelapseCommand()+"\" "+delayString+"<br/></html>");

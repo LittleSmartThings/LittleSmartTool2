@@ -18,11 +18,13 @@ public class TimelapseTester extends javax.swing.JPanel {
 
     private Timer flashTimer;
     /**
-     * Creates new form TimelapseTester
+     * 
+     * @param command
+     * @param interval In 1/10ths of seconds
      */
     public TimelapseTester(final Command command, int interval) {
         initComponents();
-        new Timer(interval, new ActionListener() {
+        new Timer(interval*100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 flashText(command.getName());
