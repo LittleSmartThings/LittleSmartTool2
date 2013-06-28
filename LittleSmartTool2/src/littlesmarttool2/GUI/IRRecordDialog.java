@@ -9,7 +9,6 @@ import java.util.concurrent.TimeoutException;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import littlesmarttool2.GUI.components.DotsListener;
-import littlesmarttool2.comm.SerialController;
 import littlesmarttool2.model.CameraModel;
 import littlesmarttool2.model.IRCommand;
 import littlesmarttool2.model.ModelUtil;
@@ -21,9 +20,8 @@ import littlesmarttool2.util.PulseDataRecorder;
  */
 public class IRRecordDialog extends javax.swing.JDialog {
 
-    private final CameraModel model;
+    private final SS2Wizard wizard;
     private final PulseDataRecorder recorder;
-    private final SerialController controller;
     private int[] pulseData;
     private Timer statusTimer = new Timer(1000,null);
     private boolean editing = false;
@@ -36,20 +34,18 @@ public class IRRecordDialog extends javax.swing.JDialog {
     public IRRecordDialog(SS2Wizard wizard){
         super(wizard, true);
         initComponents();
-        this.model = wizard.getConfiguration().getCameraModel();
-        this.controller = wizard.getSerialController();
-        this.recorder = new PulseDataRecorder(controller, wizard.getConfiguration().getMaxIR()+1);
-        modelLabel.setText(model.getIdentifier());
+        this.wizard = wizard;
+        this.recorder = new PulseDataRecorder(wizard.getSerialController(), wizard.getConfiguration().getMaxIR()+1);
+        modelLabel.setText(wizard.getConfiguration().getCameraModel().getIdentifier());
     }
     
     public IRRecordDialog(SS2Wizard wizard, IRCommand editCommand)
     {
         super(wizard, true);
         initComponents();
-        this.model = wizard.getConfiguration().getCameraModel();
-        this.controller = wizard.getSerialController();
-        this.recorder = new PulseDataRecorder(controller, wizard.getConfiguration().getMaxIR()+1);
-        modelLabel.setText(model.getIdentifier());
+        this.wizard = wizard;
+        this.recorder = new PulseDataRecorder(wizard.getSerialController(), wizard.getConfiguration().getMaxIR()+1);
+        modelLabel.setText(wizard.getConfiguration().getCameraModel().getIdentifier());
         
         editing = true;
         nameField.setText(editCommand.getName());
@@ -73,7 +69,7 @@ public class IRRecordDialog extends javax.swing.JDialog {
     
     private IRCommand generateIRCommand()
     {
-        return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{model}, pulseData, 10000, 1, 38, true);
+        return new IRCommand(nameField.getText(), descriptionArea.getText(), new CameraModel[]{wizard.getConfiguration().getCameraModel()}, pulseData, 10000, 1, 38, true);
     }
     
      private void doRecord()
@@ -82,6 +78,8 @@ public class IRRecordDialog extends javax.swing.JDialog {
         try {
             pulseData = recorder.recordPulseData();
         } catch (IOException | TimeoutException ex) {
+            wizard.connectionLost(ex.getMessage());
+        } catch (PulseDataRecorder.IRRecordException ex) {
             error = true;
         }
         
@@ -112,6 +110,8 @@ public class IRRecordDialog extends javax.swing.JDialog {
         try {
             recorder.playbackRecording();
         } catch (TimeoutException | IOException ex) {
+            wizard.connectionLost(ex.getMessage());
+        } catch (PulseDataRecorder.IRPlaybackException ex) {
             error = true;
         }
         

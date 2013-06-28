@@ -244,20 +244,16 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
         IRManageDialog diag = new IRManageDialog(wizard, wizard);
         
         try {
-            controller.send("O;1", 10000);
-            controller.send("N;0", 10000);
-        } catch (Exception ex) {
-            //TODO: Do something
+            String send = controller.send("O;1", 5000);
+            String send1 = controller.send("N;0", 5000);
+            diag.setVisible(true);
+            controller.send("N;1", 5000);
+            wizard.startAutoServoPulling();
+        } catch (IOException | TimeoutException ex) {
+            diag.setVisible(false);
+            wizard.connectionLost(ex.getMessage());
         }
         
-        diag.setVisible(true);
-        
-        try {
-            controller.send("N;1", 10000);
-        } catch (Exception ex) {
-            //TODO: Do something
-        }
-        wizard.startAutoServoPulling();
         onDisplay();
     }//GEN-LAST:event_customIRButtonActionPerformed
 

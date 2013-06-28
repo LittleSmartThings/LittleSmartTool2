@@ -323,33 +323,36 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 if (!skipFirmwareCheck && (UpdateUtil.FirmwareMain != mainV || UpdateUtil.FirmwareSub != subV))
                 {
                     String message =  "The connected Stratosnapper has firmware version " + mainV + "." + subV
-                            + "\r\nPress OK to update to the latest version!";
-                    JOptionPane.showMessageDialog(wizard, message, "Firmware update!", JOptionPane.INFORMATION_MESSAGE);
-                
-                    //Update message
-                    dotsTimer.stop();
-                    dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Updating"));
-                    dotsTimer.start();
-                    
-                    //Update firmware
-                    updatingFirmware = true;
-                    controller.disconnect();
-                    boolean success = UpdateUtil.UpdateFirmware(port);
-                    if (!success)
+                            + "\r\nThe latest firmware has version " + UpdateUtil.FirmwareMain + "." + UpdateUtil.FirmwareSub
+                            + "\r\nDo you want to update the firmware now?";
+                    int answer = JOptionPane.showConfirmDialog(wizard, message, "Firmware update!", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    if (answer == JOptionPane.YES_OPTION)
                     {
-                        int retry = JOptionPane.showConfirmDialog(wizard, "Firmware update failed.\r\nRetry update?", "Update failed", JOptionPane.YES_NO_OPTION);
-                        if (retry == JOptionPane.NO_OPTION)
-                            skipFirmwareCheck = true;
+                        //Update message
+                        dotsTimer.stop();
+                        dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Updating"));
+                        dotsTimer.start();
+
+                        //Update firmware
+                        updatingFirmware = true;
+                        controller.disconnect();
+                        boolean success = UpdateUtil.UpdateFirmware(port);
+                        if (!success)
+                        {
+                            int retry = JOptionPane.showConfirmDialog(wizard, "Firmware update failed.\r\nRetry update?", "Update failed", JOptionPane.YES_NO_OPTION);
+                            if (retry == JOptionPane.NO_OPTION)
+                                skipFirmwareCheck = true;
+                        }
+
+                        //Reconnect
+                        dotsTimer.stop();
+                        dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Validating"));
+                        dotsTimer.start();
+                        SerialConnector sc2 = new SerialConnector(port, wizard, dotsTimer);
+                        Thread t = new Thread(sc2);
+                        t.start();
+                        return;
                     }
-                    
-                    //Reconnect
-                    dotsTimer.stop();
-                    dotsTimer = new Timer(500,new DotsListener(connectedLabel, "Validating"));
-                    dotsTimer.start();
-                    SerialConnector sc2 = new SerialConnector(port, wizard, dotsTimer);
-                    Thread t = new Thread(sc2);
-                    t.start();
-                    return;
                 }
                 
                 //Finish
@@ -416,6 +419,20 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
         new Thread(new SerialConnector(portChooser.getSelectedItem().toString(), this, dotsTimer)).start();
     }//GEN-LAST:event_portChooserItemStateChanged
 
+    /**
+     * Update UI telling that connection is lost.
+     * Shows JOptionPane
+     */
+    public void connectionLost(String message)
+    {
+        servoPullerTimer.stop();
+        controller.disconnect();
+        connectedLabel.setText("Not connected");
+        connectedLabel.setForeground(new Color(0x660000));
+        portChooser.setSelectedIndex(0);
+        JOptionPane.showMessageDialog(this, "Lost connection to the Stratosnapper:\r\n" + message, "Connection lost", JOptionPane.ERROR_MESSAGE);
+    }
+    
     private void refreshPortList()
     {
         controller.disconnect();

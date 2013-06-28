@@ -70,18 +70,29 @@ public class PulseDataRecorder {
         }
     }*/
     
+    public static class IRRecordException extends Exception
+    {
+        public IRRecordException(){}
+        public IRRecordException(String msg) {super(msg);}
+    }
+    
+    public static class IRPlaybackException extends Exception
+    {
+        public IRPlaybackException(){}
+        public IRPlaybackException(String msg) {super(msg);}
+    }
+    
     /**
      * Record some pulsedata from the IR receiver
      * @return The recorded pulsedata
      * @throws IOException
      * @throws TimeoutException 
      */
-    public int[] recordPulseData() throws IOException, TimeoutException
+    public int[] recordPulseData() throws IOException, TimeoutException, IRRecordException
     {
         //Record to position 1
         String response = controller.send("J;" + position, 10000);
-        if (!response.equals("J;1")) throw new TimeoutException("The StratoSnapper timed out while waiting for IR input or the sequenze was too long");
-        
+        if (!response.equals("J;1")) throw new IRRecordException("The StratoSnapper timed out while waiting for IR input or the sequenze was too long");
         //Read last recorded
         SerialCommand[] pulseData = controller.sendMultiResponse("I;0","I;1",10000);
         
@@ -104,9 +115,11 @@ public class PulseDataRecorder {
         return reducedTimings;
     }
     
-    public void playbackRecording() throws TimeoutException, IOException
+    public void playbackRecording() throws TimeoutException, IOException, IRPlaybackException
     {
-        controller.send("H;0", 5000);
+        String reply = controller.send("H;0", 5000);
+        if (!"H;1".equals(reply))
+            throw new IRPlaybackException("Unexpected answer from Stratosnapper when playing back recorded command: \""+reply+"\"");
     }
     
 }
