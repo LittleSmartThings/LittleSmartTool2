@@ -8,6 +8,7 @@
 .DS_Store
 
 **/build/
+/LittleSmartTool2/data/CustomIRCommands/
 /LittleSmartTool2/build/
 /LittleSmartTool2/dist/
 **/nbproject/private/
