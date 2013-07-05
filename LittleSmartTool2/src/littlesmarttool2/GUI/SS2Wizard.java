@@ -44,7 +44,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
     private Configuration configuration;
     private SerialController controller;
     private Timer servoPullerTimer = new Timer(50, null);
-    private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<>();
+    private ArrayList<ResponseListener> servoReadingListeners = new ArrayList<ResponseListener>();
     private boolean connecting = false;
     private boolean updatingFirmware = false;
     private boolean skipFirmwareCheck = false;
@@ -285,7 +285,7 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 try {
                     //Try to enable output
                     controller.send("N;0", 2000);
-                } catch (IOException | TimeoutException ex) {
+                } catch (Exception ex) {
                     //Do nothing
                 }
                 System.exit(0);
@@ -376,7 +376,11 @@ public class SS2Wizard extends javax.swing.JFrame implements ActionListener{
                 Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "The selected port is in use.\r\nEnsure that you selected the right port, and that no other software is using it.\r\nOn Mac computers, this can happen as a result of fault in the serial driver. To solve this, run the following commands:\r\nmkdir /var/lock\r\nchmod 777 /var/lock","Port in use", JOptionPane.ERROR_MESSAGE);
                 error = true;
-            } catch (UnsupportedCommOperationException | IOException ex) {
+            } catch (IOException ex) {
+                Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(wizard, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
+                error = true;
+            } catch (UnsupportedCommOperationException ex) {
                 Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(wizard, "An error occured while connecting to the Stratosnapper.\r\nPlease try again or use another port if the error persists\r\nMessage from system: \"" + ex.getMessage() + "\"","Connection error", JOptionPane.ERROR_MESSAGE);
                 error = true;

@@ -174,7 +174,7 @@ public class Step4Panel extends StepPanel implements ResponseListener, Connectio
                     } 
                 });
                 wizard.startAutoServoPulling();
-            } catch (IOException | TimeoutException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger("ss2logger").log(Level.SEVERE, null, ex); //Keep this!
                 wizard.setHasUploaded(false);
                 uploadLabel.setText("An error occurred, please try agian.");

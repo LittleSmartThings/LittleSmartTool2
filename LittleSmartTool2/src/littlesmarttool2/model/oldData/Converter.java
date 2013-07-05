@@ -19,7 +19,7 @@ public class Converter {
         OldIRCommand[] oldIRs = JSON.readObjectFromFile("oldData/functions-list.json", OldIRCommand[].class);
         OldCameraBrand[] oldBrands = JSON.readObjectFromFile("oldData/camera-list.json", OldCameraBrand[].class);
         
-        HashMap<String, ArrayList<CameraModel>> map = new HashMap<>();
+        HashMap<String, ArrayList<CameraModel>> map = new HashMap<String, ArrayList<CameraModel>>();
         
         
         CameraBrand[] brands = new CameraBrand[oldBrands.length];

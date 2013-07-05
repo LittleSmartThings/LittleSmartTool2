@@ -28,8 +28,8 @@ import littlesmarttool2.model.Command;
  */
 public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInputListener {
     
-    private ArrayList<BlockPressedListener> blockPressedListeners = new ArrayList<>();
-    private ArrayList<ThresholdPressedListener> thresholdPressedListeners = new ArrayList<>();
+    private ArrayList<BlockPressedListener> blockPressedListeners = new ArrayList<BlockPressedListener>();
+    private ArrayList<ThresholdPressedListener> thresholdPressedListeners = new ArrayList<ThresholdPressedListener>();
     
     private static BasicStroke readingStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
                         BasicStroke.JOIN_MITER, 10.0f, new float[]{5f}, 0.0f);
@@ -51,8 +51,8 @@ public class ChannelSettingViewer extends javax.swing.JPanel implements MouseInp
     private Block selectedBlock;
     private Threshold selectedThreshold;
     private int dragMin, dragMax;
-    private ArrayList<Block> blocks = new ArrayList<>();
-    private ArrayList<Threshold> thresholds = new ArrayList<>();
+    private ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
     private final int thresholdSelectionWidth = 5;
     private final int thresholdMinimumSpacing = 15;
     

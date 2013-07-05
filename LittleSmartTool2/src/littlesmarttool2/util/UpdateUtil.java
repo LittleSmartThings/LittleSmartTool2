@@ -42,7 +42,7 @@ public class UpdateUtil {
             }
             result = p.waitFor();
             
-        } catch (IOException | InterruptedException ex) {
+        } catch (Exception ex) {
             sb.append(ex.getClass().getName());
             sb.append(ex.getMessage());
             result = -1;

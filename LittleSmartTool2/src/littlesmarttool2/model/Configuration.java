@@ -15,7 +15,7 @@ public class Configuration {
     private CameraBrand cameraBrand;
     private CameraModel cameraModel;
     private ConnectionType outputType;
-    private ArrayList<Channel> channels = new ArrayList<>();
+    private ArrayList<Channel> channels = new ArrayList<Channel>();
     private int irFreq;
     private int maxIRPulse, maxIR, maxLANC, maxTriggers, maxRanges;
     
@@ -226,7 +226,7 @@ public class Configuration {
         this.maxLANC = maxLANC;
     }
     public int getRemainingLANC(){
-        HashSet<Command> commands = new HashSet<>();
+        HashSet<Command> commands = new HashSet<Command>();
         int nb = 0;
         for (Channel channel : getChannels()) {
             for (Block block : channel.getSetting().getBlocks()) {
@@ -261,7 +261,7 @@ public class Configuration {
         this.maxIR = maxIR;
     }
     public int getRemainingIR(){
-        HashSet<Command> commands = new HashSet<>();
+        HashSet<Command> commands = new HashSet<Command>();
         int nb = 0;
         for (Channel channel : getChannels()) {
             for (Block block : channel.getSetting().getBlocks()) {

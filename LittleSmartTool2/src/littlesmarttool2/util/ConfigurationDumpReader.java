@@ -94,7 +94,7 @@ public class ConfigurationDumpReader {
     //4
     private ArrayList<CameraModel> GetPossibleCameraModels(CameraBrand[] cameraBrands)
     {
-        ArrayList<CameraModel> possibleModels = new ArrayList<>();
+        ArrayList<CameraModel> possibleModels = new ArrayList<CameraModel>();
         
         for (CameraBrand brand : cameraBrands)
         {
@@ -159,7 +159,7 @@ public class ConfigurationDumpReader {
     
     private ArrayList<Block> CreateBlocks(int channel, ArrayList<Threshold> thresholds, int calibLow, int calibHigh)
     {
-        ArrayList<Block> blocks = new ArrayList<>();
+        ArrayList<Block> blocks = new ArrayList<Block>();
         Threshold prevThreshold = null;
         for (Threshold th : thresholds)
         {
@@ -207,7 +207,7 @@ public class ConfigurationDumpReader {
       
     private ArrayList<ThresholdProtoMerged> GetMergedThresholdProtos(int channel)
     {
-        ArrayList<ThresholdProtoMerged> merged = new ArrayList<>();
+        ArrayList<ThresholdProtoMerged> merged = new ArrayList<ThresholdProtoMerged>();
         boolean[] visited = new boolean[thresholdProtos.size()+1];
         for (ThresholdProto tp : thresholdProtos)
         {
@@ -243,7 +243,7 @@ public class ConfigurationDumpReader {
     
     private ArrayList<Threshold> CreateThresholdsFromMergedProtos(ArrayList<ThresholdProtoMerged> merged, int calibLow, int calibHigh)
     {
-        ArrayList<Threshold> thresholds = new ArrayList<>();
+        ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
         for (ThresholdProtoMerged tpm : merged)
         {
             thresholds.add(new Threshold(
@@ -313,7 +313,7 @@ public class ConfigurationDumpReader {
 
     private static HashMap<Character,ArrayList<SerialCommand>> BuildSearchMap(SerialCommand[] dump)
     {
-        HashMap<Character,ArrayList<SerialCommand>> rawReadings = new HashMap<>();
+        HashMap<Character,ArrayList<SerialCommand>> rawReadings = new HashMap<Character,ArrayList<SerialCommand>>();
         for (SerialCommand cmd : dump)
         {
             if (!rawReadings.containsKey(cmd.getCommand()))
@@ -349,7 +349,7 @@ public class ConfigurationDumpReader {
     
     private static HashMap<Integer, LANCCommand> ReadLANCCommands(HashMap<Character,ArrayList<SerialCommand>> raw)
     {
-        HashMap<Integer,LANCCommand> cmds = new HashMap<>();
+        HashMap<Integer,LANCCommand> cmds = new HashMap<Integer, LANCCommand>();
         for (SerialCommand scmd : raw.get('L'))
         {
             int[] parts = scmd.convertArgsToInt();
@@ -362,7 +362,7 @@ public class ConfigurationDumpReader {
     
     private static HashMap<Integer, IRCommand> ReadIRCommands(HashMap<Character,ArrayList<SerialCommand>> raw, int freq)
     {
-        HashMap<Integer, IRCommand> cmds = new HashMap<>();
+        HashMap<Integer, IRCommand> cmds = new HashMap<Integer, IRCommand>();
         
         for (SerialCommand sc : raw.get('G'))
         {
@@ -379,7 +379,7 @@ public class ConfigurationDumpReader {
     
     private static int[] GetIRPulseData(HashMap<Character,ArrayList<SerialCommand>> raw, int commandId)
     {
-        HashMap<Integer, int[]> pulseParts = new HashMap<>();
+        HashMap<Integer, int[]> pulseParts = new HashMap<Integer, int[]>();
         if (!raw.containsKey('I')) return new int[0];
         for (SerialCommand cmd : raw.get('I'))
         {
@@ -400,7 +400,7 @@ public class ConfigurationDumpReader {
     
     private static HashMap<Integer, WireCommand> GenerateWireCommands(int pulseLength)
     {
-        HashMap<Integer, WireCommand> commands = new HashMap<>();
+        HashMap<Integer, WireCommand> commands = new HashMap<Integer, WireCommand>();
         commands.put(1, new WireCommand("Focus", "", null, pulseLength, 1));
         commands.put(2, new WireCommand("Shoot", "", null, pulseLength, 2));
         commands.put(3, new WireCommand("Fo+Sh", "", null, pulseLength, 3));
@@ -414,7 +414,7 @@ public class ConfigurationDumpReader {
     
     private static ArrayList<RangeProto> ReadRangeTriggers(HashMap<Character,ArrayList<SerialCommand>> raw)
     {
-        ArrayList<RangeProto> ranges = new ArrayList<>();
+        ArrayList<RangeProto> ranges = new ArrayList<RangeProto>();
         for (SerialCommand cmd : raw.get('R'))
         {
             int[] parts = cmd.convertArgsToInt();
@@ -444,7 +444,7 @@ public class ConfigurationDumpReader {
     
     private static ArrayList<ThresholdProto> ReadThresholdTriggers(HashMap<Character,ArrayList<SerialCommand>> raw)
     {
-        ArrayList<ThresholdProto> thresholds = new ArrayList<>();
+        ArrayList<ThresholdProto> thresholds = new ArrayList<ThresholdProto>();
         for (SerialCommand cmd : raw.get('T'))
         {
             int[] parts = cmd.convertArgsToInt();

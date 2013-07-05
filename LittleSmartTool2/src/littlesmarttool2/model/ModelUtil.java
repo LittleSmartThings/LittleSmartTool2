@@ -48,7 +48,7 @@ public class ModelUtil {
     }
     
     public static List<WireCommand> getWireCommandsForCamera(CameraModel camera) {
-        List<WireCommand> commands = new ArrayList<>();
+        List<WireCommand> commands = new ArrayList<WireCommand>();
         for (WireCommand command : WireCommand.getArray()) {
             for (CameraModel cameraModel : command.getCameraModels()) {
                 if(cameraModel.equals(camera)){
@@ -61,7 +61,7 @@ public class ModelUtil {
     }
     
     public static List<LANCCommand> getLANCCommandsForCamera(CameraModel camera) {
-        List<LANCCommand> commands = new ArrayList<>();
+        List<LANCCommand> commands = new ArrayList<LANCCommand>();
         for (LANCCommand command : LANCCommand.getArray()) {
             for (CameraModel cameraModel : command.getCameraModels()) {
                 if(cameraModel.equals(camera)){
@@ -74,7 +74,7 @@ public class ModelUtil {
     }
     
     public static List<IRCommand> getIRCommandsForCamera(CameraModel camera) {
-        List<IRCommand> commands = new ArrayList<>();
+        List<IRCommand> commands = new ArrayList<IRCommand>();
         for (IRCommand command : IRCommand.getArray()) {
             for (CameraModel cameraModel : command.getCameraModels()) {
                 if(cameraModel.equals(camera)){
@@ -129,7 +129,7 @@ public class ModelUtil {
     }
     
     public static void SendConfigurationToSnapper(Configuration conf, SerialController comm, ProgrammingUpdateListener listener) throws IOException, TimeoutException {
-        commandMap = new HashMap<>();
+        commandMap = new HashMap<Command, Integer>();
         currentCommand = 1;
 
         System.out.print("Clearing EEPROM...");

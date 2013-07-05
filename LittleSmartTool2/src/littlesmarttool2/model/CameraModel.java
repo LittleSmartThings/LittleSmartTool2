@@ -60,7 +60,7 @@ public class CameraModel {
     
     @JsonBackReference
     public List<IRCommand> getCustomIRCommands(){
-        List<IRCommand> commands = new ArrayList<>();
+        List<IRCommand> commands = new ArrayList<IRCommand>();
         for (IRCommand command : getIRCommands()) {
             if(command.getCustom())
                 commands.add(command);

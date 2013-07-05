@@ -28,7 +28,7 @@ public class SerialController {
     private OutputStream outStream;
     private BufferedReader inReader;
     private static final String INIT_STRING = "StratoSnapper 2 Init.";
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Add a connection listener which will get invoked when a 
@@ -51,7 +51,7 @@ public class SerialController {
     public static ArrayList<String> getPortNames()
     {
         Enumeration ports = CommPortIdentifier.getPortIdentifiers();
-        ArrayList<String> portNames = new ArrayList<>();
+        ArrayList<String> portNames = new ArrayList<String>();
         while(ports.hasMoreElements()) {
             String portName = ((CommPortIdentifier)ports.nextElement()).getName();
             portNames.add(portName);
@@ -104,7 +104,10 @@ public class SerialController {
             maxRepetitions--;
             try {
                 return send(msg, timeOut);
-            } catch (IOException | TimeoutException ex) {
+            } catch (IOException ex) {
+                if (maxRepetitions == 0)
+                    throw ex;
+            }catch (TimeoutException ex) {
                 if (maxRepetitions == 0)
                     throw ex;
             }
@@ -176,7 +179,7 @@ public class SerialController {
     
     public synchronized SerialCommand[] sendMultiResponse(String message, String term, int timeOut) throws IOException, TimeoutException
     {
-        ArrayList<SerialCommand> response = new ArrayList<>();
+        ArrayList<SerialCommand> response = new ArrayList<SerialCommand>();
         long endTime = System.currentTimeMillis() + timeOut;
         if (DEBUG) System.err.println("Sending (multi) >>>" + message + "<<<");
         try {

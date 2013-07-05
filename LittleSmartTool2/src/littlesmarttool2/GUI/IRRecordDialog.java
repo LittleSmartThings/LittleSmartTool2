@@ -83,7 +83,12 @@ public class IRRecordDialog extends javax.swing.JDialog {
         boolean error = false;
         try {
             pulseData = recorder.recordPulseData();
-        } catch (IOException | TimeoutException ex) {
+        } catch (IOException ex) {
+            hasCommError = true;
+            setVisible(false);
+            wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");
+            return;
+        } catch (TimeoutException ex) {
             hasCommError = true;
             setVisible(false);
             wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");
@@ -118,7 +123,12 @@ public class IRRecordDialog extends javax.swing.JDialog {
         boolean error = false;
         try {
             recorder.playbackRecording();
-        } catch (TimeoutException | IOException ex) {
+        } catch (IOException ex) {
+            hasCommError = true;
+            setVisible(false);
+            wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");
+            return;
+        } catch (TimeoutException ex) {
             hasCommError = true;
             setVisible(false);
             wizard.connectionLost(ex.getMessage() + "\r\nIf this error persists, try connecting the StratoSnapper to another USB port and restart this program.");

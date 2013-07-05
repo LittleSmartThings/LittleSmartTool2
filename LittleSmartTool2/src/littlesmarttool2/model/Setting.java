@@ -14,10 +14,10 @@ import static littlesmarttool2.model.ControlType.*;
  * @author Rasmus
  */
 public class Setting {
-    private ArrayList<ControlType> types = new ArrayList<>(); 
-    private ArrayList<Block> blocks = new ArrayList<>();
-    private ArrayList<Threshold> thresholds = new ArrayList<>();
-    private ArrayList<CameraModel> cameraModels = new ArrayList<>();
+    private ArrayList<ControlType> types = new ArrayList<ControlType>(); 
+    private ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<Threshold> thresholds = new ArrayList<Threshold>();
+    private ArrayList<CameraModel> cameraModels = new ArrayList<CameraModel>();
     //TODO: If this is to be serialized, should it have a no args constructor 
     //that doesn't add a block?
     private final int closeness = 10;

@@ -41,7 +41,7 @@ public class JSON {
      * @return A hashmap of all read objects as keys and the filename of the corresponding object (with the dirname: dirname"+"/"+filename).
      */
     public static <T> HashMap<T, String> readObjectsFromDir(String dirname, Class<T> clazz){
-        HashMap<T, String> map = new HashMap<>();
+        HashMap<T, String> map = new HashMap<T, String>();
         File dir = new File(DATAFOLDER+dirname);
         if (!dir.exists())
         {
@@ -85,7 +85,7 @@ public class JSON {
         
         
         CameraBrand[] brandList = readObjectFromFile("cameraList.json", CameraBrand[].class);
-        ArrayList<CameraModel> modelList = new ArrayList<>();
+        ArrayList<CameraModel> modelList = new ArrayList<CameraModel>();
         for (CameraBrand cameraBrand : brandList) {
             modelList.addAll(Arrays.asList(cameraBrand.getModels()));
         }
@@ -95,9 +95,9 @@ public class JSON {
             models[i++] = cameraModel;
         }
         
-        ArrayList<IRCommand> IRCommandList = new ArrayList<>();
-        ArrayList<WireCommand> wireCommandList = new ArrayList<>();
-        ArrayList<LANCCommand> LANCCommandList = new ArrayList<>();
+        ArrayList<IRCommand> IRCommandList = new ArrayList<IRCommand>();
+        ArrayList<WireCommand> wireCommandList = new ArrayList<WireCommand>();
+        ArrayList<LANCCommand> LANCCommandList = new ArrayList<LANCCommand>();
         IRCommandList.addAll(Arrays.asList(readObjectFromFile("IRCommandList.json", IRCommand[].class)));
         wireCommandList.addAll(Arrays.asList(readObjectFromFile("WireCommandList.json", WireCommand[].class)));
         LANCCommandList.addAll(Arrays.asList(readObjectFromFile("LANCCommandList.json", LANCCommand[].class)));

@@ -30,7 +30,7 @@ import littlesmarttool2.util.ConfigurationDumpReader;
 public class Step3Panel extends StepPanel implements ResponseListener, ConnectionListener {
 
     //ChannelTabPanel[] tabs = new ChannelTabPanel[4];
-    HashMap<Integer,ChannelTabPanel> tabs = new HashMap<>();
+    HashMap<Integer,ChannelTabPanel> tabs = new HashMap<Integer,ChannelTabPanel>();
     private final CommandChangedListener cmdChangedListener = new CommandChangedListener() {
         @Override
         public void CommandChanged() {
@@ -228,7 +228,7 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
                 //TODO: Set camera brand!
             }
             
-        } catch (IOException | TimeoutException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Step3Panel.class.getName()).log(Level.SEVERE, null, ex);
         }
         onDisplay();
@@ -263,7 +263,7 @@ public class Step3Panel extends StepPanel implements ResponseListener, Connectio
             if (!"N;1".equals(answer)) throw new IOException("Unexpected answer from StratoSnapper while disabling output. Answer: " + answer);
             
             wizard.startAutoServoPulling();
-        } catch (IOException | TimeoutException ex) {
+        } catch (Exception ex) {
             diag.setVisible(false);
             wizard.connectionLost(ex.getMessage());
         }
